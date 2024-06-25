@@ -1,6 +1,5 @@
-// const questManagerContractAddress = "0xa16D8f09c4BFf7Ef8B17bbAE534F1b524160C911";
-const questManagerContractAddress = "0x36b079165906f092b9EF79Ee837073843c51DFc3";
-const eventManagerContractAddress = "0x3a1f8375b05Ed3f8c892526c3E5e97976deA7754";
+const questManagerContractAddress = "0xbd33EbA26eCbb611966f98311F01Eb32f18a2baA";
+const eventManagerContractAddress = "0x2718Faa2Cb20d09D1697ed40283E7e1C17c51DAD";
 
 async function fetchquestABI() {
     let response = await fetch('QuestManager.json');
@@ -59,6 +58,7 @@ async function loadAvailableQuests() {
         const questEventId = 1; // Change this to the actual eventId you want to retrieve
         const quest = await questManagerContract.getQuest(questEventId);
         console.log(quest);
+				console.log(`initial quest: ${JSON.stringify(quest, null, 2)}`);
     } catch (error) {
         console.error("Failed to load quests:", error.message);
     }
@@ -71,6 +71,68 @@ async function loadAvailableEvents() {
         const eventEventId = 1; // Change this to the actual eventId you want to retrieve
         const events = await eventManagerContract.listEvents();
         console.log(events);
+				console.log(`initial events: ${JSON.stringify(events, null, 2)}`);
+				console.log(Object.keys(events[0])); // Log the keys of the first event object
+
+        // Basic verification of listEvents call
+        if (!Array.isArray(events)) {
+            console.error('listEvents did not return an array');
+            return;
+        }
+       // Basic verification of listEvents call
+			if (!Array.isArray(events)) {
+				console.error('listEvents did not return an array');
+				return;
+			}
+
+			if (events.length === 0) {
+				console.log('No events found.');
+			} else {
+				console.log(`Found ${events.length} events.`);
+
+				// Convert BigNumber to string for easier inspection
+				const firstEventId = events[0].toString();
+				console.log(`First event ID: ${firstEventId}`);
+			}
+
+      // const startTime = Math.floor(Date.now() / 1000);
+      // const endTime = startTime + 86400; // 1 day from now
+      // const description = "Test Event";
+      //  try {
+      //       const txResponse = await eventManagerContract.createEvent(startTime, endTime, description);
+      //       console.log(`Transaction hash: ${txResponse.hash}`);
+      //
+      //       await txResponse.wait(); // Wait for the transaction to be mined
+      //
+      //       console.log('Transaction mined successfully.');
+      //
+      //       // Extract the event logs from the transaction receipt
+			// 	 console.log('Provider before getTransactionReceipt:', provider);
+      //       const receipt = await provider.getTransactionReceipt(txResponse.hash);
+      //
+      //       // Filter out the EventCreated event logs
+      //       const iface = new ethers.utils.Interface(["event EventCreated(uint256 eventId, uint256 startTime, uint256 endTime, string description)"]);
+      //       const eventCreatedLogs = receipt.logs.filter(log => {
+      //           try {
+      //               iface.parseLog(log);
+      //               return true;
+      //           } catch (error) {
+      //               return false;
+      //           }
+      //       });
+      //
+      //       if (eventCreatedLogs.length > 0) {
+      //           const log = eventCreatedLogs[0];
+      //           const parsedLog = iface.parseLog(log);
+      //           const { args } = parsedLog;
+      //           console.log(`EventCreated emitted with ID: ${args.eventId.toString()}, StartTime: ${args.startTime.toString()}, EndTime: ${args.endTime.toString()}, Description: ${args.description}`);
+      //       } else {
+      //           console.log('EventCreated event not found in transaction receipt.');
+      //       }
+        // } catch (error) {
+        //     console.error('Error creating event:', error.message);
+        // }
+
     } catch (error) {
         console.error("Failed to load events:", error.message);
     }

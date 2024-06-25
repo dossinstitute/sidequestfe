@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     })();
 
-  const form = document.getElementById('registration-form');
-  if (form) {
+  const regform = document.getElementById('registration-form');
+  if (regform) {
     // document.getElementById('registration-form').addEventListener('submit', function(event) {
     form.addEventListener('submit', function(event) {
       event.preventDefault();
@@ -27,12 +27,66 @@ document.addEventListener('DOMContentLoaded', function() {
     console.error('Element with ID "registration-form" not found');
   }
 
-    document.getElementById('check-status').addEventListener('click', function() {
+  const checkform = document.getElementById('check-status');
+  if (checkform) {
+    form.addEventListener('click', function() {
         // Logic to check the registration status of the provided wallet address
         const walletAddress = document.getElementById('check-wallet-address').value;
         // Retrieve and display status
         document.getElementById('status-result').textContent = 'Status: Registered/Not Registered'; // Example result
     });
+  } else {
+    console.error('Element with ID "check-status" not found');
+  }
+
+		document.getElementById('update-event-button').addEventListener('click', async function() {
+				const name = document.getElementById('event-name').value;
+				const location = document.getElementById('event-location').value;
+				const date = document.getElementById('event-date').value;
+				const description = document.getElementById('event-description').value;
+
+        const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+				const events = await eventManagerContract.listEvents();
+			const startTime = Math.floor(Date.now() / 1000);
+			const endTime = startTime + 86400; // 1 day from now
+       try {
+            const txResponse = await eventManagerContract.createEvent(startTime, endTime, description);
+            console.log(`Transaction hash: ${txResponse.hash}`);
+
+            await txResponse.wait(); // Wait for the transaction to be mined
+
+            console.log('Transaction mined successfully.');
+
+            // Extract the event logs from the transaction receipt
+				 console.log('Provider before getTransactionReceipt:', provider);
+            const receipt = await provider.getTransactionReceipt(txResponse.hash);
+
+            // Filter out the EventCreated event logs
+            const iface = new ethers.utils.Interface(["event EventCreated(uint256 eventId, uint256 startTime, uint256 endTime, string description)"]);
+            const eventCreatedLogs = receipt.logs.filter(log => {
+                try {
+                    iface.parseLog(log);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            });
+
+            if (eventCreatedLogs.length > 0) {
+                const log = eventCreatedLogs[0];
+                const parsedLog = iface.parseLog(log);
+                const { args } = parsedLog;
+                console.log(`EventCreated emitted with ID: ${args.eventId.toString()}, StartTime: ${args.startTime.toString()}, EndTime: ${args.endTime.toString()}, Description: ${args.description}`);
+            } else {
+                console.log('EventCreated event not found in transaction receipt.');
+            }
+        } catch (error) {
+            console.error('Error creating event:', error.message);
+        }
+
+
+		});
+
 
     document.getElementById('award-points-button').addEventListener('click', function() {
             const userWallet = document.getElementById('user-wallet').value;
@@ -79,18 +133,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Emit event for quest creation
 
         alert(`Quest "${name}" created successfully!`);
-    });
-
-    document.getElementById('update-event-button').addEventListener('click', function() {
-        const name = document.getElementById('event-name').value;
-        const location = document.getElementById('event-location').value;
-        const date = document.getElementById('event-date').value;
-        const description = document.getElementById('event-description').value;
-
-        // Logic to set/update event details
-        // Emit event for event update
-
-        alert(`Event "${name}" updated successfully!`);
     });
 
     document.getElementById('monitor-progress-button').addEventListener('click', function() {

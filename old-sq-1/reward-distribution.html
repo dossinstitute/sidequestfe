@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+    <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>User Registration and Participation</title>
+        <title>Reward Distribution</title>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link media="all" rel="stylesheet" href="ss/style.css" />
     </head>
@@ -38,22 +38,21 @@
                     </div>
                 </div>
             </header>
-            <h1>User Registration and Participation</h1>
-            <form id="registration-form">
-                <label for="wallet-address">Wallet Address:</label>
-                <input type="text" id="wallet-address" name="wallet-address" required>
+        <h1>Reward Distribution</h1>
+        <div class="reward-check">
+            <h2>Check Reward Distribution Status</h2>
+            <label for="quest-id">Quest ID:</label>
+            <input type="text" id="quest-id" name="quest-id" required>
 
-                <button type="submit">Register</button>
-            </form>
+            <label for="wallet-address">Wallet Address:</label>
+            <input type="text" id="wallet-address" name="wallet-address" required>
 
-            <div class="status">
-                <h2>Registration Status</h2>
-                <label for="check-wallet-address">Check Wallet Address:</label>
-                <input type="text" id="check-wallet-address" name="check-wallet-address">
+            <button id="check-reward-status">Check Status</button>
 
-                <button id="check-status">Check Status</button>
-                <p id="status-result"></p>
+            <div class="reward-status">
+                <p id="reward-status-result"></p>
             </div>
+        </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
         <script src="js/main.js"></script>

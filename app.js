@@ -1,5 +1,5 @@
-const questManagerContractAddress = "0xbd33EbA26eCbb611966f98311F01Eb32f18a2baA";
-const eventManagerContractAddress = "0x2718Faa2Cb20d09D1697ed40283E7e1C17c51DAD";
+const questManagerContractAddress = "0x1a282c87974E60B920f8844f1e9D487B88064bC5";
+const eventManagerContractAddress = "0x72b3eddf36122De184F134b62e558A88B4877AaC";
 
 async function fetchquestABI() {
     let response = await fetch('QuestManager.json');
@@ -16,12 +16,14 @@ let questManagerABI;
 let eventManagerABI;
 
 async function initializeQuestContract() {
+		console.log("initializeQuestContract");
     questManagerABI = await fetchquestABI(); // Fetch and assign the ABI
     const questManagerContract = new ethers.Contract(questManagerContractAddress, questManagerABI, signer);
     return questManagerContract;
 }
 
 async function initializeEventContract() {
+		console.log("initializeEventContract");
     eventManagerABI = await fetcheventABI(); // Fetch and assign the ABI
     const eventManagerContract = new ethers.Contract(eventManagerContractAddress, eventManagerABI, signer);
     return eventManagerContract;
@@ -58,7 +60,7 @@ async function loadAvailableQuests() {
         const questEventId = 1; // Change this to the actual eventId you want to retrieve
         const quest = await questManagerContract.getQuest(questEventId);
         console.log(quest);
-				console.log(`initial quest: ${JSON.stringify(quest, null, 2)}`);
+				// console.log(`initial quest: ${JSON.stringify(quest, null, 2)}`);
     } catch (error) {
         console.error("Failed to load quests:", error.message);
     }
@@ -71,8 +73,8 @@ async function loadAvailableEvents() {
         const eventEventId = 1; // Change this to the actual eventId you want to retrieve
         const events = await eventManagerContract.listEvents();
         console.log(events);
-				console.log(`initial events: ${JSON.stringify(events, null, 2)}`);
-				console.log(Object.keys(events[0])); // Log the keys of the first event object
+				// console.log(`initial events: ${JSON.stringify(events, null, 2)}`);
+				// console.log(Object.keys(events[0])); // Log the keys of the first event object
 
         // Basic verification of listEvents call
         if (!Array.isArray(events)) {

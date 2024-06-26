@@ -19,7 +19,9 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100%;
-    background-color: #f4f4f4;
+    /* background-color: #f4f4f4; */
+    background-color: #f5f5f5;
+    color: #333;
 }
 
 .container {
@@ -270,4 +272,90 @@ button#create-request:hover {
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
+}
+/* Add this to your CSS file or inside a <style> tag in your HTML */
+
+
+section {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+#quest-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#quest-list li {
+    background-color: #e6e6e6;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#quest-list li:hover {
+    background-color: #d9d9d9;
+}
+
+#quest-list li div {
+    margin-bottom: 5px;
+}
+
+#quest-list li.quest-id {
+    font-weight: bold;
+}
+
+#quest-list li.quest-dates span,
+#quest-list li.quest-interactions span,
+#quest-list li.quest-reward span {
+    color: #666;
+}
+
+#quest-list li.quest-reward {
+    font-style: italic;
+}
+
+#quest-details {
+    display: none; /* Hidden by default, shown on quest selection */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#quest-details h2 {
+    margin-bottom: 20px;
+}
+
+#quest-details label,
+#quest-details input,
+#quest-details select,
+#quest-details button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#quest-details button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#quest-details button:hover {
+    background-color: #0056b3;
+}
+
+#quest-details button:focus {
+    outline: none;
 }

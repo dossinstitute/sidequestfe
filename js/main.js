@@ -14,10 +14,81 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     })();
 
+
+	const questform = document.getElementById('create-quest');
+	if (questform) {
+    questform.addEventListener('click', async function() {
+			event.preventDefault();
+			const seventId = document.getElementById('event-id').value;
+			const eventId = parseInt(seventId, 10);
+			const sstartDate= document.getElementById('start-date').value;
+			const dstartDate= new Date(sstartDate);
+			const startDate = Math.floor(dstartDate.getTime() / 1000);
+			const sendDate= document.getElementById('end-date').value;
+			const dendDate= new Date(sendDate);
+			const endDate= Math.floor(dendDate.getTime() / 1000);
+			const srequiredInteractions = document.getElementById('interactions').value;
+			const requiredInteractions = parseInt(srequiredInteractions, 10);
+			const rewardType = document.getElementById('reward-details').value;
+
+
+			const questManagerContract = await initializeQuestContract(); // Ensure contract is initialized before calling methods
+			try {
+				const txResponse = await questManagerContract.createQuest(eventId, startDate, endDate, requiredInteractions, rewardType)
+				console.log(`quest Transaction hash: ${txResponse.hash}`);
+
+				await txResponse.wait(); // Wait for the transaction to be mined
+
+				console.log('quest Transaction mined successfully.');
+
+				// Extract the event logs from the transaction receipt
+				console.log('Provider before getTransactionReceipt:', provider);
+				const receipt = await provider.getTransactionReceipt(txResponse.hash);
+				console.log(`quest receipt: ${receipt}`);
+
+				// Filter out the EventCreated event logs
+				// const iface = new ethers.utils.Interface(["event QuestCreated(uint256 eventId, uint256 startTime, uint256 endTime, string description)"]);
+				const iface = new ethers.utils.Interface([
+					"event QuestCreated(uint256 questId, uint256 eventId, uint256 startDate, uint256 endDate, uint256 requiredInteractions, string rewardType)"
+					]);
+				const questCreatedLogs = receipt.logs.filter(log => {
+					try {
+						iface.parseLog(log);
+						console.log("iface.parseLog(log);");
+						return true;
+					} catch (error) {
+						console.log("failed iface.parseLog(log);");
+						return false;
+					}
+				});
+				if (questCreatedLogs.length > 0) {
+					const log = questCreatedLogs[0];
+					const parsedLog = iface.parseLog(log);
+					if (parsedLog && parsedLog.args) {
+						const { args } = parsedLog;
+						console.log(`QuestCreated emitted with Quest ID: ${args.questId?.toString()}, Event ID: ${args.eventId?.toString()}, Start Time: ${args.startDate?.toString()}, End Time: ${args.endDate?.toString()}, Required Interactions: ${args.requiredInteractions?.toString()}, Reward Type: ${args.rewardType}`);
+						alert('Quest Created');
+						} else {
+							console.log('QuestCreated event not found in transaction receipt or failed to parse.');
+							}
+
+					} else {
+						console.log('QuestCreated event not found in transaction receipt.');
+						}
+
+				} 
+			catch (error) {
+				console.error('Error creating quest:', error.message);
+				}
+			});
+		} else {
+			console.error('Element with ID "create-quest" not found');
+			}
+
   const regform = document.getElementById('registration-form');
   if (regform) {
     // document.getElementById('registration-form').addEventListener('submit', function(event) {
-    form.addEventListener('submit', function(event) {
+    regform.addEventListener('submit', function(event) {
       event.preventDefault();
       // Logic to register the user
       // Validate wallet address and store user details
@@ -29,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const checkform = document.getElementById('check-status');
   if (checkform) {
-    form.addEventListener('click', function() {
+    checkform.addEventListener('click', function() {
         // Logic to check the registration status of the provided wallet address
         const walletAddress = document.getElementById('check-wallet-address').value;
         // Retrieve and display status

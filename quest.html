@@ -1,67 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Quest Definition and Setup</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link media="all" rel="stylesheet" href="ss/style.css" />
-    </head>
-    <body>
-        <div class="container">
-            <header>
-                <div class="logo-container">
-                    <a href="index.html">
-                        <img src="images/logo.png" alt="logo" id="logo">
-                    </a>
-                </div>
-                <div class="menu">
-                    <div class="hamburger-menu-wrapper">
-                        <button class="hamburger-menu">
-                            <span>toggle menu</span>
-                        </button>
-                    </div>
-                    <div class="menu-list">
-                        <ul>
-                            <li><a href="dashboard.html">Dashboard</a></li>
-                            <li><a href="quest.html">Quest Definition and Setup</a></li>
-                            <li><a href="users.html">User Registration and Participation</a></li>
-                            <li><a href="verification.html">Interaction Verification</a></li>
-                            <li><a href="tracking.html">Interaction Tracking</a></li>
-                            <li><a href="completion-check.html">Quest Completion Check</a></li>
-                            <li><a href="reward-distribution.html">Reward Distribution</a></li>
-                            <li><a href="security.html">Security and Validations</a></li>
-                            <li><a href="event-admin.html">Event Admin Functions</a></li>
-                            <li><a href="testing.html">Testing and Deployment</a></li>
-                            <li><a href="point-system.html">Point System and Leaderboard</a></li>
-                            <li><a href="checkout-redeem.html">Checkout & Redeem</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </header>
-            <h1>Quest Definition and Setup</h1>
-            <form>
-                <label for="event-id">Event ID:</label>
-                <input type="text" id="event-id" name="event-id" required>
+	<head>
+		<meta charset="UTF-8">
+		<title>Quest Definition and Setup</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link media="all" rel="stylesheet" href="ss/style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<div class="logo-container">
+					<a href="index.html">
+						<img src="images/logo.png" alt="logo" id="logo">
+					</a>
+				</div>
+				<div class="menu">
+					<div class="hamburger-menu-wrapper">
+						<button class="hamburger-menu">
+							<span>toggle menu</span>
+						</button>
+					</div>
+					<div class="menu-list">
+						<ul>
+							<li><a href="dashboard.html">Dashboard</a></li>
+							<li><a href="quest.html">Quest Definition and Setup</a></li>
+							<li><a href="users.html">User Registration and Participation</a></li>
+							<li><a href="verification.html">Interaction Verification</a></li>
+							<li><a href="tracking.html">Interaction Tracking</a></li>
+							<li><a href="completion-check.html">Quest Completion Check</a></li>
+							<li><a href="reward-distribution.html">Reward Distribution</a></li>
+							<li><a href="security.html">Security and Validations</a></li>
+							<li><a href="event-admin.html">Event Admin Functions</a></li>
+							<li><a href="testing.html">Testing and Deployment</a></li>
+							<li><a href="point-system.html">Point System and Leaderboard</a></li>
+							<li><a href="checkout-redeem.html">Checkout & Redeem</a></li>
+						</ul>
+					</div>
+				</div>
+			</header>
+			<h1>Quest Definition and Setup</h1>
+			<form id="create-quest-form" >
+				<label for="event-id">Event ID:</label>
+				<input type="text" id="event-id" name="event-id" required>
 
-                <label for="start-date">Start Date:</label>
-                <input type="date" id="start-date" name="start-date" required>
+				<label for="start-date">Start Date:</label>
+				<input type="date" id="start-date" name="start-date" required>
 
-                <label for="end-date">End Date:</label>
-                <input type="date" id="end-date" name="end-date" required>
+				<label for="end-date">End Date:</label>
+				<input type="date" id="end-date" name="end-date" required>
 
-                <label for="interactions">Number of Required Interactions:</label>
-                <input type="number" id="interactions" name="interactions" min="3" required>
+				<label for="interactions">Number of Required Interactions:</label>
+				<input type="number" id="interactions" name="interactions" min="3" required>
 
-                <label for="reward-details">Reward Details:</label>
-                <select id="reward-details" name="reward-details" required>
-                    <option value="NFT">NFT</option>
-                    <option value="token">Token</option>
-                </select>
+				<label for="reward-details">Reward Details:</label>
+				<select id="reward-details" name="reward-details" required>
+					<option value="NFT">NFT</option>
+					<option value="token">Token</option>
+				</select>
 
-                <button id="create-request" type="submit">Create Quest</button>
-            </form>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-        <script src="js/main.js"></script>
-    </body>
+				<button id="create-quest">Create Quest</button>
+			</form>
+		</div>
+		<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+		<script src="js/main.js?version=27"></script>
+		<script type='text/javascript' src="app.js?version=6"></script>   
+	</body>
 </html>

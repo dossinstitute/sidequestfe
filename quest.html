@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Quest Definition and Setup</title>
+		<title>Quest Management</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<link media="all" rel="stylesheet" href="ss/style.css" />
 	</head>
@@ -38,32 +38,46 @@
 					</div>
 				</div>
 			</header>
-			<h1>Quest Definition and Setup</h1>
-			<form id="create-quest-form" >
-				<label for="event-id">Event ID:</label>
-				<input type="text" id="event-id" name="event-id" required>
+			<main>
+				<section id="master-section">
+					<h2>Quest List</h2>
+					<ul id="quest-list">
+						<!-- Quests will be dynamically added here -->
+					</ul>
+				</section>
 
-				<label for="start-date">Start Date:</label>
-				<input type="date" id="start-date" name="start-date" required>
+				<section id="detail-section">
+					<h2>Quest Details</h2>
+					<form id="quest-form">
+						<label for="event-id">Event ID:</label>
+						<input type="text" id="event-id" name="event-id" required>
 
-				<label for="end-date">End Date:</label>
-				<input type="date" id="end-date" name="end-date" required>
+						<label for="start-date">Start Date:</label>
+						<input type="date" id="start-date" name="start-date" required>
 
-				<label for="interactions">Number of Required Interactions:</label>
-				<input type="number" id="interactions" name="interactions" min="3" required>
+						<label for="end-date">End Date:</label>
+						<input type="date" id="end-date" name="end-date" required>
 
-				<label for="reward-details">Reward Details:</label>
-				<select id="reward-details" name="reward-details" required>
-					<option value="NFT">NFT</option>
-					<option value="token">Token</option>
-				</select>
+						<label for="interactions">Number of Required Interactions:</label>
+						<input type="number" id="interactions" name="interactions" min="3" required>
 
-				<button id="create-quest">Create Quest</button>
-			</form>
+						<label for="reward-details">Reward Details:</label>
+						<select id="reward-details" name="reward-details" required>
+							<option value="NFT">NFT</option>
+							<option value="token">Token</option>
+						</select>
+
+						<button type="button" id="new-quest">New Quest</button>
+						<button type="button" id="create-quest">Create Quest</button>
+						<button type="button" id="update-quest">Update Quest</button>
+						<button type="button" id="delete-quest">Delete Quest</button>
+					</form>
+				</section>
+			</main>
+			<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+			<script src="js/quest.js?verrion=33"></script>
+			<script src="app.js?version=4"></script>
 		</div>
-		<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-		<script src="js/main.js?version=27"></script>
-		<script type='text/javascript' src="app.js?version=6"></script>   
 	</body>
 </html>

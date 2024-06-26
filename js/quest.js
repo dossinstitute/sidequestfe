@@ -59,12 +59,12 @@ async function populateQuestList(quests) {
 						<div class="quest-interactions">Interactions: <span>${quest.interactions}</span></div>
 						<div class="quest-reward">Reward: <span>${quest.rewardType}</span>
 				`;
-				listItem.addEventListener('click', () => handleQuestSelection(quest)); // Add click listener
+				listItem.addEventListener('click', () => handleQuestSelection(quest, listItem)); // Add click listener
 				questList.appendChild(listItem);
 		});
 }
 
-function handleQuestSelection(quest) {
+function handleQuestSelection(quest, listItem) {
 		console.log(`Quest ${quest.id} selected`);
 
 		// Populate the form fields with the selected quest's details
@@ -101,6 +101,65 @@ async function initializeQuestList() {
 }
 
 initializeQuestList(); 
+
+
+
+  function clearFormFields() {
+    // Select all input elements within the form
+    var inputs = document.querySelectorAll('#quest-form input');
+
+    // Loop through each input element and set its value to an empty string
+    inputs.forEach(function(input) {
+      input.value = '';
+    });
+
+    // Clear the select dropdown
+    var select = document.querySelector('#quest-form select');
+    select.selectedIndex = 0; // Reset to the first option
+  }
+
+  // Example usage: Call clearFormFields() when needed, e.g., after submitting the form
+  // Or, you can attach it to a button click event like so:
+  document.getElementById('new-quest').addEventListener('click', clearFormFields);
+
+async function updateQuest(seventId, sstartDate, sendDate, srequiredInteractions, rewardType) {
+  // Get the current signer (the connected wallet)
+
+			const eventId = parseInt(seventId, 10);
+			const dstartDate= new Date(sstartDate);
+			const startDate = Math.floor(dstartDate.getTime() / 1000);
+			const dendDate= new Date(sendDate);
+			const endDate= Math.floor(dendDate.getTime() / 1000);
+			const requiredInteractions = parseInt(srequiredInteractions, 10);
+
+			const questManagerContract = await initializeQuestContract(); // Ensure contract is initialized before calling methods
+			// try {
+				// const txResponse = await questManagerContract.createQuest(eventId, startDate, endDate, requiredInteractions, rewardType)
+		// const questcontracttx = contract.methods.updateQuest(eventId, startDate, endDate, requiredInteractions, rewardType).encodeABI(),
+		const questcontracttx = questManagerContract.updateQuest(eventId, startDate, endDate, requiredInteractions, rewardType)
+				console.log(`quest Transaction hash: ${questcontracttx.hash}`);
+// }
+  // Send the transaction
+  // try {
+  //   const receipt = await web3.eth.sendTransaction(txParams);
+  //   console.log('Transaction successful:', receipt.transactionHash);
+  // } catch (error) {
+  //   console.error('Transaction failed:', error);
+  // }
+}
+
+document.getElementById('update-quest').addEventListener('click', function() {
+  // Retrieve values from the form fields
+  const eventId = document.getElementById('event-id').value;
+  const startDate = document.getElementById('start-date').value;
+  const endDate = document.getElementById('end-date').value;
+  const requiredInteractions = document.getElementById('interactions').value;
+  const rewardDetails = document.getElementById('reward-details').value;
+
+  // Call the updateQuest function with the retrieved values
+  updateQuest(eventId, startDate, endDate, requiredInteractions, rewardDetails);
+});
+
 	const questform = document.getElementById('create-quest');
 	if (questform) {
     questform.addEventListener('click', async function() {

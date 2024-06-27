@@ -1,5 +1,5 @@
-const questManagerContractAddress = "0x1a282c87974E60B920f8844f1e9D487B88064bC5";
-const eventManagerContractAddress = "0x72b3eddf36122De184F134b62e558A88B4877AaC";
+const questManagerContractAddress = "0x7B4042A8D2F30Dee7ce3b5490C8088A9cbd8FE85";
+const eventManagerContractAddress = "0x5d08d1f2B436Af26E121681b976a27869B100FC5";
 
 async function fetchquestABI() {
     let response = await fetch('QuestManager.json');
@@ -7,7 +7,7 @@ async function fetchquestABI() {
     return data.abi; // Assuming the ABI is stored under the key 'abi'
 }
 async function fetcheventABI() {
-    let response = await fetch('EventManager.json');
+    let response = await fetch('EventsManager.json');
     const data = await response.json();
     return data.abi; // Assuming the ABI is stored under the key 'abi'
 }

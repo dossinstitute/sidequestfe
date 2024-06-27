@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Event Management</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link media="all" rel="stylesheet" href="ss/style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<div class="logo-container">
+					<a href="index.html">
+						<img src="images/logo.png" alt="logo" id="logo">
+					</a>
+				</div>
+				<div class="menu">
+					<div class="hamburger-menu-wrapper">
+						<button class="hamburger-menu">
+							<span>toggle menu</span>
+						</button>
+					</div>
+					<div class="menu-list">
+						<ul>
+							<li><a href="dashboard.html">Dashboard</a></li>
+							<li><a href="event.html">Event Definition and Setup</a></li>
+							<li><a href="users.html">User Registration and Participation</a></li>
+							<li><a href="verification.html">Interaction Verification</a></li>
+							<li><a href="tracking.html">Interaction Tracking</a></li>
+							<li><a href="completion-check.html">Event Completion Check</a></li>
+							<li><a href="reward-distribution.html">Reward Distribution</a></li>
+							<li><a href="security.html">Security and Validations</a></li>
+							<li><a href="event-admin.html">Event Admin Functions</a></li>
+							<li><a href="testing.html">Testing and Deployment</a></li>
+							<li><a href="point-system.html">Point System and Leaderboard</a></li>
+							<li><a href="checkout-redeem.html">Checkout & Redeem</a></li>
+						</ul>
+					</div>
+				</div>
+			</header>
+			<main>
+				<section id="master-section">
+					<h2>Event List</h2>
+					<ul id="event-list">
+						<!-- Events will be dynamically added here -->
+					</ul>
+				</section>
+
+				<section id="detail-section">
+					<h2>Event Details</h2>
+					<form id="event-form">
+						<label for="event-id">Event ID:</label>
+						<input type="text" id="event-id" name="event-id" required>
+
+						<label for="start-date">Start Date:</label>
+						<input type="date" id="start-date" name="start-date" required>
+
+						<label for="end-date">End Date:</label>
+						<input type="date" id="end-date" name="end-date" required>
+
+						<label for="description">Description:</label>
+						<input type="text" id="description" name="description">
+
+            <label for="status">Status:</label>
+            <select id="status" name="status">
+              <option value="0">Active</option>
+              <option value="1">Completed</option>
+            </select>
+						<button type="button" id="new-event">New Event</button>
+						<button type="button" id="create-event">Create Event</button>
+						<button type="button" id="update-event">Update Event</button>
+						<button type="button" id="delete-event">Delete Event</button>
+					</form>
+				</section>
+			</main>
+			<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+			<script src="js/event.js?version=52"></script>
+			<script src="app.js?version=7"></script>
+		</div>
+	</body>
+</html>

@@ -1,6 +1,6 @@
-const questManagerContractAddress = "0x8c3a688a5aC9c0B0437507A94f02c2177D2Fe3C9";
-const eventManagerContractAddress = "0xf7F2b14fD9Bb0311869eCB31d0b38f26a87081C1";
-const userManagerContractAddress = "0x556F03ff65A48eb8BCE3221486C60Ee2715E04CA";
+const questManagerContractAddress = "0xf0224509Eb8fBc7a73Dff3346FEcCf182C694cD5";
+const eventManagerContractAddress = "0xA30cE21f1Ad6205947816bFc3C027F6f981Afd7a";
+const userManagerContractAddress = "0x19A20676F0D55542c5394a618C27f7346318715D";
 
 async function fetchquestABI() {
     let response = await fetch('QuestManager.json');

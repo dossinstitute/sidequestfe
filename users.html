@@ -1,61 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>User Registration and Participation</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link media="all" rel="stylesheet" href="ss/style.css" />
-    </head>
-    <body>
-        <div class="container">
-            <header>
-                <div class="logo-container">
-                    <a href="index.html">
-                        <img src="images/logo.png" alt="logo" id="logo">
-                    </a>
-                </div>
-                <div class="menu">
-                    <div class="hamburger-menu-wrapper">
-                        <button class="hamburger-menu">
-                            <span>toggle menu</span>
-                        </button>
-                    </div>
-                    <div class="menu-list">
-                        <ul>
-                            <li><a href="dashboard.html">Dashboard</a></li>
-                            <li><a href="quest.html">Quest Definition and Setup</a></li>
-                            <li><a href="users.html">User Registration and Participation</a></li>
-                            <li><a href="verification.html">Interaction Verification</a></li>
-                            <li><a href="tracking.html">Interaction Tracking</a></li>
-                            <li><a href="completion-check.html">Quest Completion Check</a></li>
-                            <li><a href="reward-distribution.html">Reward Distribution</a></li>
-                            <li><a href="security.html">Security and Validations</a></li>
-                            <li><a href="event-admin.html">Event Admin Functions</a></li>
-                            <li><a href="testing.html">Testing and Deployment</a></li>
-                            <li><a href="point-system.html">Point System and Leaderboard</a></li>
-                            <li><a href="checkout-redeem.html">Checkout & Redeem</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </header>
-            <h1>User Registration and Participation</h1>
-            <form id="registration-form">
-                <label for="wallet-address">Wallet Address:</label>
-                <input type="text" id="wallet-address" name="wallet-address" required>
-
-                <button id="submit" type="submit">Register</button>
-            </form>
-
-            <div class="status">
-                <h2>Registration Status</h2>
-                <label for="check-wallet-address">Check Wallet Address:</label>
-                <input type="text" id="check-wallet-address" name="check-wallet-address">
-
-                <button id="check-status">Check Status</button>
-                <p id="status-result"></p>
+<head>
+    <meta charset="UTF-8">
+    <title>Quest Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link media="all" rel="stylesheet" href="ss/style.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="logo" id="logo">
+                </a>
             </div>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-        <script src="js/main.js"></script>
-    </body>
+            <div class="menu">
+                <div class="hamburger-menu-wrapper">
+                    <button class="hamburger-menu">
+                        <span>toggle menu</span>
+                    </button>
+                </div>
+                <div class="menu-list">
+                    <ul>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="event.html">Event Definition and Setup</a></li>
+                        <li><a href="quest.html">Quest Registration</a></li>
+                        <li><a href="users.html">User Registration and Participation</a></li>
+                        <li><a href="verification.html">Interaction Verification</a></li>
+                        <li><a href="tracking.html">Interaction Tracking</a></li>
+                        <li><a href="completion-check.html">Event Completion Check</a></li>
+                        <li><a href="reward-distribution.html">Reward Distribution</a></li>
+                        <li><a href="security.html">Security and Validations</a></li>
+                        <li><a href="event-admin.html">Event Admin Functions</a></li>
+												<li><a href="user-admin.html">User Admin Functions</a></li>
+                        <li><a href="testing.html">Testing and Deployment</a></li>
+                        <li><a href="point-system.html">Point System and Leaderboard</a></li>
+                        <li><a href="checkout-redeem.html">Checkout & Redeem</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <main>
+            <section id="quest-list-section">
+                <h2>Quest List</h2>
+                <ul id="quest-list">
+                    <!-- Quests will be dynamically added here -->
+                </ul>
+            </section>
+
+            <section id="quest-detail-section">
+                <h2>Quest Details</h2>
+                <form id="quest-form">
+                    <label for="quest-id">Quest ID:</label>
+                    <input type="text" id="quest-id" name="quest-id" readonly>
+
+                    <label for="event-id">Event ID:</label>
+                    <input type="text" id="event-id" name="event-id" readonly>
+
+                    <label for="start-date">Start Date:</label>
+                    <input type="text" id="start-date" name="start-date" readonly>
+
+                    <label for="end-date">End Date:</label>
+                    <input type="text" id="end-date" name="end-date" readonly>
+
+                    <label for="required-interactions">Required Interactions:</label>
+                    <input type="text" id="required-interactions" name="required-interactions" readonly>
+
+                    <label for="reward-type">Reward Type:</label>
+                    <input type="text" id="reward-type" name="reward-type" readonly>
+
+                    <button type="button" id="register-quest">Register for Quest</button>
+                </form>
+            </section>
+        </main>
+        <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="app.js?version=3"></script>
+        <script src="js/user.js?version=6"></script>
+    </div>
+</body>
 </html>
+

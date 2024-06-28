@@ -1,96 +1,86 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    (function() {
-        'use strict';
-        $('.hamburger-menu').click(function(e) {
-            e.preventDefault();
-            if ($(this).hasClass('active')) {
-                $(this).removeClass('active');
-                $('.menu .menu-list').slideToggle('slow', 'swing');
-            } else {
-                $(this).addClass('active');
-                $('.menu .menu-list').slideToggle('slow', 'swing');
-            }
+  (function() {
+    'use strict';
+    $('.hamburger-menu').click(function(e) {
+      e.preventDefault();
+      if ($(this).hasClass('active')) {
+        $(this).removeClass('active');
+        $('.menu .menu-list').slideToggle('slow', 'swing');
+      } else {
+        $(this).addClass('active');
+        $('.menu .menu-list').slideToggle('slow', 'swing');
+      }
+    });
+  })();
+
+  async function fetchEvents() {
+    console.log("fetchEvents");
+    await connectWallet(); // Ensure wallet is connected before proceeding
+    const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+
+    let events = [];
+    console.log('Provider before eventManagerContract:', provider);
+    const eventCount = await eventManagerContract.getEventsCount();
+    console.log(`fetch eventCount: ${JSON.stringify(eventCount, null, 2)}`);
+    for (let i = 0; i < eventCount; i++) {
+      const event = await eventManagerContract.getEventsByIndex(i);
+      console.log(`fetch event: ${JSON.stringify(event, null, 2)}`);
+      events.push({
+        id: event.id.toNumber(),
+        startDate: new Date(event.startTime * 1000).toISOString().split('T')[0],
+        endDate: new Date(event.endTime * 1000).toISOString().split('T')[0],
+        description: event.description,
+        status: event.status,
         });
-    })();
+      }
+    console.log(`fetch events: ${JSON.stringify(events, null, 2)}`);
+    return events;
+  }
 
-async function fetchEvents() {
-		console.log("fetchEvents");
-        await connectWallet(); // Ensure wallet is connected before proceeding
-			const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+  async function populateEventList(events) {
+    // const events = fetchEvents();
+    console.log(`events: ${JSON.stringify(events, null, 2)}`);
+    const eventList = document.getElementById('event-list');
 
-	let events = [];
-        console.log('Provider before eventManagerContract:', provider);
-	const eventCount = await eventManagerContract.getEventsCount();
-		console.log(`fetch eventCount: ${JSON.stringify(eventCount, null, 2)}`);
-	for (let i = 0; i < eventCount; i++) {
-		const event = await eventManagerContract.getEventsByIndex(i);
-		console.log(`fetch event: ${JSON.stringify(event, null, 2)}`);
-		events.push({
-			id: event.id.toNumber(),
-			startDate: new Date(event.startTime * 1000).toISOString().split('T')[0],
-			endDate: new Date(event.endTime * 1000).toISOString().split('T')[0],
-			description: event.description,
-			status: event.status,
-		});
-	}
-		console.log(`fetch events: ${JSON.stringify(events, null, 2)}`);
-	return events;
-}
-
-// // Example events array
-// const events = [
-// 		{ id: 1, startDate: '2024-06-25', endDate: '2024-06-30', interactions: 5, rewardType: 'NFT' },
-// 		{ id: 2, startDate: '2024-07-01', endDate: '2024-07-15', interactions: 3, rewardType: 'Token' },
-// 		// Add more events as needed
-// ];
-
-async function populateEventList(events) {
-		// const events = fetchEvents();
-		console.log(`events: ${JSON.stringify(events, null, 2)}`);
-		const eventList = document.getElementById('event-list');
-
-		events.forEach(event => {
-				const listItem = document.createElement('li');
+    events.forEach(event => {
+      const listItem = document.createElement('li');
       listItem.className = 'event-item'; // Assigning a class to the list item
-				listItem.innerHTML = `
-						<div class="event-id">Event ID: <span>${event.id}</span></div>
-						<div class="event-dates">Start Date: <span>${event.startDate}</span> | End Date: <span>${event.endDate}</span></div>
-						<div class="event-description"> Description: <span>${event.description}</span></div>
-            <div class="event-status"> ${event.status? 'Active' : 'Completed'} </div>
-				`;
-				listItem.addEventListener('click', () => handleEventSelection(event, listItem)); // Add click listener
-				eventList.appendChild(listItem);
-		});
+      listItem.innerHTML = `
+      <div class="event-id">Event ID: <span>${event.id}</span></div>
+      <div class="event-dates">Start Date: <span>${event.startDate}</span> | End Date: <span>${event.endDate}</span></div>
+      <div class="event-description"> Description: <span>${event.description}</span></div>
+      <div class="event-status"> ${event.status? 'Active' : 'Completed'} </div>
+        `;
+        listItem.addEventListener('click', () => handleEventSelection(event, listItem)); // Add click listener
+        eventList.appendChild(listItem);
+    });
 }
 
 function handleEventSelection(event, listItem) {
-		console.log(`Event ${event.id} selected`);
+  console.log(`Event ${event.id} selected`);
 
-		// Populate the form fields with the selected event's details
-		document.getElementById('event-id').value = event.id.toString();
-		document.getElementById('start-date').value = event.startDate;
-		document.getElementById('end-date').value = event.endDate;
-		document.getElementById('description').value = event.description.toString();
-		document.getElementById('status').value = event.status? 'Active' : 'Completed';
+  // Populate the form fields with the selected event's details
+  document.getElementById('event-id').value = event.id.toString();
+  document.getElementById('start-date').value = event.startDate;
+  document.getElementById('end-date').value = event.endDate;
+  document.getElementById('description').value = event.description.toString();
+  document.getElementById('status').value = event.status? 'Active' : 'Completed';
 
-		// Optionally, enable/disable buttons based on the action (create/update/delete)
-		// For simplicity, we'll assume this is for updating a event
-		// document.getElementById('update-event').disabled = false;
-		// document.getElementById('create-event').disabled = true;
-		// document.getElementById('delete-event').disabled = false;
+  // Optionally, enable/disable buttons based on the action (create/update/delete)
+  // For simplicity, we'll assume this is for updating a event
+  // document.getElementById('update-event').disabled = false;
+  // document.getElementById('create-event').disabled = true;
+  // document.getElementById('delete-event').disabled = false;
 
-		// Highlight the selected event in the list
-		const eventItems = document.querySelectorAll('#event-list li');
-		eventItems.forEach(item => item.classList.remove('selected'));
-		listItem.classList.add('selected'); // Assuming listItem is the clicked element
+  // Highlight the selected event in the list
+  const eventItems = document.querySelectorAll('#event-list li');
+  eventItems.forEach(item => item.classList.remove('selected'));
+  listItem.classList.add('selected'); // Assuming listItem is the clicked element
 }
 
-// populateEventList(events);
-
-//  populateEventList(events);
 async function initializeEventList() {
-		console.log("initializeEventList");
+  console.log("initializeEventList");
   try {
     const events = await fetchEvents();
     console.log("const events = await fetchEvents();");
@@ -104,23 +94,23 @@ initializeEventList();
 
 
 
-  function clearFormFields() {
-    // Select all input elements within the form
-    var inputs = document.querySelectorAll('#event-form input');
+function clearFormFields() {
+  // Select all input elements within the form
+  var inputs = document.querySelectorAll('#event-form input');
 
-    // Loop through each input element and set its value to an empty string
-    inputs.forEach(function(input) {
-      input.value = '';
-    });
+  // Loop through each input element and set its value to an empty string
+  inputs.forEach(function(input) {
+    input.value = '';
+  });
 
-    // Clear the select dropdown
-    var select = document.querySelector('#event-form select');
-    select.selectedIndex = 0; // Reset to the first option
-  }
+  // Clear the select dropdown
+  var select = document.querySelector('#event-form select');
+  select.selectedIndex = 0; // Reset to the first option
+}
 
-  // Example usage: Call clearFormFields() when needed, e.g., after submitting the form
-  // Or, you can attach it to a button click event like so:
-  document.getElementById('new-event').addEventListener('click', clearFormFields);
+// Example usage: Call clearFormFields() when needed, e.g., after submitting the form
+// Or, you can attach it to a button click event like so:
+document.getElementById('new-event').addEventListener('click', clearFormFields);
 
 async function updateEvent(seventId, sstartDate, sendDate, description) {
   await connectWallet(); // Ensure wallet is connected before proceeding
@@ -149,10 +139,10 @@ document.getElementById('update-event').addEventListener('click', function() {
 
 async function deleteEvent(seventId) {
 
-		const eventId = parseInt(seventId, 10);
-		const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
-		const eventcontracttx = eventManagerContract.deleteEvents(eventId)
-		console.log(`event Transaction hash: ${eventcontracttx.hash}`);
+  const eventId = parseInt(seventId, 10);
+  const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+  const eventcontracttx = eventManagerContract.deleteEvents(eventId)
+  console.log(`event Transaction hash: ${eventcontracttx.hash}`);
 }
 
 document.getElementById('delete-event').addEventListener('click', function() {
@@ -161,70 +151,70 @@ document.getElementById('delete-event').addEventListener('click', function() {
   deleteEvent(eventId);
 });
 
-	const eventform = document.getElementById('create-event');
-	if (eventform) {
-    eventform.addEventListener('click', async function() {
-			event.preventDefault();
-			const seventId = document.getElementById('event-id').value;
-			const eventId = parseInt(seventId, 10);
-			const sstartDate= document.getElementById('start-date').value;
-			const dstartDate= new Date(sstartDate);
-			const startDate = Math.floor(dstartDate.getTime() / 1000);
-			const sendDate= document.getElementById('end-date').value;
-			const dendDate= new Date(sendDate);
-			const endDate= Math.floor(dendDate.getTime() / 1000);
-			const description = document.getElementById('description').value;
+const eventform = document.getElementById('create-event');
+if (eventform) {
+  eventform.addEventListener('click', async function() {
+    event.preventDefault();
+    const seventId = document.getElementById('event-id').value;
+    const eventId = parseInt(seventId, 10);
+    const sstartDate= document.getElementById('start-date').value;
+    const dstartDate= new Date(sstartDate);
+    const startDate = Math.floor(dstartDate.getTime() / 1000);
+    const sendDate= document.getElementById('end-date').value;
+    const dendDate= new Date(sendDate);
+    const endDate= Math.floor(dendDate.getTime() / 1000);
+    const description = document.getElementById('description').value;
 
 
-			const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
-			try {
-				const txResponse = await eventManagerContract.createEvents(startDate, endDate, description)
-				console.log(`event Transaction hash: ${txResponse.hash}`);
+    const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+    try {
+      const txResponse = await eventManagerContract.createEvents(startDate, endDate, description)
+      console.log(`event Transaction hash: ${txResponse.hash}`);
 
-				await txResponse.wait(); // Wait for the transaction to be mined
+      await txResponse.wait(); // Wait for the transaction to be mined
 
-				console.log('event Transaction mined successfully.');
+      console.log('event Transaction mined successfully.');
 
-				// Extract the event logs from the transaction receipt
-				console.log('Provider before getTransactionReceipt:', provider);
-				const receipt = await provider.getTransactionReceipt(txResponse.hash);
-				console.log(`event receipt: ${receipt}`);
+      // Extract the event logs from the transaction receipt
+      console.log('Provider before getTransactionReceipt:', provider);
+      const receipt = await provider.getTransactionReceipt(txResponse.hash);
+      console.log(`event receipt: ${receipt}`);
 
-				// Filter out the EventCreated event logs
-				const iface = new ethers.utils.Interface([
-					"event EventsCreated(uint256 eventId, uint256 startDate, uint256 endDate, string description)"
-					]);
-				const eventCreatedLogs = receipt.logs.filter(log => {
-					try {
-						iface.parseLog(log);
-						console.log("iface.parseLog(log);");
-						return true;
-					} catch (error) {
-						console.log("failed iface.parseLog(log);");
-						return false;
-					}
-				});
-				if (eventCreatedLogs.length > 0) {
-					const log = eventCreatedLogs[0];
-					const parsedLog = iface.parseLog(log);
-					if (parsedLog && parsedLog.args) {
-						const { args } = parsedLog;
-						console.log(`EventsCreated emitted with Events ID: ${args.eventsId?.toString()}, Events ID: ${args.eventsId?.toString()}, Start Time: ${args.startDate?.toString()}, End Time: ${args.endDate?.toString()}, Required Interactions: ${args.requiredInteractions?.toString()}, Reward Type: ${args.rewardType}`);
-						alert('Event Created');
-						} else {
-							console.log('EventsCreated event not found in transaction receipt or failed to parse.');
-							}
+      // Filter out the EventCreated event logs
+      const iface = new ethers.utils.Interface([
+        "event EventsCreated(uint256 eventId, uint256 startDate, uint256 endDate, string description)"
+        ]);
+      const eventCreatedLogs = receipt.logs.filter(log => {
+        try {
+          iface.parseLog(log);
+          console.log("iface.parseLog(log);");
+          return true;
+          } catch (error) {
+            console.log("failed iface.parseLog(log);");
+            return false;
+            }
+        });
+      if (eventCreatedLogs.length > 0) {
+        const log = eventCreatedLogs[0];
+        const parsedLog = iface.parseLog(log);
+        if (parsedLog && parsedLog.args) {
+          const { args } = parsedLog;
+          console.log(`EventsCreated emitted with Events ID: ${args.eventsId?.toString()}, Events ID: ${args.eventsId?.toString()}, Start Time: ${args.startDate?.toString()}, End Time: ${args.endDate?.toString()}, Required Interactions: ${args.requiredInteractions?.toString()}, Reward Type: ${args.rewardType}`);
+          alert('Event Created');
+          } else {
+            console.log('EventsCreated event not found in transaction receipt or failed to parse.');
+            }
 
-					} else {
-						console.log('EventsCreated event not found in transaction receipt.');
-						}
+        } else {
+          console.log('EventsCreated event not found in transaction receipt.');
+          }
 
-				} 
-			catch (error) {
-				console.error('Error creating event:', error.message);
-				}
-			});
-		} else {
-			console.error('Element with ID "create-event" not found');
-			}
-});
+      } 
+    catch (error) {
+      console.error('Error creating event:', error.message);
+      }
+    });
+  } else {
+    console.error('Element with ID "create-event" not found');
+    }
+  });

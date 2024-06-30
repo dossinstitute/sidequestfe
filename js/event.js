@@ -17,19 +17,20 @@ document.addEventListener('DOMContentLoaded', function() {
   async function fetchEvents() {
     console.log("fetchEvents");
     await connectWallet(); // Ensure wallet is connected before proceeding
-    const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+    const eventManagerContract = await initializeEventsContract(); // Ensure contract is initialized before calling methods
 
     let events = [];
     console.log('Provider before eventManagerContract:', provider);
-    const eventCount = await eventManagerContract.getEventsCount();
+    const eventCount = await eventManagerContract.getEventCount();
     console.log(`fetch eventCount: ${JSON.stringify(eventCount, null, 2)}`);
     for (let i = 0; i < eventCount; i++) {
-      const event = await eventManagerContract.getEventsByIndex(i);
+      const event = await eventManagerContract.getEventByIndex(i);
       console.log(`fetch event: ${JSON.stringify(event, null, 2)}`);
       events.push({
-        id: event.id.toNumber(),
-        startDate: new Date(event.startTime * 1000).toISOString().split('T')[0],
-        endDate: new Date(event.endTime * 1000).toISOString().split('T')[0],
+        id: event.eventId.toNumber(),
+        name: event.name,
+        startDate: new Date(event.startDate * 1000).toISOString().split('T')[0],
+        endDate: new Date(event.endDate * 1000).toISOString().split('T')[0],
         description: event.description,
         status: event.status,
         });
@@ -48,8 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
       listItem.className = 'event-item'; // Assigning a class to the list item
       listItem.innerHTML = `
       <div class="event-id">Event ID: <span>${event.id}</span></div>
-      <div class="event-dates">Start Date: <span>${event.startDate}</span> | End Date: <span>${event.endDate}</span></div>
+      <div class="event-name">Event Name: <span>${event.name}</span></div>
       <div class="event-description"> Description: <span>${event.description}</span></div>
+      <div class="event-dates">Start Date: <span>${event.startDate}</span> | End Date: <span>${event.endDate}</span></div>
       <div class="event-status"> ${event.status? 'Active' : 'Completed'} </div>
         `;
         listItem.addEventListener('click', () => handleEventSelection(event, listItem)); // Add click listener
@@ -62,6 +64,7 @@ function handleEventSelection(event, listItem) {
 
   // Populate the form fields with the selected event's details
   document.getElementById('event-id').value = event.id.toString();
+  document.getElementById('event-name').value = event.name.toString();
   document.getElementById('start-date').value = event.startDate;
   document.getElementById('end-date').value = event.endDate;
   document.getElementById('description').value = event.description.toString();
@@ -112,36 +115,41 @@ function clearFormFields() {
 // Or, you can attach it to a button click event like so:
 document.getElementById('new-event').addEventListener('click', clearFormFields);
 
-async function updateEvent(seventId, sstartDate, sendDate, description) {
+async function updateEvent(seventId, name, sstartDate, sendDate, description, status) {
   await connectWallet(); // Ensure wallet is connected before proceeding
-  const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+  const eventManagerContract = await initializeEventsContract(); // Ensure contract is initialized before calling methods
 
   const eventId = parseInt(seventId, 10);
   const dstartDate= new Date(sstartDate);
   const startDate = Math.floor(dstartDate.getTime() / 1000);
   const dendDate= new Date(sendDate);
   const endDate= Math.floor(dendDate.getTime() / 1000);
+	console.log(`status: ${status}`)
+  // const istatus = parseInt(status, 10);
+  const istatus = parseInt(1, 10);
 
-  const eventcontracttx = eventManagerContract.updateEvents(eventId, startDate, endDate, description)
+  const eventcontracttx = eventManagerContract.updateEvent(eventId, name, description, startDate, endDate, istatus)
   console.log(`event Transaction hash: ${eventcontracttx.hash}`);
 }
 
 document.getElementById('update-event').addEventListener('click', function() {
   // Retrieve values from the form fields
   const eventId = document.getElementById('event-id').value;
+  const name = document.getElementById('event-name').value;
   const startDate = document.getElementById('start-date').value;
   const endDate = document.getElementById('end-date').value;
   const description = document.getElementById('description').value;
+  const status = document.getElementById('status').value;
 
   // Call the updateEvent function with the retrieved values
-  updateEvent(eventId, startDate, endDate, description);
+  updateEvent(eventId, name, startDate, endDate, description, status);
 });
 
 async function deleteEvent(seventId) {
 
   const eventId = parseInt(seventId, 10);
-  const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
-  const eventcontracttx = eventManagerContract.deleteEvents(eventId)
+  const eventManagerContract = await initializeEventsContract(); // Ensure contract is initialized before calling methods
+  const eventcontracttx = eventManagerContract.deleteEvent(eventId)
   console.log(`event Transaction hash: ${eventcontracttx.hash}`);
 }
 
@@ -164,11 +172,13 @@ if (eventform) {
     const dendDate= new Date(sendDate);
     const endDate= Math.floor(dendDate.getTime() / 1000);
     const description = document.getElementById('description').value;
+    const status = document.getElementById('status').value;
+		console.log('Provider before questManagerContract:', provider);
 
 
-    const eventManagerContract = await initializeEventContract(); // Ensure contract is initialized before calling methods
+    const eventManagerContract = await initializeEventsContract(); // Ensure contract is initialized before calling methods
     try {
-      const txResponse = await eventManagerContract.createEvents(startDate, endDate, description)
+      const txResponse = await eventManagerContract.createEvent(name, description, startDate, endDate)
       console.log(`event Transaction hash: ${txResponse.hash}`);
 
       await txResponse.wait(); // Wait for the transaction to be mined
@@ -182,7 +192,7 @@ if (eventform) {
 
       // Filter out the EventCreated event logs
       const iface = new ethers.utils.Interface([
-        "event EventsCreated(uint256 eventId, uint256 startDate, uint256 endDate, string description)"
+        "event EventsCreated(uint256 eventId, string name, string description, uint256 startDate, uint256 endDate, uint8 status)"
         ]);
       const eventCreatedLogs = receipt.logs.filter(log => {
         try {
@@ -199,7 +209,7 @@ if (eventform) {
         const parsedLog = iface.parseLog(log);
         if (parsedLog && parsedLog.args) {
           const { args } = parsedLog;
-          console.log(`EventsCreated emitted with Events ID: ${args.eventsId?.toString()}, Events ID: ${args.eventsId?.toString()}, Start Time: ${args.startDate?.toString()}, End Time: ${args.endDate?.toString()}, Required Interactions: ${args.requiredInteractions?.toString()}, Reward Type: ${args.rewardType}`);
+          console.log(`EventsCreated emitted with Events ID: ${args.eventsId?.toString()}, Events ID: ${args.eventsId?.toString()}, Start Time: ${args.startDate?.toString()}, End Time: ${args.endDate?.toString()}`);
           alert('Event Created');
           } else {
             console.log('EventsCreated event not found in transaction receipt or failed to parse.');

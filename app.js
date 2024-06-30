@@ -1,9 +1,10 @@
-const questManagerContractAddress = "0xf0224509Eb8fBc7a73Dff3346FEcCf182C694cD5";
+const questManagerContractAddress = "0xfcA9573FB8f7a1B936Db7dbe54bAB3f56aFac2f9";
 const eventManagerContractAddress = "0xA30cE21f1Ad6205947816bFc3C027F6f981Afd7a";
 const userManagerContractAddress = "0x19A20676F0D55542c5394a618C27f7346318715D";
 const eventQuestManagerContractAddress = "0xeeFd0E324B77C0F3f4C0ac1F00917A71933bD1B6";
-const eventsContractAddress = "0x62dc59030be71210a1a89Fd3048aDb8345cEF772";
+const eventsContractAddress = "0x5Cca0776A94c0a1a7c9aDcD60499b4b58e6334a1";
 const questsContractAddress = "0xaC1df9e642270de4Fa42766a4b58BfE772638821";
+const newUsersContractAddress = "0xDf6a06153173bF16a3100C700652BB4927A6A738";
 
 async function fetchquestABI() {
     let response = await fetch('QuestManager.json');
@@ -42,12 +43,19 @@ async function fetchquestsABI() {
     return data.abi; // Assuming the ABI is stored under the key 'abi'
 }
 
+async function fetchnewUsersABI() {
+    let response = await fetch('Users.json');
+    const data = await response.json();
+    return data.abi; // Assuming the ABI is stored under the key 'abi'
+}
+
 let questManagerABI;
 let eventManagerABI;
 let userManagerABI;
 let eventQuestManagerABI;
 let eventsABI;
 let questsABI;
+let newUsersABI;
 
 async function initializeQuestContract() {
     console.log("initializeQuestContract");
@@ -90,6 +98,13 @@ async function initializeQuestsContract() {
     console.log("after fetchquestsABI");
     const questsContract = new ethers.Contract(questsContractAddress, questsABI, signer);
     return questsContract;
+}
+
+async function initializeNewUsersContract() {
+    console.log("initializeNewUsersContract");
+    newUsersABI = await fetchnewUsersABI(); // Fetch and assign the ABI
+    const newUsersContract = new ethers.Contract(newUsersContractAddress, newUsersABI, signer);
+    return newUsersContract;
 }
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -160,7 +175,6 @@ async function loadAvailableUsers() {
     try {
         await connectWallet(); // Ensure wallet is connected before proceeding
         const userManagerContract = await initializeUserContract(); // Ensure contract is initialized before calling methods
-        const users = await userManagerContract.getUserCount();
         const userCountBN = await userManagerContract.getUserCount();
         const userCount = userCountBN.toNumber(); // Convert BigNumber to number
 
@@ -178,6 +192,36 @@ async function loadAvailableUsers() {
 
             for (let i = 0; i < userCount; i++) {
                 const user = await userManagerContract.getUserByIndex(i);
+                console.log(user);
+            }
+        }
+    } catch (error) {
+        console.error("Failed to load users:", error.message);
+    }
+}
+
+async function loadAvailableUsersFromNewContract() {
+    try {
+			console.log("loadAvailableUsersFromNewContract");
+        await connectWallet(); // Ensure wallet is connected before proceeding
+        const newUsersContract = await initializeNewUsersContract(); // Ensure contract is initialized before calling methods
+        const userCountBN = await newUsersContract.getUserCount();
+        const userCount = userCountBN.toNumber(); // Convert BigNumber to number
+
+        console.log(userCount);
+
+        if (!Number.isInteger(userCount)) {
+            console.error('getUserCount did not return an integer');
+            return;
+        }
+
+        if (userCount === 0) {
+            console.log('No users found.');
+        } else {
+            console.log(`Found ${userCount} users.`);
+
+            for (let i = 0; i < userCount; i++) {
+                const user = await newUsersContract.getUserByIndex(i);
                 console.log(user);
             }
         }
@@ -245,27 +289,27 @@ async function loadAvailableEvents() {
 }
 
 async function loadAvailableQuestsFromContract() {
-	try {
-		await connectWallet(); // Ensure wallet is connected before proceeding
-		console.log('Loading available quests from contract...');
-		const questsContract = await initializeQuestsContract(); // Ensure contract is initialized before calling methods
-			console.log("after initialize");
-		if (!questsContract) {
-			console.error("Quests Contract is not initialized");
-			return;
-		}
-		console.log("Available Contract Functions:", questsContract.functions); // Log available functions
+  try {
+    await connectWallet(); // Ensure wallet is connected before proceeding
+    console.log('Loading available quests from contract...');
+    const questsContract = await initializeQuestsContract(); // Ensure contract is initialized before calling methods
+      console.log("after initialize");
+    if (!questsContract) {
+      console.error("Quests Contract is not initialized");
+      return;
+    }
+    console.log("Available Contract Functions:", questsContract.functions); // Log available functions
 
-		const questCount = await questsContract.getQuestCount();
-		console.log(`Total quests: ${questCount.toNumber()}`);
+    const questCount = await questsContract.getQuestCount();
+    console.log(`Total quests: ${questCount.toNumber()}`);
 
-		for (let i = 0; i < questCount; i++) {
-			const quest = await questsContract.getQuestByIndex(i);
-			console.log(`Quest ${i}:`, quest);
-		}
-	} catch (error) {
-		console.error("Failed to load quests:", error.message);
-	} 
+    for (let i = 0; i < questCount; i++) {
+      const quest = await questsContract.getQuestByIndex(i);
+      console.log(`Quest ${i}:`, quest);
+    }
+  } catch (error) {
+    console.error("Failed to load quests:", error.message);
+  }
 }
 
 // Call the function when the page loads
@@ -273,6 +317,7 @@ window.addEventListener('load', async () => {
     await loadAvailableQuests();
     await loadAvailableEvent();
     await loadAvailableUsers();
+    await loadAvailableUsersFromNewContract();
     await loadAvailableEventQuests();
     await loadAvailableEvents();
     await loadAvailableQuestsFromContract();

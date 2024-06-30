@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event List</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+  </head>
+  <body>
+    <h1>Event List</h1>
+    <div id="events"></div>
+
+    <script>
+      console.log("event test");
+      const eventsContractAddress = '0x3c3C088bA3Dc4f41F86ceCA3F1aA8871f6d4bc43';
+      {/* const eventsAbi = [ */}
+      {/*   // Paste your ABI here */}
+      {/* ]; */}
+      async function fetcheventsABI() {
+      console.log("fetch");
+        let response = await fetch('Events.json');
+        const data = await response.json();
+      console.log(data.abi);
+        return data.abi; // Assuming the ABI is stored under the key 'abi'
+      }
+      async function connectWallet() {
+        try {
+          // Request account access if not already connected
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          // Initialize signer after successful connection
+          signer = provider.getSigner();
+    } catch (error) {
+        console.error("User rejected request to connect wallet:", error);
+    }
+}
+
+      async function loadEvents() {
+        console.log("load");
+        eventsAbi = await fetcheventsABI(); // Fetch and assign the ABI
+        console.log("after fetch");
+        {/* await connectWallet(); // Ensure wallet is connected before proceeding */}
+        {/* if (typeof window.ethereum !== 'undefined') { */}
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send('eth_requestAccounts', []); // Request account access if needed
+          const signer = provider.getSigner();
+          const eventsContract = new ethers.Contract(eventsContractAddress, eventsAbi, signer);
+
+          try {
+            const eventsList = await eventsContract.listEvents();
+            console.log(eventsList);
+            const eventsContainer = document.getElementById('events');
+
+            eventsList.forEach(event => {
+              const eventElement = document.createElement('div');
+              eventElement.innerHTML = `
+              <h2>${event.name}</h2>
+                <p>Start Date: ${new Date(event.startDate.toNumber() * 1000).toLocaleString()}</p>
+                <p>End Date: ${new Date(event.endDate.toNumber() * 1000).toLocaleString()}</p>
+                `;
+                eventsContainer.appendChild(eventElement);
+                });
+                } catch (error) {
+                  console.error('Failed to load events:', error);
+                }
+                {/* } else { */}
+                {/*   console.error('Ethereum provider not found'); */}
+                {/* } */}
+                }
+
+                window.onload = loadEvents;
+    </script>
+  </body>
+</html>
+

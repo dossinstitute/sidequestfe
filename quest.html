@@ -50,23 +50,31 @@
 				<section id="detail-section">
 					<h2>Quest Details</h2>
 					<form id="quest-form">
-						<label for="event-id">Event ID:</label>
-						<input type="text" id="event-id" name="event-id" required>
+						<label for="quest-id">Quest ID:</label>
+						<input type="text" id="quest-id" name="quest-id" required>
 
-						<label for="start-date">Start Date:</label>
-						<input type="date" id="start-date" name="start-date" required>
+						<label for="name">Name:</label>
+						<input type="text" id="name" name="name" required>
 
-						<label for="end-date">End Date:</label>
-						<input type="date" id="end-date" name="end-date" required>
+						<label for="name">Description:</label>
+						<input type="text" id="description" name="description" required>
 
-						<label for="interactions">Number of Required Interactions:</label>
-						<input type="number" id="interactions" name="interactions" min="3" required>
+						<label for="start-date">Default Start Date:</label>
+						<input type="date" id="default-start-date" name="default-start-date" required>
 
-						<label for="reward-details">Reward Details:</label>
-						<select id="reward-details" name="reward-details" required>
-							<option value="NFT">NFT</option>
-							<option value="token">Token</option>
-						</select>
+						<label for="end-date">Default End Date:</label>
+						<input type="date" id="default-end-date" name="default-end-date" required>
+
+						<label for="interactions">Default Number of Required Interactions:</label>
+						<input type="number" id="default-interactions" name="default-interactions" min="3" required>
+
+						<label for="reward-details">Default Reward Amount:</label>
+						<input type="text" id="default-reward-amount" name="default-reward-amount" required>
+            <label for="status">Status:</label>
+            <select id="status" name="status">
+              <option value="0">Active</option>
+              <option value="1">Inactive</option>
+            </select>
 
 						<button type="button" id="new-quest">New Quest</button>
 						<button type="button" id="create-quest">Create Quest</button>
@@ -77,8 +85,8 @@
 			</main>
 			<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-			<script src="js/quest.js?verrion=33"></script>
-			<script src="app.js?version=4"></script>
+			<script src="js/quest.js?version=61*"></script>
+			<script src="app.js?version=6"></script>
 		</div>
 	</body>
 </html>

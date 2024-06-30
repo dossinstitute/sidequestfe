@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function fetchQuests() {
 		console.log("fetchQuests");
         await connectWallet(); // Ensure wallet is connected before proceeding
-			const questManagerContract = await initializeQuestContract(); // Ensure contract is initialized before calling methods
+			const questManagerContract = await initializeQuestsContract(); // Ensure contract is initialized before calling methods
 
 	let quests = [];
 				console.log('Provider before questManagerContract:', provider);
@@ -28,23 +28,18 @@ async function fetchQuests() {
 		console.log(`fetch quest: ${JSON.stringify(quest, null, 2)}`);
 		quests.push({
 			id: quest.questId.toNumber(),
-			eventId: quest.eventId.toNumber(),
-			startDate: new Date(quest.startDate * 1000).toISOString().split('T')[0],
-			endDate: new Date(quest.endDate * 1000).toISOString().split('T')[0],
-			interactions: quest.requiredInteractions,
-			rewardType: quest.rewardType,
+			name: quest.name,
+			description: quest.description,
+			defaultStartDate: new Date(quest.defaultStartDate * 1000).toISOString().split('T')[0],
+			defaultEndDate: new Date(quest.defaultEndDate * 1000).toISOString().split('T')[0],
+			defaultInteractions: quest.defaultInteractions.toNumber(),
+			defaultRewardAmount: quest.defaultRewardAmount.toNumber(),
+			status : quest.status
 		});
 	}
 		console.log(`fetch quests: ${JSON.stringify(quests, null, 2)}`);
 	return quests;
 }
-
-// // Example quests array
-// const quests = [
-// 		{ id: 1, startDate: '2024-06-25', endDate: '2024-06-30', interactions: 5, rewardType: 'NFT' },
-// 		{ id: 2, startDate: '2024-07-01', endDate: '2024-07-15', interactions: 3, rewardType: 'Token' },
-// 		// Add more quests as needed
-// ];
 
 async function populateQuestList(quests) {
 		// const quests = fetchQuests();
@@ -55,9 +50,12 @@ async function populateQuestList(quests) {
 				const listItem = document.createElement('li');
 				listItem.innerHTML = `
 						<div class="quest-id">Quest ID: <span>${quest.id}</span></div>
-						<div class="quest-dates">Start Date: <span>${quest.startDate}</span> | End Date: <span>${quest.endDate}</span></div>
-						<div class="quest-interactions">Interactions: <span>${quest.interactions}</span></div>
-						<div class="quest-reward">Reward: <span>${quest.rewardType}</span>
+						<div class="name">Name: <span>${quest.name}</span></div>
+						<div class="description">Description: <span>${quest.description}</span></div>
+						<div class="quest-dates">Start Date: <span>${quest.defaultStartDate}</span> | End Date: <span>${quest.defaultEndDate}</span></div>
+						<div class="quest-interactions">Default Interactions: <span>${quest.defaultInteractions}</span></div>
+						<div class="quest-reward">Reward: <span>${quest.defaultRewardAmount}</span>
+						<div class="event-status"> ${quest.status==0 ? 'Active' : 'Inactive'} </div>
 				`;
 				listItem.addEventListener('click', () => handleQuestSelection(quest, listItem)); // Add click listener
 				questList.appendChild(listItem);
@@ -68,11 +66,14 @@ function handleQuestSelection(quest, listItem) {
 		console.log(`Quest ${quest.id} selected`);
 
 		// Populate the form fields with the selected quest's details
-		document.getElementById('event-id').value = quest.eventId.toString();
-		document.getElementById('start-date').value = quest.startDate;
-		document.getElementById('end-date').value = quest.endDate;
-		document.getElementById('interactions').value = quest.interactions.toString();
-		document.getElementById('reward-details').value = quest.rewardType;
+		document.getElementById('quest-id').value = quest.id.toString();
+		document.getElementById('name').value = quest.name.toString();
+		document.getElementById('description').value = quest.description.toString();
+		document.getElementById('default-start-date').value = quest.defaultStartDate;
+		document.getElementById('default-end-date').value = quest.defaultEndDate;
+		document.getElementById('default-interactions').value = quest.defaultInteractions.toString();
+		document.getElementById('default-reward-amount').value = quest.defaultRewardAmount;
+		document.getElementById('status').value = quest.status.toString();
 
 		// Optionally, enable/disable buttons based on the action (create/update/delete)
 		// For simplicity, we'll assume this is for updating a quest
@@ -122,67 +123,93 @@ initializeQuestList();
   // Or, you can attach it to a button click event like so:
   document.getElementById('new-quest').addEventListener('click', clearFormFields);
 
-async function updateQuest(seventId, sstartDate, sendDate, srequiredInteractions, rewardType) {
+async function updateQuest(squestId, name, description, sstartDate, sendDate, sdefaultInteractions, sdefaultRewardAmount, sstatus) {
 	// Get the current signer (the connected wallet)
+			console.log(`updateQuest`);
+			console.log(`questId: ${squestId}`);
+			console.log(`name: ${name}`);
+			console.log(`description: ${description}`);
+			console.log(`startDate: ${sstartDate}`);
+			console.log(`endDate: ${sendDate}`);
+			console.log(`defaultInteractions: ${sdefaultInteractions}`);
+			console.log(`defaultRewardAmount: ${sdefaultRewardAmount}`);
+			console.log(`istatus: ${sstatus}`);
 
-			const eventId = parseInt(seventId, 10);
+			const questId = parseInt(squestId, 10);
 			const dstartDate= new Date(sstartDate);
 			const startDate = Math.floor(dstartDate.getTime() / 1000);
 			const dendDate= new Date(sendDate);
 			const endDate= Math.floor(dendDate.getTime() / 1000);
-			const requiredInteractions = parseInt(srequiredInteractions, 10);
+			const defaultInteractions = parseInt(sdefaultInteractions, 10);
+			const defaultRewardAmount = parseInt(sdefaultRewardAmount, 10);
+			const istatus = parseInt(sstatus, 10);
+			// const istatus = parseInt(1, 10);
+			console.log(`questId: ${questId}`);
+			console.log(`name: ${name}`);
+			console.log(`description: ${description}`);
+			console.log(`startDate: ${startDate}`);
+			console.log(`endDate: ${endDate}`);
+			console.log(`defaultInteractions: ${defaultInteractions}`);
+			console.log(`defaultRewardAmount: ${defaultRewardAmount}`);
+			console.log(`istatus: ${istatus}`);
 
-			const questManagerContract = await initializeQuestContract(); // Ensure contract is initialized before calling methods
-		const questcontracttx = questManagerContract.updateQuest(eventId, startDate, endDate, requiredInteractions, rewardType)
+			const questManagerContract = await initializeQuestsContract(); // Ensure contract is initialized before calling methods
+		const questcontracttx = questManagerContract.updateQuest(questId, name, description, defaultInteractions, startDate, endDate,  defaultRewardAmount, istatus)
 				console.log(`quest Transaction hash: ${questcontracttx.hash}`);
 }
 
 document.getElementById('update-quest').addEventListener('click', function() {
   // Retrieve values from the form fields
-  const eventId = document.getElementById('event-id').value;
-  const startDate = document.getElementById('start-date').value;
-  const endDate = document.getElementById('end-date').value;
-  const requiredInteractions = document.getElementById('interactions').value;
-  const rewardDetails = document.getElementById('reward-details').value;
+  const questId = document.getElementById('quest-id').value;
+  const name = document.getElementById('name').value;
+  const description = document.getElementById('description').value;
+  const defaultInteractions = document.getElementById('default-interactions').value;
+  const defaultStartDate = document.getElementById('default-start-date').value;
+  const defaultEndDate = document.getElementById('default-end-date').value;
+  const defaultRewardAmount = document.getElementById('default-reward-amount').value;
+  const status = document.getElementById('status').value;
 
   // Call the updateQuest function with the retrieved values
-  updateQuest(eventId, startDate, endDate, requiredInteractions, rewardDetails);
+  updateQuest(questId, name, description, defaultStartDate, defaultEndDate,defaultInteractions,  defaultRewardAmount, status);
 });
 
-async function deleteQuest(seventId) {
+async function deleteQuest(squestId) {
 
-		const eventId = parseInt(seventId, 10);
-		const questManagerContract = await initializeQuestContract(); // Ensure contract is initialized before calling methods
-		const questcontracttx = questManagerContract.deleteQuest(eventId)
+		const questId = parseInt(squestId, 10);
+		const questManagerContract = await initializeQuestsContract(); // Ensure contract is initialized before calling methods
+		const questcontracttx = questManagerContract.deleteQuest(questId)
 		console.log(`quest Transaction hash: ${questcontracttx.hash}`);
 }
 
 document.getElementById('delete-quest').addEventListener('click', function() {
   // Retrieve values from the form fields
-  const eventId = document.getElementById('event-id').value;
-  deleteQuest(eventId);
+  const questId = document.getElementById('quest-id').value;
+  deleteQuest(questId);
 });
 
 	const questform = document.getElementById('create-quest');
 	if (questform) {
     questform.addEventListener('click', async function() {
 			event.preventDefault();
-			const seventId = document.getElementById('event-id').value;
-			const eventId = parseInt(seventId, 10);
-			const sstartDate= document.getElementById('start-date').value;
+			const name = document.getElementById('name').value;
+			const description = document.getElementById('description').value;
+			const squestId = document.getElementById('quest-id').value;
+			const questId = parseInt(squestId, 10);
+			const sstartDate= document.getElementById('default-start-date').value;
 			const dstartDate= new Date(sstartDate);
-			const startDate = Math.floor(dstartDate.getTime() / 1000);
-			const sendDate= document.getElementById('end-date').value;
+			const defaultStartDate = Math.floor(dstartDate.getTime() / 1000);
+			const sendDate= document.getElementById('default-end-date').value;
 			const dendDate= new Date(sendDate);
-			const endDate= Math.floor(dendDate.getTime() / 1000);
-			const srequiredInteractions = document.getElementById('interactions').value;
-			const requiredInteractions = parseInt(srequiredInteractions, 10);
-			const rewardType = document.getElementById('reward-details').value;
+			const defaultEndDate= Math.floor(dendDate.getTime() / 1000);
+			const srequiredInteractions = document.getElementById('default-interactions').value;
+			const defaultInteractions = parseInt(srequiredInteractions, 10);
+			const defaultRewardAmount = document.getElementById('default-reward-amount').value;
 
 
-			const questManagerContract = await initializeQuestContract(); // Ensure contract is initialized before calling methods
+			const questManagerContract = await initializeQuestsContract(); // Ensure contract is initialized before calling methods
 			try {
-				const txResponse = await questManagerContract.createQuest(eventId, startDate, endDate, requiredInteractions, rewardType)
+				const txResponse = await questManagerContract.createQuest(name, description, defaultInteractions, defaultStartDate, defaultEndDate,  defaultRewardAmount)
+          // questsContract.createQuest("Quest 1", "Description 1", 10, 1640995200, 1641081600, 1000)
 				console.log(`quest Transaction hash: ${txResponse.hash}`);
 
 				await txResponse.wait(); // Wait for the transaction to be mined

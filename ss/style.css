@@ -381,4 +381,9 @@ section {
     font-weight: bold;
     margin-top: 5px;
 }
-
+/* Styling for disabled link */
+.disabled-link {
+	color: #808080 !important; /* Grey color */
+	text-decoration: none; /* Remove underline */
+	pointer-events: none; /* Disable click events */
+	cursor: default; /* Default cursor */

@@ -163,6 +163,7 @@ const eventform = document.getElementById('create-event');
 if (eventform) {
   eventform.addEventListener('click', async function() {
     event.preventDefault();
+    const name = document.getElementById('event-name').value;
     const seventId = document.getElementById('event-id').value;
     const eventId = parseInt(seventId, 10);
     const sstartDate= document.getElementById('start-date').value;

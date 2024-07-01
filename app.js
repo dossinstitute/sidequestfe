@@ -4,11 +4,11 @@ const userManagerContractAddress = "0x19A20676F0D55542c5394a618C27f7346318715D";
 const eventQuestManagerContractAddress = "0xeeFd0E324B77C0F3f4C0ac1F00917A71933bD1B6";
 const newUsersContractAddress = "0xDf6a06153173bF16a3100C700652BB4927A6A738";
 
-const usersContractAddress = "0x38d4FCfF637332a28dFd10b64598c037f58E65Fe";
-const userQuestEventsContractAddress = "0xB3c43977cC56c606fa895f7e26Df3801b9c2c55A";
-const questEventsContractAddress = "0x6E9A6EE7C83f00EBdB9dA0d075CCEeEd75bab2Ba";
-const eventsContractAddress = "0xceBdF22a2cabE08a58C380b1307C98aBB3be26a4";
-const questsContractAddress = "0xFF0A37a6BB9bBe0D6a26eb42EC6f44b5497a59f6";
+  const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
+  const usersContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
+  const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
+  const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
+  const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
 
 // async function fetchquestABI() {
 //     let response = await fetch('QuestManager.json');

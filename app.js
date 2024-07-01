@@ -2,10 +2,13 @@
 const eventManagerContractAddress = "0xA30cE21f1Ad6205947816bFc3C027F6f981Afd7a";
 const userManagerContractAddress = "0x19A20676F0D55542c5394a618C27f7346318715D";
 const eventQuestManagerContractAddress = "0xeeFd0E324B77C0F3f4C0ac1F00917A71933bD1B6";
-const eventsContractAddress = "0x5Cca0776A94c0a1a7c9aDcD60499b4b58e6334a1";
-// const questsContractAddress = "0xaC1df9e642270de4Fa42766a4b58BfE772638821";
-const questsContractAddress = "0xfcA9573FB8f7a1B936Db7dbe54bAB3f56aFac2f9";
 const newUsersContractAddress = "0xDf6a06153173bF16a3100C700652BB4927A6A738";
+
+const usersContractAddress = "0x38d4FCfF637332a28dFd10b64598c037f58E65Fe";
+const userQuestEventsContractAddress = "0xB3c43977cC56c606fa895f7e26Df3801b9c2c55A";
+const questEventsContractAddress = "0x6E9A6EE7C83f00EBdB9dA0d075CCEeEd75bab2Ba";
+const eventsContractAddress = "0xceBdF22a2cabE08a58C380b1307C98aBB3be26a4";
+const questsContractAddress = "0xFF0A37a6BB9bBe0D6a26eb42EC6f44b5497a59f6";
 
 // async function fetchquestABI() {
 //     let response = await fetch('QuestManager.json');

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quest Event Management</title>
+  <title>User Quest Event Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link media="all" rel="stylesheet" href="ss/style.css" />
 </head>
@@ -43,50 +43,47 @@
     </header>
     <main>
       <section id="master-section">
-        <h2>Quest Event List</h2>
-        <ul id="quest-event-list">
-          <!-- Quest Events will be dynamically added here -->
+        <h2>User Quest Event List</h2>
+        <ul id="user-quest-event-list">
+          <!-- User Quest Events will be dynamically added here -->
         </ul>
       </section>
 
       <section id="detail-section">
-        <h2>Quest Event Details</h2>
-        <form id="quest-event-form">
-          <label for="quest-event-id">Quest Event ID:</label>
-          <input type="text" id="quest-event-id" name="quest-event-id" required readonly>
+        <h2>User Quest Event Details</h2>
+        <form id="user-quest-event-form">
+          <label for="user-quest-event-id">User Quest Event ID:</label>
+          <input type="text" id="user-quest-event-id" name="user-quest-event-id" required readonly>
 
-          <label for="event-id">Event:</label>
-          <select id="event-id" name="event-id" required></select>
+          <label for="user-id">User ID:</label>
+          <input type="text" id="user-id" name="user-id" required>
 
-          <label for="quest-id">Quest:</label>
-          <select id="quest-id" name="quest-id" required></select>
+          <label for="quest-event-id">Quest Event:</label>
+          <select id="quest-event-id" name="quest-event-id" required></select>
 
-          <label for="minimum-interactions">Minimum Interactions:</label>
-          <input type="number" id="minimum-interactions" name="minimum-interactions" required>
+          <label for="interactions">Interactions:</label>
+          <input type="number" id="interactions" name="interactions" required>
 
-          <label for="start-date">Start Date:</label>
-          <input type="date" id="start-date" name="start-date" required>
+          <label for="validated">Validated:</label>
+          <input type="checkbox" id="validated" name="validated">
 
-          <label for="end-date">End Date:</label>
-          <input type="date" id="end-date" name="end-date" required>
+          <label for="url">URL:</label>
+          <input type="text" id="url" name="url" required>
 
-          <label for="reward-amount">Reward Amount:</label>
-          <input type="number" id="reward-amount" name="reward-amount" required>
+          <label for="completed">Completed:</label>
+          <input type="checkbox" id="completed" name="completed">
 
-          <label for="url-hash-tags">URL Hash Tags:</label>
-          <input type="text" id="url-hash-tags" name="url-hash-tags" required>
-
-          <button type="button" id="new-quest-event">New Quest Event</button>
-          <button type="button" id="create-quest-event">Create Quest Event</button>
-          <button type="button" id="update-quest-event">Update Quest Event</button>
-          <button type="button" id="delete-quest-event">Delete Quest Event</button>
+          <button type="button" id="new-user-quest-event">New User Quest Event</button>
+          <button type="button" id="create-user-quest-event">Create User Quest Event</button>
+          <button type="button" id="update-user-quest-event">Update User Quest Event</button>
+          <button type="button" id="delete-user-quest-event">Delete User Quest Event</button>
         </form>
       </section>
     </main>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="app.js?version=9"></script>
-    <script src="js/quest-event-admin.js?version=19"></script>
+    <script src="app.js?version=22"></script>
+    <script src="js/user-quest-event-admin.js?version=26"></script>
   </div>
 </body>
 </html>

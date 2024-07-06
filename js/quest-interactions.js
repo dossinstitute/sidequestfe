@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
-  const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
-  const userContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
-  const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
-  const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
-  const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
+  // const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
+  // const userContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
+  // const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
+  // const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
+  // const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
 
   async function fetchEventsABI() {
     let response = await fetch('Events.json');
@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function initializeUserQuestEventsContract() {
+	  console.log("quest interactions initializeUserQuestEventsContract")
     const userQuestEventsABI = await fetchUserQuestEventsABI();
     const userQuestEventsContract = new ethers.Contract(userQuestEventsContractAddress, userQuestEventsABI, signer);
     return userQuestEventsContract;
@@ -79,7 +80,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+	async function fetchAndPopulateQuestEvents() {
+		console.log(`user quest eventfetchAndPopulateQuestEvents`);
+		await connectWallet();
+		const questEventsContract = await initializeQuestEventsContract();
+
+		try {
+			const questEventCount = await questEventsContract.getQuestEventCount();
+			const questEventSelect = document.getElementById('quest-event-id');
+
+			for (let i = 0; i < questEventCount; i++) {
+				try {
+					const questEvent = await questEventsContract.readQuestEvent(i + 1); // Adjust for 1-based indexing
+					const eventId = questEvent.eventId;
+					const questId = questEvent.questId;
+
+					const eventsContract = await initializeEventsContract();
+					const questsContract = await initializeQuestsContract();
+					const event = await eventsContract.readEvent(eventId);
+					const quest = await questsContract.readQuest(questId);
+
+					const option = document.createElement('option');
+					option.value = questEvent.questEventId;
+					option.textContent = `${event.name} - ${quest.name} (${questEvent.questEventId})`;
+					questEventSelect.appendChild(option);
+				} catch (err) {
+					console.error(`Error reading quest event at index ${i + 1}:`, err);
+				}
+			}
+		} catch (err) {
+			console.error("Error fetching quest events:", err);
+		}
+	}
+
   async function fetchUserQuestEvents() {
+	  console.log("quest interactions fetchUserQuestEvents")
     await connectWallet();
     const userQuestEventsContract = await initializeUserQuestEventsContract();
     const userQuestEventList = document.getElementById('user-quest-event-list');
@@ -87,7 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const userAddress = accounts[0];
 
     try {
-      const userQuestEvents = await userQuestEventsContract.getUserQuestsByWallet(userAddress, userContractAddress);
+			console.log("quest interactions before userQuestEventsContract.getUserQuestsByWallet")
+      const userQuestEvents = await userQuestEventsContract.getUserQuestsByWallet(userAddress, usersContractAddress);
       populateUserQuestEventList(userQuestEvents);
     } catch (err) {
       console.error("Error fetching user quest events:", err);
@@ -150,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
   async function initializePage() {
     try {
       await connectWallet();
+			await fetchAndPopulateQuestEvents();
       await fetchUserQuestEvents();
     } catch (error) {
       console.error("Failed to initialize page:", error);

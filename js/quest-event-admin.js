@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   })();
 
-  const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
-  const userContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
-  const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
-  const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
-  const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
+  // const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
+  // const userContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
+  // const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
+  // const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
+  // const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
 
   async function fetchEventsABI() {
     console.log(`quest event fetchEventsABI`);

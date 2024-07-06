@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeSponsorList();
 });
 
-const sponsorsContractAddress = "0x2D7CDBa8d642Bb36E70Beb2A61dBe8ED4Ea9fcC8";
+const sponsorsContractAddress = "0x083d289d81DE4FC4f5E9A31c41Cf3eb31519c09b";
 
 async function initializeSponsorsContract() {
   console.log("initializeSponsorsContract");

@@ -13,63 +13,63 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	})();
 
-  const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
-  const userContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
-  const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
-  const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
-  const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
+  // const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
+  // const userContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
+  // const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
+  // const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
+  // const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
 
 	async function fetchEventsABI() {
-		console.log(`fetchEventsABI`);
+		console.log(`user quest eventfetchEventsABI`);
 		let response = await fetch('Events.json');
 		const data = await response.json();
 		return data.abi;
 	}
 
 	async function fetchQuestsABI() {
-		console.log(`fetchQuestsABI`);
+		console.log(`user quest eventfetchQuestsABI`);
 		let response = await fetch('Quests.json');
 		const data = await response.json();
 		return data.abi;
 	}
 
 	async function fetchQuestEventsABI() {
-		console.log(`fetchQuestEventsABI`);
+		console.log(`user quest eventfetchQuestEventsABI`);
 		let response = await fetch('QuestEvents.json');
 		const data = await response.json();
 		return data.abi;
 	}
 
 	async function fetchUserQuestEventsABI() {
-		console.log(`fetchUserQuestEventsABI`);
+		console.log(`user quest eventfetchUserQuestEventsABI`);
 		let response = await fetch('UserQuestEvents.json');
 		const data = await response.json();
 		return data.abi;
 	}
 
 	async function initializeEventsContract() {
-		console.log(`initializeEventsContract`);
+		console.log(`user quest eventinitializeEventsContract`);
 		const eventsABI = await fetchEventsABI();
 		const eventsContract = new ethers.Contract(eventsContractAddress, eventsABI, signer);
 		return eventsContract;
 	}
 
 	async function initializeQuestsContract() {
-		console.log(`initializeQuestsContract`);
+		console.log(`user quest eventinitializeQuestsContract`);
 		const questsABI = await fetchQuestsABI();
 		const questsContract = new ethers.Contract(questsContractAddress, questsABI, signer);
 		return questsContract;
 	}
 
 	async function initializeQuestEventsContract() {
-		console.log(`initializeQuestEventsContract`);
+		console.log(`user quest eventinitializeQuestEventsContract`);
 		const questEventsABI = await fetchQuestEventsABI();
 		const questEventsContract = new ethers.Contract(questEventsContractAddress, questEventsABI, signer);
 		return questEventsContract;
 	}
 
 	async function initializeUserQuestEventsContract() {
-		console.log(`initializeUserQuestEventsContract`);
+		console.log(`user quest eventinitializeUserQuestEventsContract`);
 		const userQuestEventsABI = await fetchUserQuestEventsABI();
 		const userQuestEventsContract = new ethers.Contract(userQuestEventsContractAddress, userQuestEventsABI, signer);
 		return userQuestEventsContract;
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	async function fetchAndPopulateQuestEvents() {
-		console.log(`fetchAndPopulateQuestEvents`);
+		console.log(`user quest eventfetchAndPopulateQuestEvents`);
 		await connectWallet();
 		const questEventsContract = await initializeQuestEventsContract();
 
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	async function fetchUserQuestEvents() {
-		console.log(`fetchUserQuestEvents`);
+		console.log(`user quest eventfetchUserQuestEvents`);
 		await connectWallet();
 		const userQuestEventsContract = await initializeUserQuestEventsContract();
 		const userQuestEventList = document.getElementById('user-quest-event-list');
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		const completed = document.getElementById('completed').checked;
 
 		try {
-			const txResponse = await userQuestEventsContract.createUserQuestEvent(userId, questEventId, interactions, validated, url, completed);
+			const txResponse = await userQuestEventsContract.createUserQuestEvent(questEventId, userId, interactions, validated, url, completed);
 			console.log(`User Quest Event creation transaction hash: ${txResponse.hash}`);
 			await txResponse.wait();
 			console.log('User Quest Event created successfully');
@@ -254,8 +254,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	async function initializePage() {
 		try {
+			console.log("user quest event initializePage");
 			await connectWallet();
+			console.log("user quest event before fetchAndPopulateQuestEvents");
 			await fetchAndPopulateQuestEvents();
+			console.log("user quest event before fetchUserQuestEvents");
 			await fetchUserQuestEvents();
 		} catch (error) {
 			console.error("Failed to initialize page:", error);

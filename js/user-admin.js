@@ -14,29 +14,36 @@ document.addEventListener('DOMContentLoaded', function() {
 	})();
 
 	async function fetchUsers() {
-		console.log("fetchUsers");
+		console.log("user-admin fetchUsers");
 		await connectWallet(); // Ensure wallet is connected before proceeding
 		const usersContract = await initializeNewUsersContract(); // Ensure contract is initialized before calling methods
 
 		let users = [];
-		console.log('Provider before usersContract:', provider);
+		console.log('user-admin Provider before usersContract:', provider);
 		const userCount = await usersContract.getUserCount();
-		console.log(`fetch userCount: ${userCount}`);
+		console.log(`user-admin fetch userCount: ${userCount}`);
+
 		for (let i = 0; i < userCount; i++) {
-			const user = await usersContract.getUserByIndex(i);
-			console.log(`fetch user: ${JSON.stringify(user, null, 2)}`);
-			users.push({
-				id: user.userId.toNumber(),
-				wallet: user.wallet,
-				role: user.role
-			});
+			try {
+				const user = await usersContract.getUserByIndex(i);
+				console.log(`user-admin fetch user: ${JSON.stringify(user, null, 2)}`);
+				users.push({
+					id: user.userId.toNumber(),
+					wallet: user.wallet,
+					role: user.role
+				});
+			} catch (error) {
+				console.error(`Failed to fetch user at index ${i}: ${error.message}`);
+			}
 		}
-		console.log(`fetch users: ${JSON.stringify(users, null, 2)}`);
+
+		console.log(`user-admin fetch users: ${JSON.stringify(users, null, 2)}`);
 		return users;
 	}
 
 	async function populateUserList(users) {
-		console.log(`users: ${JSON.stringify(users, null, 2)}`);
+		console.log("user-admin populateUserList");
+		console.log(`user-admin users: ${JSON.stringify(users, null, 2)}`);
 		const userList = document.getElementById('user-list');
 
 		users.forEach(user => {
@@ -50,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			listItem.addEventListener('click', () => handleUserSelection(user, listItem));
 			userList.appendChild(listItem);
 		});
+		console.log("user-admin populateUserList end");
 	}
 
 	function handleUserSelection(user, listItem) {
@@ -65,10 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	async function initializeUserList() {
-		console.log("initializeUserList");
+		console.log("user-admin initializeUserList");
 		try {
 			const users = await fetchUsers();
+      console.log(`user-admin initializeUserList fetchUsers ${users}`);
 			await populateUserList(users);
+      console.log(`after populateUserList(users)`);
 		} catch (error) {
 			console.error("Failed to fetch or populate users:", error);
 		}

@@ -4,12 +4,26 @@ const userManagerContractAddress = "0x19A20676F0D55542c5394a618C27f7346318715D";
 
 
 const eventQuestManagerContractAddress = "0xad9b202e48e1bCbafaa8cDCc7A136CD7c1E04C52";
-const newUsersContractAddress = "0x5b3f2DFD93be62C56d456951e0f0c1160F509da9";
-  const userQuestEventsContractAddress = "0x1a9eA524FF70CD1B4ffa63Bfa5620371cC6E80d8";
-  const usersContractAddress = "0x5b3f2DFD93be62C56d456951e0f0c1160F509da9";
-  const questEventsContractAddress = "0x10F6e385155A6DA095A391d8a86F8A9d6ccdC7ef";
-  const eventsContractAddress = "0xBECCf00407FC8558cAec9D0bAe392c8dd4245Db3";
-  const questsContractAddress = "0x80619c797baC0E95d393664Aff31Ac4541b94649";
+const newUsersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
+  const userQuestEventsContractAddress = "0xce6fcee19eA91fab8Db884D3f3F7dC05b70E4f84";
+  const usersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
+  const questEventsContractAddress = "0xeb6EEbb7bA7C56Cc76F0a84BE166Ff2148450266";
+  const eventsContractAddress = "0x164155E567ee016DEe8F2c26785003c578eA919E";
+  const questsContractAddress = "0xcbf7b6da410b8d3f77f9ba600eD9ED689C058a0e";
+
+
+// npx hardhat run --network rskTestnet scripts/deploy_event_questmanager.ts 
+// Compiled 2 Solidity files successfully (evm target: paris).
+// Deploying contracts with the account: 0xA9574989663f48C010c87C638e94eF737c3Af3C0
+// Events contract deployed to: 0x164155E567ee016DEe8F2c26785003c578eA919E
+// Quests contract deployed to: 0xcbf7b6da410b8d3f77f9ba600eD9ED689C058a0e
+// Users contract deployed to: 0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e
+// Sponsors contract deployed to: 0xa70228113b6402b72af5e7b92529D70f4855b20e
+// QuestEvents contract deployed to: 0xeb6EEbb7bA7C56Cc76F0a84BE166Ff2148450266
+// UserQuestEvents contract deployed to: 0xce6fcee19eA91fab8Db884D3f3F7dC05b70E4f84
+// Rewards contract deployed to: 0x2393d0e23A53b2dc51C9C19Cc72102856206F1be
+// RewardPools contract deployed to: 0xa52c03a93837BE756c417E866dDFe4321Cbd44ed
+// EventQuestManagement contract deployed to: 0x254E4DC8326f7096e08aBD302F978287092EDcBa
 
 // async function fetchquestABI() {
 //     let response = await fetch('QuestManager.json');
@@ -333,7 +347,7 @@ async function checkAndCreateUser() {
 				console.log(`error.data.message ${error.data.message}`);
 				console.log(`error.data ${error.data}`);
 				console.log(`error ${error}`);
-				if (error.data.message === "execution reverted: User does not exist") {
+				if (error.data.message && error.data.message.includes("User does not exist")) {
 						console.log("User does not exist. Creating new user...");
 						try {
 								const txResponse = await usersContract.createUser(userWallet, "defaultRole");

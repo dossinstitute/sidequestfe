@@ -201,11 +201,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	initializeUserList();
 
-  const userQuestEventsContractAddress = "0x9596640e54d4382717dB30946f22152cfA5673fE";
-  const userContractAddress = "0x03DFc1e09395d5875eCF4DF432307BBE62b145bd";
-  const questEventsContractAddress = "0xb20a8C14d4ade65338b468B794f5261D472c2402";
-  const eventsContractAddress = "0x9725CD79109Ee4F956ec9Fa6dCb22BF623c18BF8";
-  const questsContractAddress = "0x113632694bF0E7F1f447046403784d3220C29580";
+  const userQuestEventsContractAddress = "0xce6fcee19eA91fab8Db884D3f3F7dC05b70E4f84";
+  const usersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
+  const questEventsContractAddress = "0xeb6EEbb7bA7C56Cc76F0a84BE166Ff2148450266";
+  const eventsContractAddress = "0x164155E567ee016DEe8F2c26785003c578eA919E";
+  const questsContractAddress = "0xcbf7b6da410b8d3f77f9ba600eD9ED689C058a0e";
 
 	async function initializeNewUsersContract() {
 		console.log("initializeNewUsersContract");

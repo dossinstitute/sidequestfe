@@ -1,18 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
-
-    (function() {
-        'use strict';
-        document.querySelector('.hamburger-menu').addEventListener('click', function(e) {
-            e.preventDefault();
-            if (this.classList.contains('active')) {
-                this.classList.remove('active');
-                document.querySelector('.menu .menu-list').classList.toggle('visible');
-            } else {
-                this.classList.add('active');
-                document.querySelector('.menu .menu-list').classList.toggle('visible');
-            }
-        });
-    })();
+  (function() {
+    'use strict';
+    $('.hamburger-menu').click(function(e) {
+      e.preventDefault();
+      if ($(this).hasClass('active')) {
+        $(this).removeClass('active');
+        $('.menu .menu-list').slideToggle('slow', 'swing');
+      } else {
+        $(this).addClass('active');
+        $('.menu .menu-list').slideToggle('slow', 'swing');
+      }
+    });
+  })();
 
     async function fetchRewards() {
         await connectWallet();
@@ -145,32 +144,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const rewardId = document.getElementById('reward-id').value;
         await deleteReward(rewardId);
     });
+
+  let rewardManagerContract;
+
+  async function fetchrewardsABI() {
+      console.log("reward-admin fetchrewardsABI");
+      let response = await fetch('Rewards.json');
+      const data = await response.json();
+      console.log(`data.abi ${data.abi}`);
+      return data.abi; // Assuming the ABI is stored under the key 'abi'
+  }
+  async function initializeRewardsContract() {
+      console.log("reward-admin initializeRewardContract");
+      const contractAddress = "0x2cE326C939328D2168E705faf832E661e564373e";
+      rewardsABI = await fetchrewardsABI(); // Fetch and assign the ABI
+
+      rewardManagerContract = new ethers.Contract(contractAddress, rewardsABI, signer);
+      return rewardManagerContract;
+  }
+  // async function initializePage() {
+  //   try {
+  //     await connectWallet();
+  //     await fetchAndPopulateEvents();
+  //     await fetchAndPopulateQuests();
+  //     await fetchQuestEvents();
+  //   } catch (error) {
+  //     console.error("Failed to initialize page:", error);
+  //   }
+  // }
+  //
+  // initializePage();
 });
-//let provider;
-//let signer;
-let rewardManagerContract;
-
-//async function connectWallet() {
-    //if (window.ethereum) {
-    //     provider = new ethers.providers.Web3Provider(window.ethereum);
-    //     await provider.send("eth_requestAccounts", []);
-    //     signer = provider.getSigner();
-    // } else {
-    //     alert("Please install MetaMask!");
-    // }
-// }
-async function fetchrewardsABI() {
-    console.log("reward-admin fetchrewardsABI");
-    let response = await fetch('Rewards.json');
-    const data = await response.json();
-    console.log(`data.abi ${data.abi}`);
-    return data.abi; // Assuming the ABI is stored under the key 'abi'
-}
-async function initializeRewardsContract() {
-    console.log("reward-admin initializeRewardContract");
-    const contractAddress = "0x2cE326C939328D2168E705faf832E661e564373e";
-    rewardsABI = await fetchrewardsABI(); // Fetch and assign the ABI
-
-    rewardManagerContract = new ethers.Contract(contractAddress, rewardsABI, signer);
-    return rewardManagerContract;
-}

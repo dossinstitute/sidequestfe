@@ -25,8 +25,13 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         let rewards = [];
         const rewardCount = await rewardManagerContract.getRewardCount();
+        console.log(`rewardCount: ${rewardCount}`);
         for (let i = 1; i <= rewardCount; i++) {
+          try {
+            console.log(`rewardCount i: ${i}`);
+            console.log(`rewardCount i - 1: ${i - 1}`);
             const reward = await rewardManagerContract.getRewardByIndex(i - 1);
+            console.log(`reward-admin fetch reward: ${JSON.stringify(reward, null, 2)}`);
             rewards.push({
                 id: reward.rewardId.toNumber(),
                 attendeeId: reward.attendeeId.toNumber(),
@@ -35,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 rewardType: reward.rewardType,
                 poolWalletAddress: reward.poolWalletAddress
             });
+          } catch (error) {
+            console.error(`Failed to fetch rewward at index ${i}: ${error.message}`);
+          }
         }
         return rewards;
     }

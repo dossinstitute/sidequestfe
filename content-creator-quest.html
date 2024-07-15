@@ -26,7 +26,7 @@
                         <li><a href="quest-interactions.html">Quest Interaction</a></li>
                         <li><a href="event.html" class="disabled-link">Event Definition and Setup</a></li>
                         <li><a href="users.html" class="disabled-link">User Registration and Participation</a></li>
-                        <li><a href="verification.html" class="disabled-link">Interaction Verification</a></li>
+                        <li><a href="verification.html" class="disabled-link" >Interaction Verification</a></li>
                         <li><a href="tracking.html" class="disabled-link">Interaction Tracking</a></li>
                         <li><a href="completion-check.html" class="disabled-link">Event Completion Check</a></li>
                         <li><a href="reward-distribution.html" class="disabled-link">Reward Distribution</a></li>
@@ -51,45 +51,48 @@
                     <!-- Quest Events will be dynamically added here -->
                 </ul>
             </section>
-  
+
             <section id="detail-section">
-                <h2>Quest Event Details</h2>
+                <h2>Content Creator Quest Details</h2>
                 <form id="quest-event-form">
                     <label for="quest-event-id">Quest Event ID:</label>
-                    <input type="text" id="quest-event-id" name="quest-event-id" required readonly>
-    
+                    <input type="text" id="quest-event-id" name="quest-event-id" required>
+
+                    <label for="user-quest-event-id">User Quest Event ID:</label>
+                    <input type="text" id="user-quest-event-id" name="user-quest-event-id">
+
                     <label for="event-id">Event:</label>
                     <select id="event-id" name="event-id" required></select>
-    
+
                     <label for="quest-id">Quest:</label>
                     <select id="quest-id" name="quest-id" required></select>
-    
+
                     <label for="minimum-interactions">Minimum Interactions:</label>
                     <input type="number" id="minimum-interactions" name="minimum-interactions" required>
-    
+
                     <label for="start-date">Start Date:</label>
                     <input type="date" id="start-date" name="start-date" required>
-    
+
                     <label for="end-date">End Date:</label>
                     <input type="date" id="end-date" name="end-date" required>
-    
+
                     <label for="reward-amount">Reward Amount:</label>
                     <input type="number" id="reward-amount" name="reward-amount" required>
-    
+
                     <label for="url-hash-tags">URL Hash Tags:</label>
                     <input type="text" id="url-hash-tags" name="url-hash-tags" required>
 
                     <label for="expiration-time">Expiration Time:</label>
-                    <input type="number" id="expiration-time" name="expiration-time" required readonly>
+                    <input type="text" id="expiration-time" name="expiration-time" required>
 
                     <label for="min-submissions">Minimum Submissions:</label>
-                    <input type="number" id="min-submissions" name="min-submissions" required readonly>
+                    <input type="text" id="min-submissions" name="min-submissions" required>
 
                     <label for="required-hashtags">Required Hashtags:</label>
-                    <input type="text" id="required-hashtags" name="required-hashtags" required readonly>
+                    <input type="text" id="required-hashtags" name="required-hashtags" required>
 
                     <label for="require-hashtags">Require Hashtags:</label>
-                    <input type="checkbox" id="require-hashtags" name="require-hashtags" disabled>
+                    <input type="checkbox" id="require-hashtags" name="require-hashtags">
 
                     <label for="content-url">Content URL:</label>
                     <input type="text" id="content-url" name="content-url" required>
@@ -97,16 +100,17 @@
                     <label for="content-hashtags">Content Hashtags:</label>
                     <input type="text" id="content-hashtags" name="content-hashtags" required>
 
-                    <div id="quest-status"></div>
-
                     <button type="button" id="initialize-quest">Initialize Quest</button>
                     <button type="button" id="submit-content">Submit Content</button>
                     <button type="button" id="check-submissions">Check Submissions</button>
+                    <button type="button" id="check-quest-active">Check Quest Active</button>
+                    <button type="button" id="check-quest-completed">Check Quest Completed</button>
                 </form>
+                <div id="output"></div>
+                <div id="quest-status"></div>
             </section>
         </main>
         <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="js/ethutils.js"></script>
         <script src="js/content-creator-quest.js"></script>
     </div>

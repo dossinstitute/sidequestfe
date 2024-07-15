@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Creator Quest Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
+    <script src="js/ethutils.js"></script>
+</head>
+<body>
+    <input type="text" id="quest-id" placeholder="Quest ID"/>
+    <button id="initialize-quest">Initialize Quest</button>
+    <button id="submit-content">Submit Content</button>
+    <button id="check-submissions">Check Submissions</button>
+    <button id="check-quest-active">Check Quest Active</button>
+    <button id="check-quest-completed">Check Quest Completed</button>
+    <div id="output"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            let signer, contentCreatorQuestContract;
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const web3Provider = new Web3(window.ethereum);
+            const questIdInput = document.getElementById('quest-id');
+            const output = document.getElementById('output');
+            const contentCreatorQuestAddress = "0xf442b5dbA616a630Fb98559AC4E757c67Ead54Ab"; // Updated contract address
+
+						async function fetchContentCreatorQuestABI() {
+						let response = await fetch('ContentCreatorQuest.json');
+						const data = await response.json();
+						return data.abi;
+						}
+
+            async function connectWalletByProvider() {
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                const contentCreatorQuestABI = await fetchContentCreatorQuestABI();
+                contentCreatorQuestContract = new ethers.Contract(contentCreatorQuestAddress, contentCreatorQuestABI, signer);
+                console.log("Connected to wallet");
+            }
+
+            document.getElementById('initialize-quest').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await initializeQuest(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('submit-content').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await submitContent(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('check-submissions').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await checkSubmissions(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('check-quest-active').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await checkQuestActive(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('check-quest-completed').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await checkQuestCompleted(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            async function initializeQuest(questId) {
+                const currentTimestamp = Math.floor(Date.now() / 1000);
+                const expirationTime = currentTimestamp + 86400; // 1 day in the future
+                const minSubmissions = 2;
+                const requiredHashtags = ["#test"];
+                const requireHashtags = true;
+
+                console.log("Initializing quest with params:", {
+                    questId, expirationTime, minSubmissions, requiredHashtags, requireHashtags
+                });
+
+                const tx = await contentCreatorQuestContract.initializeContentCreatorQuest(
+                    questId, expirationTime, minSubmissions, requiredHashtags, requireHashtags, {
+                    gasLimit: 1000000 // Ensure sufficient gas
+                });
+                const receipt = await tx.wait();
+
+                parseLogs(receipt.logs);
+
+                console.log("Quest initialized:", questId);
+                output.innerText = `Quest initialized with ID: ${questId}`;
+
+                const questStatus = await contentCreatorQuestContract.quests(questId);
+                console.log("Quest status after initialization:", questStatus);
+            }
+
+            async function submitContent(questId) {
+                const contentUrl = "http://example.com";
+                const hashtags = ["#test"];
+
+                const questStatus = await contentCreatorQuestContract.quests(questId);
+                console.log("Quest status before submission:", questStatus);
+                const parsedQuestData = parseQuestData(questStatus);
+                console.log("Parsed Quest Data: ", parsedQuestData);
+
+                if (!parsedQuestData.isActive || parsedQuestData.isCompleted) {
+                    throw new Error("Quest is either inactive or already completed.");
+                }
+
+                const contentData = web3Provider.eth.abi.encodeParameters(["string", "string[]"], [contentUrl, hashtags]);
+                const tx = await contentCreatorQuestContract.interact(questId, await signer.getAddress(), "submit", contentData, {
+                    gasLimit: 500000 // Ensure sufficient gas
+                });
+                const receipt = await tx.wait();
+
+                parseLogs(receipt.logs);
+
+                console.log("Content submitted:", contentUrl);
+                output.innerText = `Content submitted: ${contentUrl}`;
+            }
+
+            async function checkSubmissions(questId) {
+                const submissions = await contentCreatorQuestContract.getContentSubmissions(questId);
+                console.log("Submissions:", submissions);
+                output.innerText = `Submissions: ${JSON.stringify(submissions)}`;
+            }
+
+            async function checkQuestActive(questId) {
+                const questStatus = await contentCreatorQuestContract.quests(questId);
+                const parsedQuestData = parseQuestData(questStatus);
+                const isActive = parsedQuestData.isActive;
+                console.log("Quest active status:", isActive);
+                output.innerText = `Quest active status: ${isActive}`;
+            }
+
+            async function checkQuestCompleted(questId) {
+                const questStatus = await contentCreatorQuestContract.quests(questId);
+                const parsedQuestData = parseQuestData(questStatus);
+                const isCompleted = parsedQuestData.isCompleted;
+                console.log("Quest completed status:", isCompleted);
+                output.innerText = `Quest completed status: ${isCompleted}`;
+            }
+
+        });
+    </script>
+</body>
+</html>
+

@@ -248,22 +248,26 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    async function getUserQuestEventId(questEventId) {
-        console.log(`getUserQuestEventId called with params: questEventId=${questEventId}`);
-        try {
-            const userId = await signer.getAddress();
-            const userQuestEventCount = await userQuestEventsContract.getUserQuestEventCount();
-            for (let i = 0; i < userQuestEventCount; i++) {
-                const userQuestEvent = await userQuestEventsContract.readUserQuestEvent(i + 1);
-                if (userQuestEvent.questEventId == questEventId && userQuestEvent.userId == userId) {
-                    return userQuestEvent.userQuestEventId;
-                }
-            }
-        } catch (error) {
-            console.error("Error fetching user quest event ID:", error);
-        }
-        return null;
-    }
+		async function getUserQuestEventId(questEventId) {
+				console.log(`getUserQuestEventId called with params: questEventId=${questEventId}`);
+				try {
+						await connectWalletByProvider();
+						const userContract = await initializeContract(provider, 'Users.json', usersContractAddress);
+						const userId = await userContract.getUserIdByWallet(await signer.getAddress());
+						const userQuestEventCount = await userQuestEventsContract.getUserQuestEventCount();
+						for (let i = 0; i < userQuestEventCount; i++) {
+								const userQuestEvent = await userQuestEventsContract.readUserQuestEvent(i + 1);
+								console.log(`userQuestEvent  userQuestEvent.questEventId questEventId userQuestEvent.userId  userId: ${userQuestEvent} ${userQuestEvent.questEventId} ${questEventId} ${userQuestEvent.userId} ${userId} ${ethers.BigNumber.from(userQuestEvent.questEventId).eq(ethers.BigNumber.from(questEventId))} ${ethers.BigNumber.from(userQuestEvent.userId).eq(ethers.BigNumber.from(userId))}`);
+								if (ethers.BigNumber.from(userQuestEvent.questEventId).eq(ethers.BigNumber.from(questEventId)) && ethers.BigNumber.from(userQuestEvent.userId).eq(ethers.BigNumber.from(userId))) {
+										console.log(`user quest event found for a quest event`);
+										return userQuestEvent.userQuestEventId;
+								}
+						}
+				} catch (error) {
+						console.error("Error fetching user quest event ID:", error);
+				}
+				return null;
+		}
 
     async function createUserQuestEvent(questEventId) {
         console.log(`createUserQuestEvent called with params: questEventId=${questEventId}`);

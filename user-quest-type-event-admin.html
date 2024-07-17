@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Quest Type Event Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link media="all" rel="stylesheet" href="ss/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <a href="index.html">
+          <img src="images/logo.png" alt="logo" id="logo">
+        </a>
+      </div>
+      <div class="menu">
+        <div class="hamburger-menu-wrapper">
+          <button class="hamburger-menu">
+            <span>toggle menu</span>
+          </button>
+        </div>
+        <div class="menu-list">
+          <ul>
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="quest-interactions.html">Quest Interaction</a></li>
+              <li><a href="event.html" class="disabled-link">Event Definition and Setup</a></li>
+              <li><a href="users.html" class="disabled-link">User Registration and Participation</a></li>
+              <li><a href="verification.html" class="disabled-link" >Interaction Verification</a></li>
+              <li><a href="tracking.html" class="disabled-link">Interaction Tracking</a></li>
+              <li><a href="completion-check.html" class="disabled-link">Event Completion Check</a></li>
+              <li><a href="reward-distribution.html" class="disabled-link">Reward Distribution</a></li>
+              <li><a href="security.html" class="disabled-link">Security and Validations</a></li>
+              <li><a href="event-admin.html">Event Admin Functions</a></li>
+              <li><a href="quest-admin.html">Quest Definition and Setup</a></li>
+              <li><a href="user-admin.html">User Admin Functions</a></li>
+              <li><a href="quest-event-admin.html">Quest Event Management</a></li>
+              <li><a href="sponsor-admin.html">Sponsor Admin Management</a></li>
+              <li><a href="user-quest-event-admin.html">User Quest Event Management</a></li>
+              <li><a href="rewards-admin.html">Rewards Admin Management</a></li>
+              <li><a href="point-system.html" class="disabled-link">Point System and Leaderboard</a></li>
+              <li><a href="checkout-redeem.html" class="disabled-link">Checkout & Redeem</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section id="master-section">
+        <h2>User Quest Type Event List</h2>
+        <ul id="user-quest-type-event-list">
+          <!-- User Quest Type Events will be dynamically added here -->
+        </ul>
+      </section>
+
+      <section id="detail-section">
+        <h2>User Quest Type Event Details</h2>
+        <form id="user-quest-type-event-form">
+          <label for="user-quest-type-event-id">User Quest Type Event ID:</label>
+          <input type="text" id="user-quest-type-event-id" name="user-quest-type-event-id" required readonly>
+
+          <label for="user-id">User ID:</label>
+          <input type="text" id="user-id" name="user-id" required>
+
+          <label for="quest-type-event-id">Quest Type Event:</label>
+          <select id="quest-type-event-id" name="quest-type-event-id" required></select>
+
+          <label for="interactions">Interactions:</label>
+          <input type="number" id="interactions" name="interactions" required>
+
+          <label for="validated">Validated:</label>
+          <input type="checkbox" id="validated" name="validated">
+
+          <label for="url">URL:</label>
+          <input type="text" id="url" name="url" required>
+
+          <label for="completed">Completed:</label>
+          <input type="checkbox" id="completed" name="completed">
+
+          <button type="button" id="new-user-quest-type-event">New User Quest Type Event</button>
+          <button type="button" id="create-user-quest-type-event">Create User Quest Type Event</button>
+          <button type="button" id="update-user-quest-type-event">Update User Quest Type Event</button>
+          <button type="button" id="delete-user-quest-type-event">Delete User Quest Type Event</button>
+        </form>
+      </section>
+    </main>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/ethutils.js"></script>
+    <script src="js/user-quest-type-event-admin.js"></script>
+  </div>
+</body>
+</html>
+

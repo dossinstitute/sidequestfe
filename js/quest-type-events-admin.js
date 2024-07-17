@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     })();
 
-    const questTypeContractAddress = "0x44845EE65A68d7Fa3F3eaF4CE7E9e0BA74386a0C";
-    const questTypeEventsContractAddress = "0xf6760E4E601b684610740b71b4c5546db9706107";
+    const questTypeContractAddress = "0x2d39372e07C71C0F26ec00c7350AAba5Fe2d4141";
+    const questTypeEventsContractAddress = "0x92e0043d21C38dCd1C5B6e4dAfdbf2fd57FB70bF";
     const eventsContractAddress = "0x164155E567ee016DEe8F2c26785003c578eA919E";
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   })();
 
-  const questTypesContractAddress = "0x44845EE65A68d7Fa3F3eaF4CE7E9e0BA74386a0C";
+  const questTypesContractAddress = "0x2d39372e07C71C0F26ec00c7350AAba5Fe2d4141";
   const questTypesABIPath = 'QuestTypes.json'; // Path to your ABI file
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);

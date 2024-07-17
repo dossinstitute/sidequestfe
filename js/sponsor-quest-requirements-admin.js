@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   })();
   const sponsorQuestRequirementsContractAddress = "0x71C953E5F22b290f813B4695BFc4a5100538Fb51";
-  const questTypeEventContractAddress = "0xf6760E4E601b684610740b71b4c5546db9706107";
+  const questTypeEventContractAddress = "0x92e0043d21C38dCd1C5B6e4dAfdbf2fd57FB70bF";
   const provider = new ethers.providers.Web3Provider(window.ethereum);
 
   async function initializeSponsorQuestRequirementsContract() {

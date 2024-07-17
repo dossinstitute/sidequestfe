@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Quest Types Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link media="all" rel="stylesheet" href="ss/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo-container">
+          <a href="index.html">
+            <img src="images/logo.png" alt="logo" id="logo">
+          </a>
+        </div>
+        <div class="menu">
+          <div class="hamburger-menu-wrapper">
+            <button class="hamburger-menu">
+              <span>toggle menu</span>
+            </button>
+          </div>
+          <div class="menu-list">
+            <ul>
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <!-- Other menu items -->
+            </ul>
+          </div>
+        </div>
+      </header>
+      <main>
+        <section id="master-section">
+          <h2>Quest Types List</h2>
+          <ul id="quest-type-list">
+            <!-- Quest Types will be dynamically added here -->
+          </ul>
+        </section>
+
+        <section id="detail-section">
+          <h2>Quest Type Details</h2>
+          <form id="quest-type-form">
+            <label for="quest-type-id">Quest Type ID:</label>
+            <input type="text" id="quest-type-id" name="quest-type-id" required readonly>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required>
+
+            <label for="screen-name">Screen Name:</label>
+            <input type="text" id="screen-name" name="screen-name" required>
+
+            <label for="quest-contract-name">Quest Contract Name:</label>
+            <input type="text" id="quest-contract-name" name="quest-contract-name" required>
+
+            <label for="quest-contract-address">Quest Contract Address:</label>
+            <input type="text" id="quest-contract-address" name="quest-contract-address" required>
+
+            <label for="sponsor-requirements-contract-name">Sponsor Requirements Contract Name:</label>
+            <input type="text" id="sponsor-requirements-contract-name" name="sponsor-requirements-contract-name" required>
+
+            <label for="sponsor-requirements-address">Sponsor Requirements Address:</label>
+            <input type="text" id="sponsor-requirements-address" name="sponsor-requirements-address" required>
+
+            <button type="button" id="new-quest-type">New Quest Type</button>
+            <button type="button" id="create-quest-type">Create Quest Type</button>
+            <button type="button" id="update-quest-type">Update Quest Type</button>
+            <button type="button" id="delete-quest-type">Delete Quest Type</button>
+          </form>
+        </section>
+      </main>
+      <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="app.js"></script>
+      <script src="js/ethutils.js"></script>
+      <script src="js/quest-types-admin.js"></script>
+    </div>
+  </body>
+</html>
+

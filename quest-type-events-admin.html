@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Quest Event Management</title>
+    <title>Quest Type Events Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link media="all" rel="stylesheet" href="ss/style.css" />
   </head>
@@ -46,50 +46,53 @@
       </header>
       <main>
         <section id="master-section">
-          <h2>Quest Event List</h2>
-          <ul id="quest-event-list">
-            <!-- Quest Events will be dynamically added here -->
+          <h2>Quest Type Events List</h2>
+          <ul id="quest-type-events-list">
+            <!-- Quest Type Events will be dynamically added here -->
           </ul>
         </section>
 
         <section id="detail-section">
-          <h2>Quest Event Details</h2>
-          <form id="quest-event-form">
-            <label for="quest-event-id">Quest Event ID:</label>
-            <input type="text" id="quest-event-id" name="quest-event-id" required readonly>
+          <h2>Quest Type Event Details</h2>
+          <form id="quest-type-event-form">
+            <label for="quest-type-event-id">Quest Type Event ID:</label>
+            <input type="text" id="quest-type-event-id" name="quest-type-event-id" required readonly>
 
-            <label for="event-id">Event:</label>
+            <label for="event-id">Event ID:</label>
             <select id="event-id" name="event-id" required></select>
 
-            <label for="quest-id">Quest:</label>
-            <select id="quest-id" name="quest-id" required></select>
+            <label for="quest-type-id">Quest Type ID:</label>
+            <select id="quest-type-id" name="quest-type-id" required></select>
 
-            <label for="minimum-interactions">Minimum Interactions:</label>
-            <input type="number" id="minimum-interactions" name="minimum-interactions" required>
+            <label for="reward">Reward:</label>
+            <input type="number" id="reward" name="reward" required>
 
-            <label for="start-date">Start Date:</label>
-            <input type="date" id="start-date" name="start-date" required>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
 
-            <label for="end-date">End Date:</label>
-            <input type="date" id="end-date" name="end-date" required>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required>
 
-            <label for="reward-amount">Reward Amount:</label>
-            <input type="number" id="reward-amount" name="reward-amount" required>
+            <label for="required-interactions">Required Interactions:</label>
+            <input type="number" id="required-interactions" name="required-interactions" required>
 
-            <label for="url-hash-tags">URL Hash Tags:</label>
-            <input type="text" id="url-hash-tags" name="url-hash-tags" required>
+            <label for="quest-event-start-date">Start Date:</label>
+            <input type="date" id="quest-event-start-date" name="quest-event-start-date" required>
 
-            <button type="button" id="new-quest-event">New Quest Event</button>
-            <button type="button" id="create-quest-event">Create Quest Event</button>
-            <button type="button" id="update-quest-event">Update Quest Event</button>
-            <button type="button" id="delete-quest-event">Delete Quest Event</button>
+            <label for="quest-event-end-date">End Date:</label>
+            <input type="date" id="quest-event-end-date" name="quest-event-end-date" required>
+
+            <button type="button" id="new-quest-type-event">New Quest Type Event</button>
+            <button type="button" id="create-quest-type-event">Create Quest Type Event</button>
+            <button type="button" id="update-quest-type-event">Update Quest Type Event</button>
+            <button type="button" id="delete-quest-type-event">Delete Quest Type Event</button>
           </form>
         </section>
       </main>
       <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="app.js?version=22"></script>
-      <script src="js/quest-event-admin.js?version=20"></script>
+      <script src="js/ethutils.js"></script>
+      <script src="js/quest-type-events-admin.js?version=20"></script>
     </div>
   </body>
 </html>

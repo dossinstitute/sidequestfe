@@ -90,6 +90,13 @@ function verifyFunctionSignature(contract, functionName, params) {
     const encodedParams = contract.interface.encodeFunctionData(functionFragment, params);
     const decodedParams = contract.interface.decodeFunctionData(functionFragment, encodedParams);
 
-    return JSON.stringify(params) === JSON.stringify(decodedParams);
-}
+    const isMatch = JSON.stringify(params) === JSON.stringify(decodedParams);
 
+    if (!isMatch) {
+        console.error(`Function signature verification failed for ${functionName} with params: ${JSON.stringify(params)}`);
+        console.error(`Expected params: ${JSON.stringify(decodedParams)}`);
+        console.error(`Valid functions: ${contract.interface.fragments.map(frag => `${frag.name}: ${JSON.stringify(frag.inputs)}`)}`);
+    }
+
+    return isMatch;
+}

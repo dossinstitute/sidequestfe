@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Quest Event Management</title>
+    <title>Sponsor Quest Requirements Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link media="all" rel="stylesheet" href="ss/style.css" />
   </head>
@@ -46,50 +46,38 @@
       </header>
       <main>
         <section id="master-section">
-          <h2>Quest Event List</h2>
-          <ul id="quest-event-list">
-            <!-- Quest Events will be dynamically added here -->
+          <h2>Sponsor Quest Requirements List</h2>
+          <ul id="sponsor-quest-requirements-list">
+            <!-- Sponsor Quest Requirements will be dynamically added here -->
           </ul>
         </section>
 
         <section id="detail-section">
-          <h2>Quest Event Details</h2>
-          <form id="quest-event-form">
-            <label for="quest-event-id">Quest Event ID:</label>
-            <input type="text" id="quest-event-id" name="quest-event-id" required readonly>
+          <h2>Sponsor Quest Requirement Details</h2>
+          <form id="sponsor-quest-requirement-form">
+            <label for="sqr-id">Sponsor Quest Requirement ID:</label>
+            <input type="text" id="sqr-id" name="sqr-id" required readonly>
 
-            <label for="event-id">Event:</label>
-            <select id="event-id" name="event-id" required></select>
+            <label for="quest-type-event-id">Quest Type Event ID:</label>
+            <select id="quest-type-event-id" name="quest-type-event-id" required></select>
 
-            <label for="quest-id">Quest:</label>
-            <select id="quest-id" name="quest-id" required></select>
+            <label for="sponsor-hashtags">Sponsor Hashtags:</label>
+            <input type="text" id="sponsor-hashtags" name="sponsor-hashtags" required>
 
-            <label for="minimum-interactions">Minimum Interactions:</label>
-            <input type="number" id="minimum-interactions" name="minimum-interactions" required>
+            <label for="sponsor-hashtags-required">Sponsor Hashtags Required:</label>
+            <input type="checkbox" id="sponsor-hashtags-required" name="sponsor-hashtags-required">
 
-            <label for="start-date">Start Date:</label>
-            <input type="date" id="start-date" name="start-date" required>
-
-            <label for="end-date">End Date:</label>
-            <input type="date" id="end-date" name="end-date" required>
-
-            <label for="reward-amount">Reward Amount:</label>
-            <input type="number" id="reward-amount" name="reward-amount" required>
-
-            <label for="url-hash-tags">URL Hash Tags:</label>
-            <input type="text" id="url-hash-tags" name="url-hash-tags" required>
-
-            <button type="button" id="new-quest-event">New Quest Event</button>
-            <button type="button" id="create-quest-event">Create Quest Event</button>
-            <button type="button" id="update-quest-event">Update Quest Event</button>
-            <button type="button" id="delete-quest-event">Delete Quest Event</button>
+            <button type="button" id="new-sponsor-quest-requirement">New Sponsor Quest Requirement</button>
+            <button type="button" id="create-sponsor-quest-requirement">Create Sponsor Quest Requirement</button>
+            <button type="button" id="update-sponsor-quest-requirement">Update Sponsor Quest Requirement</button>
+            <button type="button" id="delete-sponsor-quest-requirement">Delete Sponsor Quest Requirement</button>
           </form>
         </section>
       </main>
       <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="app.js?version=22"></script>
-      <script src="js/quest-event-admin.js?version=20"></script>
+      <script src="js/ethutils.js"></script>
+      <script src="js/sponsor-quest-requirements-admin.js?version=20"></script>
     </div>
   </body>
 </html>

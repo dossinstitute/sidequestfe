@@ -43,24 +43,24 @@ const newUsersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
 //     const data = await response.json();
 //     return data.abi; // Assuming the ABI is stored under the key 'abi'
 // }
-async function connectWalletByProvider(provider) {
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    console.log("Connected to wallet");
-    return signer;
-}
+// async function connectWalletByProvider(provider) {
+//     await provider.send("eth_requestAccounts", []);
+//     const signer = provider.getSigner();
+//     console.log("Connected to wallet");
+//     return signer;
+// }
 
-async function fetchContractABI(filePath) {
-    const response = await fetch(filePath);
-    const data = await response.json();
-    return data.abi;
-}
-
-async function initializeContract(provider, abiPath, contractAddress) {
-    const signer = await connectWalletByProvider(provider);
-    const contractABI = await fetchContractABI(abiPath);
-    return new ethers.Contract(contractAddress, contractABI, signer);
-}
+// async function fetchContractABI(filePath) {
+//     const response = await fetch(filePath);
+//     const data = await response.json();
+//     return data.abi;
+// }
+//
+// async function initializeContract(provider, abiPath, contractAddress) {
+//     const signer = await connectWalletByProvider(provider);
+//     const contractABI = await fetchContractABI(abiPath);
+//     return new ethers.Contract(contractAddress, contractABI, signer);
+// }
 
 function parseLogs(receipt, contract) {
     receipt.logs.forEach(log => {

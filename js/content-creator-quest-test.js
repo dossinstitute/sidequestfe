@@ -1,146 +1,128 @@
 document.addEventListener('DOMContentLoaded', async function () {
-  let signer, contentCreatorQuestContract;
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const web3Provider = new Web3(window.ethereum);
-  const questId = 1;
-
-  async function fetchContentCreatorQuestABI() {
-    let response = await fetch('ContentCreatorQuest.json');
-    const data = await response.json();
-    return data.abi;
-  }
-
-  async function initializeContentCreatorQuestContract() {
-    const contentCreatorQuestABI = await fetchContentCreatorQuestABI();
-    const contentCreatorQuestAddress = "0x6216D31358A213863553Fcb1a352A929803e22D1"; // Replace with your contract address
-    const contentCreatorQuestContract = new ethers.Contract(contentCreatorQuestAddress, contentCreatorQuestABI, signer);
-    return contentCreatorQuestContract;
-  }
-
-  // Connect to Ethereum Wallet
-  async function connectWallet() {
-    try {
-      await provider.send("eth_requestAccounts", []);
-      signer = provider.getSigner();
-      contentCreatorQuestContract = await initializeContentCreatorQuestContract();
-      console.log("Connected to wallet");
-    } catch (error) {
-      console.error("User rejected request to connect wallet:", error);
-    }
-  }
-
-  // Initialize Quest
-  async function initializeQuest() {
-    try {
-      const currentTimestamp = Math.floor(Date.now() / 1000);
-      const expirationTime = currentTimestamp + 86400; // 1 day in the future
-      const minSubmissions = 2;
-      const requiredHashtags = ["#test"];
-      const requireHashtags = true;
-
-      const tx = await contentCreatorQuestContract.initializeContentCreatorQuest(questId, expirationTime, minSubmissions, requiredHashtags, requireHashtags, {
-        gasLimit: 1000000 // Ensure sufficient gas
-      });
-      const receipt = await tx.wait();
-
-      // Check for custom debug events
-      receipt.logs.forEach(log => {
-        try {
-          const parsedLog = contentCreatorQuestContract.interface.parseLog(log);
-          if (parsedLog.name === 'Debug') {
-            console.log('Debug event:', parsedLog.args.message);
-          }
-          if (parsedLog.name === 'DebugAddress') {
-            console.log('DebugAddress event:', parsedLog.args.addr);
-          }
-          if (parsedLog.name === 'DebugUint256') {
-            console.log('DebugUint256 event:', parsedLog.args.value);
-          }
-          if (parsedLog.name === 'DebugString') {
-            console.log('DebugString event:', parsedLog.args.value);
-          }
-        } catch (e) {
-          // Ignore logs that cannot be parsed
+    // Hamburger menu setup
+    document.querySelector('.hamburger-menu').addEventListener('click', function (e) {
+        e.preventDefault();
+        const menu = document.querySelector('.menu .menu-list');
+        if (this.classList.contains('active')) {
+            this.classList.remove('active');
+            menu.style.display = 'none';
+        } else {
+            this.classList.add('active');
+            menu.style.display = 'block';
         }
-      });
+    });
 
-      console.log("Quest initialized:", questId);
-      document.getElementById('output').innerText = `Quest initialized with ID: ${questId}`;
-    } catch (error) {
-      console.error("Error initializing quest:", error);
+    let signer, contentCreatorQuestContract;
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const output = document.getElementById('output');
+    const contentCreatorQuestContractAddress = "0x59b544dd3533f1E0a0dac51D0DdFf7a1AE693003"; // Replace with your contract address
+
+    async function connectWalletAndInitializeContract() {
+        signer = await connectWalletByProvider(provider);
+        contentCreatorQuestContract = await initializeContract(provider, 'ContentCreatorQuest.json', contentCreatorQuestContractAddress);
     }
-  }
 
-  // Submit Content
-  async function submitContent() {
-    try {
-      const contentUrl = "http://example.com";
-      const hashtags = ["#test"];
+    async function initializeQuest() {
+        await connectWalletAndInitializeContract();
+        const questId = ethers.BigNumber.from(document.getElementById('quest-id').value);
+        const questTypeId = ethers.BigNumber.from(document.getElementById('quest-type-id').value);
+        const currentTimestamp = (await provider.getBlock('latest')).timestamp;
+        const expirationTime = currentTimestamp + 86400;
+        const minSubmissions = ethers.BigNumber.from(2);
+        const requiredHashtags = ["#test"];
+        const requireHashtags = true;
 
-      // Check if the quest is still active and not completed
-      const quest = await contentCreatorQuestContract.quests(questId);
-      if (!quest.isActive || quest.isCompleted) {
-        throw new Error("Quest is either inactive or already completed.");
-      }
+        const params = [questId, questTypeId, expirationTime, minSubmissions, requiredHashtags, requireHashtags];
 
-      const contentData = web3Provider.eth.abi.encodeParameters(["string", "string[]"], [contentUrl, hashtags]);
-      const tx = await contentCreatorQuestContract.interact(questId, await signer.getAddress(), "submit", contentData, {
-        gasLimit: 500000 // Ensure sufficient gas
-      });
-      const receipt = await tx.wait();
-
-      // Check for custom debug events
-      receipt.logs.forEach(log => {
         try {
-          const parsedLog = contentCreatorQuestContract.interface.parseLog(log);
-          if (parsedLog.name === 'Debug') {
-            console.log('Debug event:', parsedLog.args.message);
-          }
-          if (parsedLog.name === 'DebugAddress') {
-            console.log('DebugAddress event:', parsedLog.args.addr);
-          }
-          if (parsedLog.name === 'DebugUint256') {
-            console.log('DebugUint256 event:', parsedLog.args.value);
-          }
-          if (parsedLog.name === 'DebugString') {
-            console.log('DebugString event:', parsedLog.args.value);
-          }
-        } catch (e) {
-          // Ignore logs that cannot be parsed
+            verifyFunctionSignature(contentCreatorQuestContract, 'initializeContentCreatorQuest', params);
+
+            const txResponse = await contentCreatorQuestContract.initializeContentCreatorQuest(...params);
+            const receipt = await txResponse.wait();
+
+            parseLogs(receipt.logs, contentCreatorQuestContract);
+            output.innerText = `Quest initialized: ${JSON.stringify(receipt.events)}`;
+        } catch (error) {
+            if (error.transactionHash) {
+                const reason = await decodeRevertReason(error.transactionHash, provider);
+                console.error("Revert reason:", reason);
+            }
+            handleError(error);
         }
-      });
-
-      console.log("Content submitted:", contentUrl);
-      document.getElementById('output').innerText = `Content submitted: ${contentUrl}`;
-    } catch (error) {
-      console.error("Error submitting content:", error);
     }
-  }
 
-  // Check Submissions
-  async function checkSubmissions() {
-    try {
-      const submissions = await contentCreatorQuestContract.getContentSubmissions(questId);
-      console.log("Submissions:", submissions);
-      document.getElementById('output').innerText = `Submissions: ${JSON.stringify(submissions)}`;
-    } catch (error) {
-      console.error("Error checking submissions:", error);
+    async function submitContent() {
+        await connectWalletAndInitializeContract();
+        const questId = ethers.BigNumber.from(document.getElementById('quest-id').value);
+        const contentUrl = "http://example.com";
+        const hashtags = ["#test"];
+        const contentData = ethers.utils.defaultAbiCoder.encode(["string", "string[]"], [contentUrl, hashtags]);
+
+        const params = [questId, await signer.getAddress(), "submit", contentData];
+
+        try {
+            verifyFunctionSignature(contentCreatorQuestContract, 'interact', params);
+
+            const txResponse = await contentCreatorQuestContract.interact(...params);
+            const receipt = await txResponse.wait();
+
+            parseLogs(receipt.logs, contentCreatorQuestContract);
+            output.innerText = `Content submitted: ${JSON.stringify(receipt.events)}`;
+        } catch (error) {
+            if (error.transactionHash) {
+                const reason = await decodeRevertReason(error.transactionHash, provider);
+                console.error("Revert reason:", reason);
+            }
+            handleError(error);
+        }
     }
-  }
 
-  document.getElementById('initialize-quest').addEventListener('click', async () => {
-    await connectWallet();
-    await initializeQuest();
-  });
+    async function listSubmissions() {
+        await connectWalletAndInitializeContract();
+        const questId = ethers.BigNumber.from(document.getElementById('quest-id').value);
 
-  document.getElementById('submit-content').addEventListener('click', async () => {
-    await connectWallet();
-    await submitContent();
-  });
+        try {
+            const submissions = await contentCreatorQuestContract.getContentSubmissions(questId);
+            output.innerText = `Submissions: ${JSON.stringify(submissions)}`;
+        } catch (error) {
+            handleError(error);
+        }
+    }
 
-  document.getElementById('check-submissions').addEventListener('click', async () => {
-    await connectWallet();
-    await checkSubmissions();
-  });
+    async function listActiveQuests() {
+        await connectWalletAndInitializeContract();
+
+        try {
+            const activeQuests = await contentCreatorQuestContract.listActiveQuests();
+            output.innerText = `Active Quests: ${JSON.stringify(activeQuests)}`;
+        } catch (error) {
+            handleError(error);
+        }
+    }
+
+    async function completeQuest() {
+        await connectWalletAndInitializeContract();
+        const questId = ethers.BigNumber.from(document.getElementById('quest-id').value);
+
+        try {
+            const txResponse = await contentCreatorQuestContract.completeQuest(questId);
+            const receipt = await txResponse.wait();
+
+            parseLogs(receipt.logs, contentCreatorQuestContract);
+            output.innerText = `Quest completed: ${JSON.stringify(receipt.events)}`;
+        } catch (error) {
+            if (error.transactionHash) {
+                const reason = await decodeRevertReason(error.transactionHash, provider);
+                console.error("Revert reason:", reason);
+            }
+            handleError(error);
+        }
+    }
+
+    document.getElementById('initialize-quest').addEventListener('click', initializeQuest);
+    document.getElementById('submit-content').addEventListener('click', submitContent);
+    document.getElementById('list-submissions').addEventListener('click', listSubmissions);
+    document.getElementById('list-active-quests').addEventListener('click', listActiveQuests);
+    document.getElementById('complete-quest').addEventListener('click', completeQuest);
 });
 

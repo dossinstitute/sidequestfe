@@ -42,9 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				try {
 						const userQuestTypeEventCount = await userQuestTypeEventsContract.getUserQuestTypeEventCount();
+console.log (`uqte count: ${userQuestTypeEventCount}`)
 						let userQuestTypeEvents = [];
 						for (let i = 0; i < userQuestTypeEventCount; i++) {
-								const userQuestTypeEvent = await userQuestTypeEventsContract.readUserQuestTypeEvent(i + 1); // Adjust for 1-based indexing
+								const userQuestTypeEvent = await userQuestTypeEventsContract.getUserQuestTypeEventByIndex(i); // Adjust for 1-based indexing
 								userQuestTypeEvents.push(userQuestTypeEvent);
 						}
 						populateUserQuestTypeEventList(userQuestTypeEvents);
@@ -94,8 +95,35 @@ document.addEventListener('DOMContentLoaded', function() {
 				const url = document.getElementById('url').value;
 				const completed = document.getElementById('completed').checked;
 
-				try {
-						const txResponse = await userQuestTypeEventsContract.createUserQuestTypeEvent(questTypeEventId, userId, interactions, validated, url, completed);
+        const params = {
+            questTypeEventId: ethers.BigNumber.from(questTypeEventId),
+            userId: ethers.BigNumber.from(userId),
+						interactions: ethers.BigNumber.from(parseInt(interactions, 10)),
+            validated,
+            url,
+            completed
+        };
+
+        console.log("Creating User Quest Type Event with params:", params);
+
+        try {
+            verifyFunctionSignature(userQuestTypeEventsContract, "createUserQuestTypeEvent", [
+                params.questTypeEventId,
+                params.userId,
+                params.interactions,
+                params.validated,
+                params.url,
+                params.completed
+            ]);
+
+						const txResponse = await userQuestTypeEventsContract.createUserQuestTypeEvent(
+                params.questTypeEventId,
+                params.userId,
+                params.interactions,
+                params.validated,
+                params.url,
+                params.completed
+								);
 						await txResponse.wait();
 						alert('User Quest Type Event created successfully');
 						fetchUserQuestTypeEvents(); // Refresh user quest type event list

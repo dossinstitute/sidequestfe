@@ -52,9 +52,23 @@ async function parseLogs(logs, contract) {
 async function decodeRevertReason(transactionHash, provider) {
     console.log(`decodeRevertReason called with params: transactionHash=${transactionHash}`);
     const tx = await provider.getTransaction(transactionHash);
-    const code = await provider.call(tx, tx.blockNumber);
-    const reason = ethers.utils.toUtf8String('0x' + code.substr(138));
-    return reason.replace('VM Exception while processing transaction: revert ', '');
+    if (!tx) {
+        console.error("Transaction not found");
+        return "Transaction not found";
+    }
+    
+    try {
+        const code = await provider.call(tx, tx.blockNumber);
+        if (code === "0x") {
+            console.error("No revert reason provided in the transaction");
+            return "No revert reason provided";
+        }
+        const reason = ethers.utils.toUtf8String('0x' + code.substr(138));
+        return reason.replace('VM Exception while processing transaction: revert ', '');
+    } catch (error) {
+        console.error("Error decoding revert reason:", error);
+        return `Error decoding revert reason: ${error.message}`;
+    }
 }
 
 function handleError(error) {

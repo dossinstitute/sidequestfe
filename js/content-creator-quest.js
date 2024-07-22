@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const urlHashTagsInput = document.getElementById('url-hash-tags');
     const output = document.getElementById('output');
     const userQuestTypeEventIdInput = document.getElementById('user-quest-type-event-id');
+    const questStatusIndicator = document.getElementById('quest-status-indicator');
     const contentCreatorQuestAddress = "0x59b544dd3533f1E0a0dac51D0DdFf7a1AE693003"; // Replace with your contract address
     const questTypeEventsContractAddress = "0x92e0043d21C38dCd1C5B6e4dAfdbf2fd57FB70bF";
     const userQuestTypeEventsContractAddress = "0x9E2D8a12713042E541c2f342B83878c7A168a660";
@@ -91,75 +92,75 @@ document.addEventListener('DOMContentLoaded', async function () {
         return data.abi;
     }
 
-		async function initializeQuest(userQuestTypeEventId) {
-				console.log(`initializeQuest called with params: userQuestTypeEventId=${userQuestTypeEventId}`);
-				const currentTimestamp = Math.floor(Date.now() / 1000);
-				const expirationTime = ethers.BigNumber.from(currentTimestamp + 86400); // 24 hours from now
-				const minSubmissions = ethers.BigNumber.from(parseInt(minSubmissionsInput.value, 10));
-				const requiredHashtags = requiredHashtagsInput.value.split(", ");
-				const requireHashtags = requireHashtagsInput.checked;
-				const questTypeId = ethers.BigNumber.from(questTypeIdInput.value);
+    async function initializeQuest(userQuestTypeEventId) {
+        console.log(`initializeQuest called with params: userQuestTypeEventId=${userQuestTypeEventId}`);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const expirationTime = ethers.BigNumber.from(currentTimestamp + 86400); // 24 hours from now
+        const minSubmissions = ethers.BigNumber.from(parseInt(minSubmissionsInput.value, 10));
+        const requiredHashtags = requiredHashtagsInput.value.split(", ");
+        const requireHashtags = requireHashtagsInput.checked;
+        const questTypeId = ethers.BigNumber.from(questTypeIdInput.value);
 
-				console.log("Initializing quest with params:", {
-						userQuestTypeEventId,
-						questTypeId,
-						expirationTime,
-						minSubmissions,
-						requiredHashtags,
-						requireHashtags
-				});
+        console.log("Initializing quest with params:", {
+            userQuestTypeEventId,
+            questTypeId,
+            expirationTime,
+            minSubmissions,
+            requiredHashtags,
+            requireHashtags
+        });
 
-				try {
-						// Verify the function signature before calling the contract
-						verifyFunctionSignature(contentCreatorQuestContract, "initializeContentCreatorQuest", [
-								ethers.BigNumber.from(userQuestTypeEventId),
-								questTypeId,
-								expirationTime,
-								minSubmissions,
-								requiredHashtags,
-								requireHashtags
-						]);
+        try {
+            verifyFunctionSignature(contentCreatorQuestContract, "initializeContentCreatorQuest", [
+                ethers.BigNumber.from(userQuestTypeEventId),
+                questTypeId,
+                expirationTime,
+                minSubmissions,
+                requiredHashtags,
+                requireHashtags
+            ]);
 
-						// Call the contract function with correct number of parameters
-						const tx = await contentCreatorQuestContract.initializeContentCreatorQuest(
-								ethers.BigNumber.from(userQuestTypeEventId),
-								questTypeId,
-								expirationTime,
-								minSubmissions,
-								requiredHashtags,
-								requireHashtags,
-								{ gasLimit: 1000000 } // Increased gas limit
-						);
+            const tx = await contentCreatorQuestContract.initializeContentCreatorQuest(
+                ethers.BigNumber.from(userQuestTypeEventId),
+                questTypeId,
+                expirationTime,
+                minSubmissions,
+                requiredHashtags,
+                requireHashtags,
+                { gasLimit: 1000000 } // Increased gas limit
+            );
 
-						console.log(`Quest initialization transaction hash: ${tx.hash}`);
-						const receipt = await tx.wait();
+            console.log(`Quest initialization transaction hash: ${tx.hash}`);
+            const receipt = await tx.wait();
 
-						const parsedLogs = await parseLogs(receipt.logs, contentCreatorQuestContract);
-						console.log("Parsed logs:", parsedLogs);
+            const parsedLogs = await parseLogs(receipt.logs, contentCreatorQuestContract);
+            console.log("Parsed logs:", parsedLogs);
 
-						console.log("Quest initialized:", userQuestTypeEventId);
-						output.innerText = `Quest initialized with ID: ${userQuestTypeEventId}`;
+            console.log("Quest initialized:", userQuestTypeEventId);
+            output.innerText = `Quest initialized with ID: ${userQuestTypeEventId}`;
 
-						const questStatus = await contentCreatorQuestContract.quests(userQuestTypeEventId);
-						console.log("Quest status after initialization:", questStatus);
-				} catch (error) {
-						console.error("Error initializing quest:", error);
+            const questStatus = await contentCreatorQuestContract.quests(userQuestTypeEventId);
+            console.log("Quest status after initialization:", questStatus);
 
-						// Decode the revert reason
-						if (error.transactionHash) {
-								try {
-										const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
-										console.error("Decoded Revert Reason:", decodedRevertReason);
-										output.innerText = `Error: ${decodedRevertReason}`;
-								} catch (decodeError) {
-										console.error("Error decoding revert reason:", decodeError);
-										output.innerText = `Error: ${decodeError.message}`;
-								}
-						} else {
-								handleError(error);
-						}
-				}
-		}
+            // Update quest status indicator
+            updateQuestStatusIndicator();
+        } catch (error) {
+            console.error("Error initializing quest:", error);
+
+            if (error.transactionHash) {
+                try {
+                    const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
+                    console.error("Decoded Revert Reason:", decodedRevertReason);
+                    output.innerText = `Error: ${decodedRevertReason}`;
+                } catch (decodeError) {
+                    console.error("Error decoding revert reason:", decodeError);
+                    output.innerText = `Error: ${decodeError.message}`;
+                }
+            } else {
+                handleError(error);
+            }
+        }
+    }
 
     const submitContent = async (userQuestTypeEventId) => {
         console.log(`submitContent called with params: userQuestTypeEventId=${userQuestTypeEventId}`);
@@ -291,81 +292,82 @@ document.addEventListener('DOMContentLoaded', async function () {
         return null;
     };
 
-      const createUserQuestTypeEvent = async (questTypeEventId) => {
-      console.log(`createUserQuestTypeEvent called with params: questTypeEventId=${questTypeEventId}`);
-      await connectWalletByProvider();
-      const userContract = await initializeContract(provider, 'Users.json', usersContractAddress);
-      const userQuestTypeEventsContract = await initializeContract(provider, 'UserQuestTypeEvents.json', userQuestTypeEventsContractAddress);
-      const userId = await userContract.getUserIdByWallet(await signer.getAddress());
-      const interactions = ethers.BigNumber.from(2);
-      const validated = false;
-      const url = 'example.com';
-      const completed = false;
+    const createUserQuestTypeEvent = async (questTypeEventId) => {
+        console.log(`createUserQuestTypeEvent called with params: questTypeEventId=${questTypeEventId}`);
+        await connectWalletByProvider();
+        const userContract = await initializeContract(provider, 'Users.json', usersContractAddress);
+        const userQuestTypeEventsContract = await initializeContract(provider, 'UserQuestTypeEvents.json', userQuestTypeEventsContractAddress);
+        const userId = await userContract.getUserIdByWallet(await signer.getAddress());
+        const interactions = ethers.BigNumber.from(2);
+        const validated = false;
+        const url = 'example.com';
+        const completed = false;
 
-      const params = {
-          questTypeEventId: ethers.BigNumber.from(questTypeEventId),
-          userId: ethers.BigNumber.from(userId),
-          interactions,
-          validated,
-          url,
-          completed
-      };
+        const params = {
+            questTypeEventId: ethers.BigNumber.from(questTypeEventId),
+            userId: ethers.BigNumber.from(userId),
+            interactions,
+            validated,
+            url,
+            completed
+        };
 
-      console.log("Creating User Quest Type Event with params:", params);
+        console.log("Creating User Quest Type Event with params:", params);
 
-      try {
-          verifyFunctionSignature(userQuestTypeEventsContract, "createUserQuestTypeEvent", [
-              params.questTypeEventId,
-              params.userId,
-              params.interactions,
-              params.validated,
-              params.url,
-              params.completed
-          ]);
+        try {
+            verifyFunctionSignature(userQuestTypeEventsContract, "createUserQuestTypeEvent", [
+                params.questTypeEventId,
+                params.userId,
+                params.interactions,
+                params.validated,
+                params.url,
+                params.completed
+            ]);
 
-          const txResponse = await userQuestTypeEventsContract.createUserQuestTypeEvent(
-              params.questTypeEventId,
-              params.userId,
-              params.interactions,
-              params.validated,
-              params.url,
-              params.completed,
-              { gasLimit: 1000000 } // Increased gas limit
-          );
-          console.log(`User Quest Type Event creation transaction hash: ${txResponse.hash}`);
-          const receipt = await txResponse.wait();
+            const txResponse = await userQuestTypeEventsContract.createUserQuestTypeEvent(
+                params.questTypeEventId,
+                params.userId,
+                params.interactions,
+                params.validated,
+                params.url,
+                params.completed,
+                { gasLimit: 1000000 } // Increased gas limit
+            );
+            console.log(`User Quest Type Event creation transaction hash: ${txResponse.hash}`);
+            const receipt = await txResponse.wait();
 
-          const parsedLogs = await parseLogs(receipt.logs, userQuestTypeEventsContract);
-          console.log("Parsed logs:", parsedLogs);
+            const parsedLogs = await parseLogs(receipt.logs, userQuestTypeEventsContract);
+            console.log("Parsed logs:", parsedLogs);
 
-          const event = parsedLogs.find(event => event.name === 'UserQuestTypeEventCreated');
-          if (event) {
-              const userQuestTypeEventId = event.args.userQuestTypeEventId.toString();
-              document.getElementById('user-quest-type-event-id').value = userQuestTypeEventId;
-              return userQuestTypeEventId;
-          } else {
-              console.error("UserQuestTypeEventCreated event not found in receipt logs:", receipt.logs);
-              output.innerText = "Error: UserQuestTypeEventCreated event not found";
-          }
-      } catch (error) {
-          console.error("Error creating user quest type event:", error);
-          try {
-              const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
-              console.error("Decoded Revert Reason:", decodedRevertReason);
-              output.innerText = `Error: ${decodedRevertReason}`;
-          } catch (decodeError) {
-              console.error("Error decoding revert reason:", decodeError);
-              if (decodeError.data && decodeError.data.message) {
-                  output.innerText = `Error: ${decodeError.data.message}`;
-              } else {
-                  output.innerText = `Error: ${decodeError.message}`;
-              }
-          }
-          handleError(error);
-      }
-  };
+            const event = parsedLogs.find(event => event.name === 'UserQuestTypeEventCreated');
+            if (event) {
+                const userQuestTypeEventId = event.args.userQuestTypeEventId.toString();
+                document.getElementById('user-quest-type-event-id').value = userQuestTypeEventId;
+                updateQuestStatusIndicator(); // Update the quest status indicator
+                return userQuestTypeEventId;
+            } else {
+                console.error("UserQuestTypeEventCreated event not found in receipt logs:", receipt.logs);
+                output.innerText = "Error: UserQuestTypeEventCreated event not found";
+            }
+        } catch (error) {
+            console.error("Error creating user quest type event:", error);
+            try {
+                const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
+                console.error("Decoded Revert Reason:", decodedRevertReason);
+                output.innerText = `Error: ${decodedRevertReason}`;
+            } catch (decodeError) {
+                console.error("Error decoding revert reason:", decodeError);
+                if (decodeError.data && decodeError.data.message) {
+                    output.innerText = `Error: ${decodeError.data.message}`;
+                } else {
+                    output.innerText = `Error: ${decodeError.message}`;
+                }
+            }
+            handleError(error);
+        }
+    };
 
-  const populateQuestEventList = async (questTypeEvents) => {
+    const populateQuestEventList = async (questTypeEvents) => {
         console.log("populateQuestEventList called with params:", questTypeEvents);
         const questTypeEventList = document.getElementById('quest-type-event-list');
         questTypeEventList.innerHTML = '';
@@ -401,6 +403,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('reward-amount').value = questTypeEvent.reward;
         document.getElementById('url-hash-tags').value = questTypeEvent.urlHashTags;
         document.getElementById('user-quest-type-event-id').value = userQuestTypeEventId || '';
+        
+        updateQuestStatusIndicator(); // Update the quest status indicator
 
         const questTypeEventItems = document.querySelectorAll('#quest-type-event-list li');
         questTypeEventItems.forEach(item => item.classList.remove('selected'));
@@ -418,6 +422,15 @@ document.addEventListener('DOMContentLoaded', async function () {
         const isCompleted = parsedQuestData.isCompleted;
 
         document.getElementById('quest-status').innerText = `Active: ${isActive}, Completed: ${isCompleted}`;
+    };
+
+    const updateQuestStatusIndicator = () => {
+        const userQuestTypeEventId = document.getElementById('user-quest-type-event-id').value;
+        if (userQuestTypeEventId) {
+            questStatusIndicator.textContent = "Quest initialized";
+        } else {
+            questStatusIndicator.textContent = "Quest not initialized";
+        }
     };
 
     fetchQuestTypeEvents();
@@ -486,5 +499,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             handleError(error);
         }
     });
+
+    // Update the quest status indicator when the user quest event ID field changes
+    document.getElementById('user-quest-type-event-id').addEventListener('input', updateQuestStatusIndicator);
 });
 

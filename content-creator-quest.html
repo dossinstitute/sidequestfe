@@ -55,11 +55,15 @@
             <section id="detail-section">
                 <h2>Content Creator Quest Details</h2>
                 <form id="quest-type-event-form">
+                    <span id="quest-status-indicator">Quest not initialized</span>
+
                     <label for="quest-type-event-id">Quest Event ID:</label>
                     <input type="text" id="quest-type-event-id" name="quest-type-event-id" required>
 
-                    <label for="user-quest-type-event-id">User Quest Event ID:</label>
-                    <input type="text" id="user-quest-type-event-id" name="user-quest-type-event-id">
+                    <div id="user-quest-type-event-container" style="display: none;">
+                        <label for="user-quest-type-event-id">User Quest Event ID:</label>
+                        <input type="text" id="user-quest-type-event-id" name="user-quest-type-event-id" readonly>
+                    </div>
 
                     <label for="event-id">Event:</label>
                     <select id="event-id" name="event-id" required></select>

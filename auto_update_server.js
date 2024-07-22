@@ -1,7 +1,10 @@
 const { exec } = require('child_process');
 const cron = require('node-cron');
 const path = require('path');
-const port = 3001;
+
+// Default port
+const defaultPort = 3001;
+const port = process.argv[2] ? parseInt(process.argv[2]) : defaultPort;
 
 // Start http-server immediately
 console.log(`Starting http-server on port ${port}...`);
@@ -16,7 +19,7 @@ cron.schedule('*/5 * * * *', () => {
 function updateAndServe() {
     // Navigate to current directory
     const projectPath = path.resolve(__dirname);
-    
+
     // Pull from Git
     exec(`cd ${projectPath} && git pull origin`, (err, stdout, stderr) => {
         if (err) {
@@ -24,7 +27,7 @@ function updateAndServe() {
             return;
         }
         console.log('Git pull successful:', stdout.trim());
-        
+
         // Check if server is already running on specified port
         exec(`lsof -i :${port}`, (err, stdout, stderr) => {
             if (stdout.includes(`:${port}`)) {
@@ -36,7 +39,7 @@ function updateAndServe() {
                         return;
                     }
                     console.log(`Existing server process on port ${port} killed`);
-                    
+
                     // Start npx http-server
                     startHttpServer(projectPath);
                 });
@@ -47,6 +50,7 @@ function updateAndServe() {
         });
     });
 }
+
 function startHttpServer(projectPath) {
     exec(`npx http-server -p ${port} -a 0.0.0.0 ${projectPath} &`, (err, stdout, stderr) => {
         if (err) {

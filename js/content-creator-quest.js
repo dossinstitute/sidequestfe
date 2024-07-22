@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const questTypeEventsContractAddress = "0x92e0043d21C38dCd1C5B6e4dAfdbf2fd57FB70bF";
     const userQuestTypeEventsContractAddress = "0x9E2D8a12713042E541c2f342B83878c7A168a660";
     const eventsContractAddress = "0x164155E567ee016DEe8F2c26785003c578eA919E";
-    const questTypesContractAddress = "0x04D64d048aA6E7A50FE59a82b3b30E437cD6a98f";
+		const questTypesContractAddress = "0x2d39372e07C71C0F26ec00c7350AAba5Fe2d4141";
     const usersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
     const sponsorQuestRequirementsContractAddress = "0x71C953E5F22b290f813B4695BFc4a5100538Fb51"; // Replace with your contract address
 
@@ -188,7 +188,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const contentData = ethers.utils.defaultAbiCoder.encode(["string", "string[]"], [contentUrl, hashtags]);
         try {
-            const tx = await contentCreatorQuestContract.interact(userQuestTypeEventId, await signer.getAddress(), "submit", contentData, { gasLimit: 500000 });
+            verifyFunctionSignature(contentCreatorQuestContract, "interact", [
+                userQuestTypeEventId,
+                await signer.getAddress(),
+                "submit",
+                contentData
+            ]);
+
+            const tx = await contentCreatorQuestContract.interact(
+                userQuestTypeEventId,
+                await signer.getAddress(),
+                "submit",
+                contentData,
+                { gasLimit: 500000 }
+            );
             const receipt = await tx.wait();
 
             parseLogs(receipt.logs, contentCreatorQuestContract);
@@ -203,27 +216,45 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const checkSubmissions = async (userQuestTypeEventId) => {
         console.log(`checkSubmissions called with params: userQuestTypeEventId=${userQuestTypeEventId}`);
-        const submissions = await contentCreatorQuestContract.getContentSubmissions(userQuestTypeEventId);
-        console.log("Submissions:", submissions);
-        output.innerText = `Submissions: ${JSON.stringify(submissions)}`;
+        try {
+            verifyFunctionSignature(contentCreatorQuestContract, "getContentSubmissions", [userQuestTypeEventId]);
+            const submissions = await contentCreatorQuestContract.getContentSubmissions(userQuestTypeEventId);
+            console.log("Submissions:", submissions);
+            output.innerText = `Submissions: ${JSON.stringify(submissions)}`;
+        } catch (error) {
+            console.error("Error checking submissions:", error);
+            handleError(error);
+        }
     };
 
     const checkQuestActive = async (userQuestTypeEventId) => {
         console.log(`checkQuestActive called with params: userQuestTypeEventId=${userQuestTypeEventId}`);
-        const questStatus = await contentCreatorQuestContract.quests(userQuestTypeEventId);
-        const parsedQuestData = parseQuestData(questStatus);
-        const isActive = parsedQuestData.isActive;
-        console.log("Quest active status:", isActive);
-        output.innerText = `Quest active status: ${isActive}`;
+        try {
+            verifyFunctionSignature(contentCreatorQuestContract, "quests", [userQuestTypeEventId]);
+            const questStatus = await contentCreatorQuestContract.quests(userQuestTypeEventId);
+            const parsedQuestData = parseQuestData(questStatus);
+            const isActive = parsedQuestData.isActive;
+            console.log("Quest active status:", isActive);
+            output.innerText = `Quest active status: ${isActive}`;
+        } catch (error) {
+            console.error("Error checking quest active status:", error);
+            handleError(error);
+        }
     };
 
     const checkQuestCompleted = async (userQuestTypeEventId) => {
         console.log(`checkQuestCompleted called with params: userQuestTypeEventId=${userQuestTypeEventId}`);
-        const questStatus = await contentCreatorQuestContract.quests(userQuestTypeEventId);
-        const parsedQuestData = parseQuestData(questStatus);
-        const isCompleted = parsedQuestData.isCompleted;
-        console.log("Quest completed status:", isCompleted);
-        output.innerText = `Quest completed status: ${isCompleted}`;
+        try {
+            verifyFunctionSignature(contentCreatorQuestContract, "quests", [userQuestTypeEventId]);
+            const questStatus = await contentCreatorQuestContract.quests(userQuestTypeEventId);
+            const parsedQuestData = parseQuestData(questStatus);
+            const isCompleted = parsedQuestData.isCompleted;
+            console.log("Quest completed status:", isCompleted);
+            output.innerText = `Quest completed status: ${isCompleted}`;
+        } catch (error) {
+            console.error("Error checking quest completed status:", error);
+            handleError(error);
+        }
     };
 
     const fetchQuestTypeEvents = async () => {
@@ -377,6 +408,36 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     };
 
+    const getEventName = async (eventId) => {
+        console.log(`getEventName called with params: eventId=${eventId}`);
+        try {
+            const eventsContract = await initializeContract(provider, 'Events.json', eventsContractAddress);
+            verifyFunctionSignature(eventsContract, "readEvent", [eventId]);
+            const event = await eventsContract.readEvent(eventId);
+            console.log(`Event name for event ID ${eventId}: ${event.name}`);
+            return event.name;
+        } catch (error) {
+            console.error(`Error fetching event name for event ID ${eventId}:`, error);
+            handleError(error);
+            return `Event ID ${eventId}`;
+        }
+    };
+
+    const getQuestTypeName = async (questTypeId) => {
+        console.log(`getQuestTypeName called with params: questTypeId=${questTypeId}`);
+        try {
+            const questTypesContract = await initializeContract(provider, 'QuestTypes.json', questTypesContractAddress);
+            verifyFunctionSignature(questTypesContract, "readQuestType", [questTypeId]);
+            const questType = await questTypesContract.readQuestType(questTypeId);
+            console.log(`Quest type name for quest type ID ${questTypeId}: ${questType.name}`);
+            return questType.name;
+        } catch (error) {
+            console.error(`Error fetching quest type name for quest type ID ${questTypeId}:`, error);
+            handleError(error);
+            return `Quest Type ID ${questTypeId}`;
+        }
+    };
+
     const populateQuestEventList = async (questTypeEvents) => {
         console.log("populateQuestEventList called with params:", questTypeEvents);
         const questTypeEventList = document.getElementById('quest-type-event-list');
@@ -384,13 +445,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         for (const questTypeEvent of questTypeEvents) {
             const userQuestTypeEventId = await getUserQuestTypeEventId(questTypeEvent.questTypeEventId);
+            const eventName = await getEventName(questTypeEvent.eventId);
+            const questTypeName = await getQuestTypeName(questTypeEvent.questTypeId);
             const listItem = document.createElement('li');
             listItem.className = 'quest-type-event-item';
             listItem.innerHTML = `
-                <div class="quest-type-event-id">Quest Event ID: <span>${questTypeEvent.questTypeEventId}</span></div>
-                <div class="user-quest-type-event-id">User Quest Type Event ID: <span>${userQuestTypeEventId || ''}</span></div>
-                <div class="event-id">Event ID: <span>${questTypeEvent.eventId}</span></div>
-                <div class="quest-id">Quest Type ID: <span>${questTypeEvent.questTypeId}</span></div>
+                <div class="quest-type-event-id" style="display: none;">Quest Event ID: <span>${questTypeEvent.questTypeEventId}</span></div>
+                <div class="user-quest-type-event-id" style="font-weight: bold; color: ${userQuestTypeEventId ? 'green' : 'black'};">${userQuestTypeEventId ? 'Quest initialized' : 'Quest not initialized'}</div>
+                <div class="event-id" style="display: none;">Event ID: <span>${questTypeEvent.eventId}</span></div>
+                <div class="event-name">Event Name: <span>${eventName}</span></div>
+                <div class="quest-id" style="display: none;">Quest Type ID: <span>${questTypeEvent.questTypeId}</span></div>
+                <div class="quest-name">Quest Type Name: <span>${questTypeName}</span></div>
             `;
             listItem.addEventListener('click', () => handleQuestEventSelection(questTypeEvent, listItem, userQuestTypeEventId));
             questTypeEventList.appendChild(listItem);
@@ -441,12 +506,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         const userQuestTypeEventId = document.getElementById('user-quest-type-event-id').value;
         if (userQuestTypeEventId) {
             questStatusIndicator.textContent = "Quest initialized";
-            questStatusIndicator.classList.remove('quest-status-not-initialized');
-            questStatusIndicator.classList.add('quest-status-initialized');
+            questStatusIndicator.style.fontWeight = "bold";
+            questStatusIndicator.style.color = "green";
         } else {
             questStatusIndicator.textContent = "Quest not initialized";
-            questStatusIndicator.classList.remove('quest-status-initialized');
-            questStatusIndicator.classList.add('quest-status-not-initialized');
+            questStatusIndicator.style.fontWeight = "normal";
+            questStatusIndicator.style.color = "black";
         }
     };
 
@@ -458,7 +523,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log("Sponsor quest requirements:", sponsorQuestRequirements);
 
             for (const requirement of sponsorQuestRequirements) {
-                if (requirement.questTypeEventId.eq(questTypeEventId)) {
+                console.log("requirement.questTypeEventId:", requirement.questTypeEventId);
+                console.log("questTypeEventId:", questTypeEventId);
+                if (ethers.BigNumber.from(requirement.questTypeEventId).eq(ethers.BigNumber.from(questTypeEventId))) {
                     requiredHashtagsInput.value = requirement.sponsorHashtags;
                     requireHashtagsInput.checked = requirement.sponsorHashtagsRequired;
                     break;
@@ -466,6 +533,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         } catch (error) {
             console.error("Error fetching sponsor quest requirements:", error);
+            handleError(error);
         }
     };
 

@@ -7,11 +7,16 @@
     <link media="all" rel="stylesheet" href="ss/style.css" />
     <style>
         .quest-status-initialized {
-            font-weight: bold;
             color: green;
+            font-weight: bold;
         }
+
         .quest-status-not-initialized {
             color: black;
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -66,10 +71,10 @@
                 <form id="quest-type-event-form">
                     <span id="quest-status-indicator" class="quest-status-not-initialized">Quest not initialized</span>
 
-                    <label for="quest-type-event-id">Quest Event ID:</label>
-                    <input type="text" id="quest-type-event-id" name="quest-type-event-id" required>
+                    <label for="quest-type-event-id" class="hidden">Quest Event ID:</label>
+                    <input type="text" id="quest-type-event-id" name="quest-type-event-id" required class="hidden">
 
-                    <div id="user-quest-type-event-container" style="display: none;">
+                    <div id="user-quest-type-event-container" class="hidden">
                         <label for="user-quest-type-event-id">User Quest Event ID:</label>
                         <input type="text" id="user-quest-type-event-id" name="user-quest-type-event-id" readonly>
                     </div>
@@ -92,26 +97,26 @@
                     <label for="reward-amount">Reward Amount:</label>
                     <input type="number" id="reward-amount" name="reward-amount" required readonly>
 
-                    <div id="url-hash-tags-container" style="display: none;">
+                    <div id="url-hash-tags-container" class="hidden">
                       <label for="url-hash-tags">URL Hash Tags:</label>
                       <input type="text" id="url-hash-tags" name="url-hash-tags" required>
                     </div>
 
-                    <div id="expiration-time-container" style="display: none;">
+                    <div id="expiration-time-container" class="hidden">
                       <label for="expiration-time">Expiration Time:</label>
                       <input type="text" id="expiration-time" name="expiration-time" required>
                     </div>
 
-                    <div id="min-submissions-container" style="display: none;">
+                    <div id="min-submissions-container" class="hidden">
                     <label for="min-submissions">Minimum Submissions:</label>
                     <input type="text" id="min-submissions" name="min-submissions" required readonly>
                     </div>
 
                     <label for="required-hashtags">Required Hashtags:</label>
-                    <input type="text" id="required-hashtags" name="required-hashtags" required  readonly>
+                    <input type="text" id="required-hashtags" name="required-hashtags" required readonly>
 
                     <label for="require-hashtags">Require Hashtags:</label>
-                    <input type="checkbox" id="require-hashtags" name="require-hashtags"  readonly>
+                    <input type="checkbox" id="require-hashtags" name="require-hashtags" readonly>
 
                     <label for="content-url">Content URL:</label>
                     <input type="text" id="content-url" name="content-url" required>

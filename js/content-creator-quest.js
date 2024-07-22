@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    let signer, contentCreatorQuestContract, userQuestTypeEventsContract;
+    let signer, contentCreatorQuestContract, userQuestTypeEventsContract, sponsorQuestRequirementsContract;
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const questTypeIdInput = document.getElementById('quest-type-id');
     const expirationTimeInput = document.getElementById('expiration-time');
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const eventsContractAddress = "0x164155E567ee016DEe8F2c26785003c578eA919E";
     const questTypesContractAddress = "0x04D64d048aA6E7A50FE59a82b3b30E437cD6a98f";
     const usersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
+    const sponsorQuestRequirementsContractAddress = "0x71C953E5F22b290f813B4695BFc4a5100538Fb51"; // Replace with your contract address
 
     async function connectWalletByProvider() {
         console.log("connectWalletByProvider called");
@@ -45,8 +46,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         signer = provider.getSigner();
         const contentCreatorQuestABI = await fetchContentCreatorQuestABI();
         const userQuestTypeEventsABI = await fetchUserQuestTypeEventsABI();
+        const sponsorQuestRequirementsABI = await fetchSponsorQuestRequirementsABI();
         contentCreatorQuestContract = new ethers.Contract(contentCreatorQuestAddress, contentCreatorQuestABI, signer);
         userQuestTypeEventsContract = new ethers.Contract(userQuestTypeEventsContractAddress, userQuestTypeEventsABI, signer);
+        sponsorQuestRequirementsContract = new ethers.Contract(sponsorQuestRequirementsContractAddress, sponsorQuestRequirementsABI, signer);
         console.log("Connected to wallet");
     }
 
@@ -92,11 +95,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         return data.abi;
     }
 
+    async function fetchSponsorQuestRequirementsABI() {
+        console.log("fetchSponsorQuestRequirementsABI called");
+        let response = await fetch('SponsorQuestRequirements.json');
+        const data = await response.json();
+        return data.abi;
+    }
+
     async function initializeQuest(userQuestTypeEventId) {
         console.log(`initializeQuest called with params: userQuestTypeEventId=${userQuestTypeEventId}`);
         const currentTimestamp = Math.floor(Date.now() / 1000);
         const expirationTime = ethers.BigNumber.from(currentTimestamp + 86400); // 24 hours from now
-        const minSubmissions = ethers.BigNumber.from(parseInt(minSubmissionsInput.value, 10));
+        const minSubmissions = ethers.BigNumber.from(parseInt(minimumInteractionsInput.value, 10));
         const requiredHashtags = requiredHashtagsInput.value.split(", ");
         const requireHashtags = requireHashtagsInput.checked;
         const questTypeId = ethers.BigNumber.from(questTypeIdInput.value);
@@ -403,7 +413,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('reward-amount').value = questTypeEvent.reward;
         document.getElementById('url-hash-tags').value = questTypeEvent.urlHashTags;
         document.getElementById('user-quest-type-event-id').value = userQuestTypeEventId || '';
-        
+
         updateQuestStatusIndicator(); // Update the quest status indicator
 
         const questTypeEventItems = document.querySelectorAll('#quest-type-event-list li');
@@ -411,6 +421,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         listItem.classList.add('selected');
 
         updateQuestStatus(questTypeEvent.questTypeEventId);
+
+        // Fetch and populate sponsor quest requirements
+        await fetchAndPopulateSponsorQuestRequirements(questTypeEvent.questTypeEventId);
     };
 
     const updateQuestStatus = async (userQuestTypeEventId) => {
@@ -428,8 +441,31 @@ document.addEventListener('DOMContentLoaded', async function () {
         const userQuestTypeEventId = document.getElementById('user-quest-type-event-id').value;
         if (userQuestTypeEventId) {
             questStatusIndicator.textContent = "Quest initialized";
+            questStatusIndicator.classList.remove('quest-status-not-initialized');
+            questStatusIndicator.classList.add('quest-status-initialized');
         } else {
             questStatusIndicator.textContent = "Quest not initialized";
+            questStatusIndicator.classList.remove('quest-status-initialized');
+            questStatusIndicator.classList.add('quest-status-not-initialized');
+        }
+    };
+
+    const fetchAndPopulateSponsorQuestRequirements = async (questTypeEventId) => {
+        console.log(`fetchAndPopulateSponsorQuestRequirements called with params: questTypeEventId=${questTypeEventId}`);
+        try {
+            verifyFunctionSignature(sponsorQuestRequirementsContract, "listSponsorQuestRequirements", []);
+            const sponsorQuestRequirements = await sponsorQuestRequirementsContract.listSponsorQuestRequirements();
+            console.log("Sponsor quest requirements:", sponsorQuestRequirements);
+
+            for (const requirement of sponsorQuestRequirements) {
+                if (requirement.questTypeEventId.eq(questTypeEventId)) {
+                    requiredHashtagsInput.value = requirement.sponsorHashtags;
+                    requireHashtagsInput.checked = requirement.sponsorHashtagsRequired;
+                    break;
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching sponsor quest requirements:", error);
         }
     };
 

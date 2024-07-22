@@ -5,6 +5,15 @@
     <title>Content Creator Quest</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link media="all" rel="stylesheet" href="ss/style.css" />
+    <style>
+        .quest-status-initialized {
+            font-weight: bold;
+            color: green;
+        }
+        .quest-status-not-initialized {
+            color: black;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -55,7 +64,7 @@
             <section id="detail-section">
                 <h2>Content Creator Quest Details</h2>
                 <form id="quest-type-event-form">
-                    <span id="quest-status-indicator">Quest not initialized</span>
+                    <span id="quest-status-indicator" class="quest-status-not-initialized">Quest not initialized</span>
 
                     <label for="quest-type-event-id">Quest Event ID:</label>
                     <input type="text" id="quest-type-event-id" name="quest-type-event-id" required>
@@ -66,37 +75,43 @@
                     </div>
 
                     <label for="event-id">Event:</label>
-                    <select id="event-id" name="event-id" required></select>
+                    <select id="event-id" name="event-id" required disabled></select>
 
                     <label for="quest-type-id">Quest Type:</label>
-                    <select id="quest-type-id" name="quest-type-id" required></select>
+                    <select id="quest-type-id" name="quest-type-id" required disabled></select>
 
                     <label for="minimum-interactions">Minimum Interactions:</label>
-                    <input type="number" id="minimum-interactions" name="minimum-interactions" required>
+                    <input type="number" id="minimum-interactions" name="minimum-interactions" required readonly>
 
                     <label for="start-date">Start Date:</label>
-                    <input type="date" id="start-date" name="start-date" required>
+                    <input type="date" id="start-date" name="start-date" required readonly>
 
                     <label for="end-date">End Date:</label>
-                    <input type="date" id="end-date" name="end-date" required>
+                    <input type="date" id="end-date" name="end-date" required readonly>
 
                     <label for="reward-amount">Reward Amount:</label>
-                    <input type="number" id="reward-amount" name="reward-amount" required>
+                    <input type="number" id="reward-amount" name="reward-amount" required readonly>
 
-                    <label for="url-hash-tags">URL Hash Tags:</label>
-                    <input type="text" id="url-hash-tags" name="url-hash-tags" required>
+                    <div id="url-hash-tags-container" style="display: none;">
+                      <label for="url-hash-tags">URL Hash Tags:</label>
+                      <input type="text" id="url-hash-tags" name="url-hash-tags" required>
+                    </div>
 
-                    <label for="expiration-time">Expiration Time:</label>
-                    <input type="text" id="expiration-time" name="expiration-time" required>
+                    <div id="expiration-time-container" style="display: none;">
+                      <label for="expiration-time">Expiration Time:</label>
+                      <input type="text" id="expiration-time" name="expiration-time" required>
+                    </div>
 
+                    <div id="min-submissions-container" style="display: none;">
                     <label for="min-submissions">Minimum Submissions:</label>
-                    <input type="text" id="min-submissions" name="min-submissions" required>
+                    <input type="text" id="min-submissions" name="min-submissions" required readonly>
+                    </div>
 
                     <label for="required-hashtags">Required Hashtags:</label>
-                    <input type="text" id="required-hashtags" name="required-hashtags" required>
+                    <input type="text" id="required-hashtags" name="required-hashtags" required  readonly>
 
                     <label for="require-hashtags">Require Hashtags:</label>
-                    <input type="checkbox" id="require-hashtags" name="require-hashtags">
+                    <input type="checkbox" id="require-hashtags" name="require-hashtags"  readonly>
 
                     <label for="content-url">Content URL:</label>
                     <input type="text" id="content-url" name="content-url" required>

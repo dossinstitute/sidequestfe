@@ -1,21 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOMContentLoaded event fired");
 
-    (function() {
-        console.log("IIFE for hamburger menu initialized");
-        'use strict';
-        $('.hamburger-menu').click(function(e) {
-            console.log("Hamburger menu clicked");
-            e.preventDefault();
-            if ($(this).hasClass('active')) {
-                $(this).removeClass('active');
-                $('.menu .menu-list').slideToggle('slow', 'swing');
-            } else {
-                $(this).addClass('active');
-                $('.menu .menu-list').slideToggle('slow', 'swing');
-            }
-        });
-    })();
+    // Hamburger menu setup
+    document.querySelector('.hamburger-menu').addEventListener('click', function (e) {
+        e.preventDefault();
+        const menu = document.querySelector('.menu .menu-list');
+        if (this.classList.contains('active')) {
+            this.classList.remove('active');
+            menu.style.display = 'none';
+        } else {
+            this.classList.add('active');
+            menu.style.display = 'block';
+        }
+    });
 
     const questTypeContractAddress = "0x2d39372e07C71C0F26ec00c7350AAba5Fe2d4141";
     const questTypeEventsContractAddress = "0x92e0043d21C38dCd1C5B6e4dAfdbf2fd57FB70bF";

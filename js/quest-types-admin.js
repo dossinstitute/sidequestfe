@@ -1,21 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-  (function() {
-    'use strict';
-    $('#menu-list').load('menu.html', function() {
-      // Hamburger menu setup
-      $('.hamburger-menu').click(function (e) {
-        e.preventDefault();
-        const menu = $('.menu .menu-list');
-        if ($(this).hasClass('active')) {
-          $(this).removeClass('active');
-          menu.slideToggle('slow', 'swing');
-        } else {
-          $(this).addClass('active');
-          menu.slideToggle('slow', 'swing');
-        }
-      });
-    });
-  })();
+   
+  // Hamburger menu setup
+   document.querySelector('.hamburger-menu').addEventListener('click', function (e) {
+    e.preventDefault();
+    const menu = document.querySelector('.menu .menu-list');
+    if (this.classList.contains('active')) {
+      this.classList.remove('active');
+      menu.style.display = 'none';
+    } else {
+      this.classList.add('active');
+      menu.style.display = 'block';
+    }
+  });
+
   const questTypesContractAddress = "0x2d39372e07C71C0F26ec00c7350AAba5Fe2d4141";
   const questTypesABIPath = 'QuestTypes.json'; // Path to your ABI file
 

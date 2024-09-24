@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Creator Quest Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
+    <script src="js/ethutils.js"></script>
+</head>
+<body>
+    <input type="text" id="quest-id" placeholder="Quest ID"/>
+    <input type="text" id="quest-type-id" placeholder="Quest Type ID"/>
+    <button id="initialize-quest">Initialize Quest</button>
+    <button id="submit-content">Submit Content</button>
+    <button id="check-submissions">Check Submissions</button>
+    <button id="check-quest-active">Check Quest Active</button>
+    <button id="check-quest-completed">Check Quest Completed</button>
+    <div id="output"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            let signer, contentCreatorQuestContract;
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const web3Provider = new Web3(window.ethereum);
+            const questIdInput = document.getElementById('quest-id');
+            const questTypeIdInput = document.getElementById('quest-type-id');
+            const output = document.getElementById('output');
+						const contentCreatorQuestAddress = "0x91cBc191c5729CBF08E0ed95889eF5a517D777aE";
+
+            async function fetchContentCreatorQuestABI() {
+                let response = await fetch('ContentCreatorQuest.json');
+                const data = await response.json();
+                return data.abi;
+            }
+
+            async function connectWalletByProvider() {
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                const contentCreatorQuestABI = await fetchContentCreatorQuestABI();
+                contentCreatorQuestContract = new ethers.Contract(contentCreatorQuestAddress, contentCreatorQuestABI, signer);
+                console.log("Connected to wallet");
+            }
+
+            document.getElementById('initialize-quest').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                const questTypeId = questTypeIdInput.value;
+                try {
+                    await initializeQuest(questId, questTypeId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('submit-content').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await submitContent(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('check-submissions').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await checkSubmissions(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('check-quest-active').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await checkQuestActive(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            document.getElementById('check-quest-completed').addEventListener('click', async () => {
+                await connectWalletByProvider();
+                const questId = questIdInput.value;
+                try {
+                    await checkQuestCompleted(questId);
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            async function initializeQuest(questId, questTypeId) {
+                const currentTimestamp = Math.floor(Date.now() / 1000);
+                const expirationTime = ethers.BigNumber.from(currentTimestamp + 86400); // 1 day in the future
+                const minSubmissions = ethers.BigNumber.from(2);
+                const requiredHashtags = ["#test"];
+                const requireHashtags = true;
+
+                const params = {
+                    questId: ethers.BigNumber.from(questId),
+                    questTypeId: ethers.BigNumber.from(questTypeId),
+                    expirationTime,
+                    minSubmissions,
+                    requiredHashtags,
+                    requireHashtags
+                };
+
+                console.log("Initializing quest with params:", params);
+
+                try {
+                    verifyFunctionSignature(contentCreatorQuestContract, "initializeContentCreatorQuest", [
+                        params.questId,
+                        params.questTypeId,
+                        params.expirationTime,
+                        params.minSubmissions,
+                        params.requiredHashtags,
+                        params.requireHashtags
+                    ]);
+
+                    const tx = await contentCreatorQuestContract.initializeContentCreatorQuest(
+                        params.questId,
+                        params.questTypeId,
+                        params.expirationTime,
+                        params.minSubmissions,
+                        params.requiredHashtags,
+                        params.requireHashtags,
+                        {
+                            gasLimit: 1000000 // Ensure sufficient gas
+                        }
+                    );
+                    const receipt = await tx.wait();
+
+                    const parsedLogs = await parseLogs(receipt.logs, contentCreatorQuestContract);
+                    console.log("Parsed logs:", parsedLogs);
+
+                    console.log("Quest initialized:", questId);
+                    output.innerText = `Quest initialized with ID: ${questId}`;
+
+                    const questStatus = await contentCreatorQuestContract.quests(params.questId);
+                    console.log("Quest status after initialization:", questStatus);
+                } catch (error) {
+                    if (error.transactionHash) {
+                        try {
+                            const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
+                            console.error("Decoded Revert Reason:", decodedRevertReason);
+                            output.innerText = `Error: ${decodedRevertReason}`;
+                        } catch (decodeError) {
+                            console.error("Error decoding revert reason:", decodeError);
+                            output.innerText = `Error: ${decodeError.message}`;
+                        }
+                    }
+                    handleError(error);
+                }
+            }
+
+            async function submitContent(questId) {
+                const contentUrl = "http://example.com";
+                const hashtags = ["#test"];
+
+                const questStatus = await contentCreatorQuestContract.quests(ethers.BigNumber.from(questId));
+                console.log("Quest status before submission:", questStatus);
+                const parsedQuestData = parseQuestData(questStatus);
+                console.log("Parsed Quest Data: ", parsedQuestData);
+
+                if (!parsedQuestData.isActive || parsedQuestData.isCompleted) {
+                    throw new Error("Quest is either inactive or already completed.");
+                }
+
+                const contentData = web3Provider.eth.abi.encodeParameters(["string", "string[]"], [contentUrl, hashtags]);
+
+                try {
+                    verifyFunctionSignature(contentCreatorQuestContract, "interact", [
+                        ethers.BigNumber.from(questId),
+                        await signer.getAddress(),
+                        "submit",
+                        contentData
+                    ]);
+
+                    const tx = await contentCreatorQuestContract.interact(
+                        ethers.BigNumber.from(questId),
+                        await signer.getAddress(),
+                        "submit",
+                        contentData,
+                        {
+                            gasLimit: 500000 // Ensure sufficient gas
+                        }
+                    );
+                    const receipt = await tx.wait();
+
+                    const parsedLogs = await parseLogs(receipt.logs, contentCreatorQuestContract);
+                    console.log("Parsed logs:", parsedLogs);
+
+                    console.log("Content submitted:", contentUrl);
+                    output.innerText = `Content submitted: ${contentUrl}`;
+                } catch (error) {
+                    if (error.transactionHash) {
+                        try {
+                            const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
+                            console.error("Decoded Revert Reason:", decodedRevertReason);
+                            output.innerText = `Error: ${decodedRevertReason}`;
+                        } catch (decodeError) {
+                            console.error("Error decoding revert reason:", decodeError);
+                            output.innerText = `Error: ${decodeError.message}`;
+                        }
+                    }
+                    handleError(error);
+                }
+            }
+
+            async function checkSubmissions(questId) {
+                try {
+                    const submissions = await contentCreatorQuestContract.getContentSubmissions(ethers.BigNumber.from(questId));
+                    console.log("Submissions:", submissions);
+                    output.innerText = `Submissions: ${JSON.stringify(submissions)}`;
+                } catch (error) {
+                    if (error.transactionHash) {
+                        try {
+                            const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
+                            console.error("Decoded Revert Reason:", decodedRevertReason);
+                            output.innerText = `Error: ${decodedRevertReason}`;
+                        } catch (decodeError) {
+                            console.error("Error decoding revert reason:", decodeError);
+                            output.innerText = `Error: ${decodeError.message}`;
+                        }
+                    }
+                    handleError(error);
+                }
+            }
+
+            async function checkQuestActive(questId) {
+                try {
+                    const questStatus = await contentCreatorQuestContract.quests(ethers.BigNumber.from(questId));
+                    const parsedQuestData = parseQuestData(questStatus);
+                    const isActive = parsedQuestData.isActive;
+                    console.log("Quest active status:", isActive);
+                    output.innerText = `Quest active status: ${isActive}`;
+                } catch (error) {
+                    if (error.transactionHash) {
+                        try {
+                            const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
+                            console.error("Decoded Revert Reason:", decodedRevertReason);
+                            output.innerText = `Error: ${decodedRevertReason}`;
+                        } catch (decodeError) {
+                            console.error("Error decoding revert reason:", decodeError);
+                            output.innerText = `Error: ${decodeError.message}`;
+                        }
+                    }
+                    handleError(error);
+                }
+            }
+
+            async function checkQuestCompleted(questId) {
+                try {
+                    const questStatus = await contentCreatorQuestContract.quests(ethers.BigNumber.from(questId));
+                    const parsedQuestData = parseQuestData(questStatus);
+                    const isCompleted = parsedQuestData.isCompleted;
+                    console.log("Quest completed status:", isCompleted);
+                    output.innerText = `Quest completed status: ${isCompleted}`;
+                } catch (error) {
+                    if (error.transactionHash) {
+                        try {
+                            const decodedRevertReason = await decodeRevertReason(error.transactionHash, provider);
+                            console.error("Decoded Revert Reason:", decodedRevertReason);
+                            output.innerText = `Error: ${decodedRevertReason}`;
+                        } catch (decodeError) {
+                            console.error("Error decoding revert reason:", decodeError);
+                            output.innerText = `Error: ${decodeError.message}`;
+                        }
+                    }
+                    handleError(error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

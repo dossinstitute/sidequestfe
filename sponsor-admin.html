@@ -1,91 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
     <meta charset="UTF-8">
     <title>Sponsor Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link media="all" rel="stylesheet" href="ss/style.css" />
-</head>
-
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <div class="logo-container">
-                <a href="index.html">
-                    <img src="images/logo.png" alt="logo" id="logo">
-                </a>
+      <header>
+        <div class="logo-container">
+          <a href="index.html">
+            <img src="images/logo.png" alt="logo" id="logo">
+          </a>
+        </div>
+        <div class="menu">
+          <div class="hamburger-menu-wrapper">
+            <button class="hamburger-menu">
+              <span>toggle menu</span>
+            </button>
+            <div class="menu-list">
+              <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="quest-interactions.html">Quest Interaction</a></li>
+                <li><a href="event.html" class="disabled-link">Event Definition and Setup</a></li>
+                <li><a href="users.html" class="disabled-link">User Registration and Participation</a></li>
+                <li><a href="verification.html" class="disabled-link" >Interaction Verification</a></li>
+                <li><a href="tracking.html" class="disabled-link">Interaction Tracking</a></li>
+                <li><a href="completion-check.html" class="disabled-link">Event Completion Check</a></li>
+                <li><a href="reward-distribution.html" class="disabled-link">Reward Distribution</a></li>
+                <li><a href="security.html" class="disabled-link">Security and Validations</a></li>
+                <li><a href="event-admin.html">Event Admin Functions</a></li>
+                <li><a href="quest-admin.html">Quest Definition and Setup</a></li>
+                <li><a href="user-admin.html">User Admin Functions</a></li>
+                <li><a href="quest-event-admin.html">Quest Event Management</a></li>
+                <li><a href="sponsor-admin.html">Sponsor Admin Management</a></li>
+                <li><a href="user-quest-event-admin.html">User Quest Event Management</a></li>
+                <li><a href="rewards-admin.html">Rewards Admin Management</a></li>
+                <li><a href="point-system.html" class="disabled-link">Point System and Leaderboard</a></li>
+                <li><a href="checkout-redeem.html" class="disabled-link">Checkout & Redeem</a></li>
+              </ul>
             </div>
-            <div class="menu">
-                <div class="hamburger-menu-wrapper">
-                    <button class="hamburger-menu">
-                        <span>toggle menu</span>
-                    </button>
-                    <div class="menu-list">
-                        <ul>
-                            <li><a href="dashboard.html">Dashboard</a></li>
-                            <li><a href="quest-interactions.html">Quest Interaction</a></li>
-                            <li><a href="event.html" class="disabled-link">Event Definition and Setup</a></li>
-                            <li><a href="users.html" class="disabled-link">User Registration and Participation</a></li>
-                            <li><a href="verification.html" class="disabled-link">Interaction Verification</a></li>
-                            <li><a href="tracking.html" class="disabled-link">Interaction Tracking</a></li>
-                            <li><a href="completion-check.html" class="disabled-link">Event Completion Check</a></li>
-                            <li><a href="reward-distribution.html" class="disabled-link">Reward Distribution</a></li>
-                            <li><a href="security.html" class="disabled-link">Security and Validations</a></li>
-                            <li><a href="event-admin.html">Event Admin Functions</a></li>
-                            <li><a href="quest-admin.html">Quest Definition and Setup</a></li>
-                            <li><a href="user-admin.html">User Admin Functions</a></li>
-                            <li><a href="quest-event-admin.html">Quest Event Management</a></li>
-                            <li><a href="sponsor-admin.html">Sponsor Admin Management</a></li>
-                            <li><a href="user-quest-event-admin.html">User Quest Event Management</a></li>
-                            <li><a href="point-system.html" class="disabled-link">Point System and Leaderboard</a></li>
-                            <li><a href="checkout-redeem.html" class="disabled-link">Checkout & Redeem</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="menu-list">
-                    <ul>
-                        <li><a href="dashboard.html">Dashboard</a></li>
-                        <li><a href="sponsor-admin.html">Sponsor Admin Functions</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>
-        <main>
-            <section id="master-section">
-                <h2>Sponsor List</h2>
-                <ul id="sponsor-list">
-                    <!-- Sponsors will be dynamically added here -->
-                </ul>
-            </section>
+          </div>
+          <div class="menu-list">
+            <ul>
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="sponsor-admin.html">Sponsor Admin Functions</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <main>
+        <section id="master-section">
+          <h2>Sponsor List</h2>
+          <ul id="sponsor-list">
+            <!-- Sponsors will be dynamically added here -->
+          </ul>
+        </section>
 
-            <section id="detail-section">
-                <h2>Sponsor Details</h2>
-                <form id="sponsor-form">
-                    <label for="sponsor-id">Sponsor ID:</label>
-                    <input type="text" id="sponsor-id" name="sponsor-id" required readonly>
+        <section id="detail-section">
+          <h2>Sponsor Details</h2>
+          <form id="sponsor-form">
+            <label for="sponsor-id">Sponsor ID:</label>
+            <input type="text" id="sponsor-id" name="sponsor-id" required readonly>
 
-                    <label for="company-name">Company Name:</label>
-                    <input type="text" id="company-name" name="company-name" required>
+            <label for="company-name">Company Name:</label>
+            <input type="text" id="company-name" name="company-name" required>
 
-                    <label for="wallet-address">Wallet Address:</label>
-                    <input type="text" id="wallet-address" name="wallet-address" required>
+            <label for="wallet-address">Wallet Address:</label>
+            <input type="text" id="wallet-address" name="wallet-address" required>
 
-                    <label for="reward-pool-id">Reward Pool ID:</label>
-                    <input type="text" id="reward-pool-id" name="reward-pool-id" required>
+            <label for="reward-pool-id">Reward Pool ID:</label>
+            <input type="text" id="reward-pool-id" name="reward-pool-id" required>
 
-                    <button type="button" id="new-sponsor">New Sponsor</button>
-                    <button type="button" id="create-sponsor">Create Sponsor</button>
-                    <button type="button" id="update-sponsor">Update Sponsor</button>
-                    <button type="button" id="delete-sponsor">Delete Sponsor</button>
-                </form>
-            </section>
-        </main>
-        <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="app.js?version=7"></script>
-        <script src="js/sponsor-admin.js?version=3"></script>
+            <button type="button" id="new-sponsor">New Sponsor</button>
+            <button type="button" id="create-sponsor">Create Sponsor</button>
+            <button type="button" id="update-sponsor">Update Sponsor</button>
+            <button type="button" id="delete-sponsor">Delete Sponsor</button>
+          </form>
+        </section>
+      </main>
+      <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="app.js?version=7"></script>
+      <script src="js/sponsor-admin.js?version=3"></script>
     </div>
-</body>
+  </body>
 
 </html>

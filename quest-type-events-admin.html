@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Quest Registration</title>
+    <title>Quest Type Events Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link media="all" rel="stylesheet" href="ss/style.css" />
   </head>
@@ -45,42 +45,54 @@
         </div>
       </header>
       <main>
-        <section id="quest-list-section">
-          <h2>Quest List</h2>
-          <ul id="quest-list">
-            <!-- Quests will be dynamically added here -->
+        <section id="master-section">
+          <h2>Quest Type Events List</h2>
+          <ul id="quest-type-events-list">
+            <!-- Quest Type Events will be dynamically added here -->
           </ul>
         </section>
 
-        <section id="quest-detail-section">
-          <h2>Quest Details</h2>
-          <form id="quest-form">
-            <label for="quest-id">Quest ID:</label>
-            <input type="text" id="quest-id" name="quest-id" readonly>
+        <section id="detail-section">
+          <h2>Quest Type Event Details</h2>
+          <form id="quest-type-event-form">
+            <label for="quest-type-event-id">Quest Type Event ID:</label>
+            <input type="text" id="quest-type-event-id" name="quest-type-event-id" required readonly>
 
             <label for="event-id">Event ID:</label>
-            <input type="text" id="event-id" name="event-id" readonly>
+            <select id="event-id" name="event-id" required></select>
 
-            <label for="start-date">Start Date:</label>
-            <input type="text" id="start-date" name="start-date" readonly>
+            <label for="quest-type-id">Quest Type ID:</label>
+            <select id="quest-type-id" name="quest-type-id" required></select>
 
-            <label for="end-date">End Date:</label>
-            <input type="text" id="end-date" name="end-date" readonly>
+            <label for="reward">Reward:</label>
+            <input type="number" id="reward" name="reward" required>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required>
 
             <label for="required-interactions">Required Interactions:</label>
-            <input type="text" id="required-interactions" name="required-interactions" readonly>
+            <input type="number" id="required-interactions" name="required-interactions" required>
 
-            <label for="reward-type">Reward Type:</label>
-            <input type="text" id="reward-type" name="reward-type" readonly>
+            <label for="quest-event-start-date">Start Date:</label>
+            <input type="date" id="quest-event-start-date" name="quest-event-start-date" required>
 
-            <button type="button" id="register-quest">Register for Quest</button>
+            <label for="quest-event-end-date">End Date:</label>
+            <input type="date" id="quest-event-end-date" name="quest-event-end-date" required>
+
+            <button type="button" id="new-quest-type-event">New Quest Type Event</button>
+            <button type="button" id="create-quest-type-event">Create Quest Type Event</button>
+            <button type="button" id="update-quest-type-event">Update Quest Type Event</button>
+            <button type="button" id="delete-quest-type-event">Delete Quest Type Event</button>
           </form>
         </section>
       </main>
       <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="app.js?version=3"></script>
-      <script src="js/user.js?version=6"></script>
+      <script src="js/ethutils.js"></script>
+      <script src="js/quest-type-events-admin.js?version=20"></script>
     </div>
   </body>
 </html>

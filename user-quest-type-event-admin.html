@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User Quest Event Management</title>
+  <title>User Quest Type Event Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link media="all" rel="stylesheet" href="ss/style.css" />
 </head>
@@ -46,23 +46,23 @@
     </header>
     <main>
       <section id="master-section">
-        <h2>User Quest Event List</h2>
-        <ul id="user-quest-event-list">
-          <!-- User Quest Events will be dynamically added here -->
+        <h2>User Quest Type Event List</h2>
+        <ul id="user-quest-type-event-list">
+          <!-- User Quest Type Events will be dynamically added here -->
         </ul>
       </section>
 
       <section id="detail-section">
-        <h2>User Quest Event Details</h2>
-        <form id="user-quest-event-form">
-          <label for="user-quest-event-id">User Quest Event ID:</label>
-          <input type="text" id="user-quest-event-id" name="user-quest-event-id" required readonly>
+        <h2>User Quest Type Event Details</h2>
+        <form id="user-quest-type-event-form">
+          <label for="user-quest-type-event-id">User Quest Type Event ID:</label>
+          <input type="text" id="user-quest-type-event-id" name="user-quest-type-event-id" required readonly>
 
           <label for="user-id">User ID:</label>
           <input type="text" id="user-id" name="user-id" required>
 
-          <label for="quest-event-id">Event - Quest:</label>
-          <select id="quest-event-id" name="quest-event-id" required></select>
+          <label for="quest-type-event-id">Quest Type Event:</label>
+          <select id="quest-type-event-id" name="quest-type-event-id" required></select>
 
           <label for="interactions">Interactions:</label>
           <input type="number" id="interactions" name="interactions" required>
@@ -76,17 +76,17 @@
           <label for="completed">Completed:</label>
           <input type="checkbox" id="completed" name="completed">
 
-          <button type="button" id="new-user-quest-event">New User Quest Event</button>
-          <button type="button" id="create-user-quest-event">Create User Quest Event</button>
-          <button type="button" id="update-user-quest-event">Update User Quest Event</button>
-          <button type="button" id="delete-user-quest-event">Delete User Quest Event</button>
+          <button type="button" id="new-user-quest-type-event">New User Quest Type Event</button>
+          <button type="button" id="create-user-quest-type-event">Create User Quest Type Event</button>
+          <button type="button" id="update-user-quest-type-event">Update User Quest Type Event</button>
+          <button type="button" id="delete-user-quest-type-event">Delete User Quest Type Event</button>
         </form>
       </section>
     </main>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="app.js?version=26"></script>
-    <script src="js/user-quest-event-admin.js?version=40"></script>
+    <script src="js/ethutils.js"></script>
+    <script src="js/user-quest-type-event-admin.js"></script>
   </div>
 </body>
 </html>

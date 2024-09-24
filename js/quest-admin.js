@@ -1,18 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    (function() {
-        'use strict';
-        $('.hamburger-menu').click(function(e) {
-            e.preventDefault();
-            if ($(this).hasClass('active')) {
-                $(this).removeClass('active');
-                $('.menu .menu-list').slideToggle('slow', 'swing');
-            } else {
-                $(this).addClass('active');
-                $('.menu .menu-list').slideToggle('slow', 'swing');
-            }
-        });
-    })();
+    // Hamburger menu setup
+    document.querySelector('.hamburger-menu').addEventListener('click', function (e) {
+        e.preventDefault();
+        const menu = document.querySelector('.menu .menu-list');
+        if (this.classList.contains('active')) {
+            this.classList.remove('active');
+            menu.style.display = 'none';
+        } else {
+            this.classList.add('active');
+            menu.style.display = 'block';
+        }
+    });
 
 async function fetchQuests() {
 		console.log("fetchQuests");

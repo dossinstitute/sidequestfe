@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Creator Quest Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link media="all" rel="stylesheet" href="ss/style.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="logo" id="logo">
+                </a>
+            </div>
+            <div class="menu">
+                <div class="hamburger-menu-wrapper">
+                    <button class="hamburger-menu">
+                        <span>toggle menu</span>
+                    </button>
+                </div>
+                <div class="menu-list">
+                    <ul>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="quest-interactions.html">Quest Interaction</a></li>
+                        <li><a href="content-creator-quest.html" class="disabled-link">Content Creator Quest</a></li>
+                        <!-- Other links -->
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <main>
+            <section id="test-section">
+                <h2>Content Creator Quest Test</h2>
+                <div id="output"></div>
+                <div>
+                    <label for="quest-id">Quest ID:</label>
+                    <input type="number" id="quest-id" name="quest-id" min="1">
+                </div>
+                <div>
+                    <label for="quest-type-id">Quest Type ID:</label>
+                    <input type="number" id="quest-type-id" name="quest-type-id" min="1">
+                </div>
+                <button id="initialize-quest">Initialize Quest</button>
+                <button id="submit-content">Submit Content</button>
+                <button id="list-submissions">List Submissions</button>
+                <button id="list-active-quests">List Active Quests</button>
+                <button id="complete-quest">Complete Quest</button>
+            </section>
+        </main>
+        <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+        <script src="js/ethutils.js"></script>
+        <script src="js/content-creator-quest-test.js"></script>
+    </div>
+</body>
+</html>

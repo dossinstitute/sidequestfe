@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Quest Registration</title>
+    <title>Sponsor Quest Requirements Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link media="all" rel="stylesheet" href="ss/style.css" />
   </head>
@@ -45,42 +45,39 @@
         </div>
       </header>
       <main>
-        <section id="quest-list-section">
-          <h2>Quest List</h2>
-          <ul id="quest-list">
-            <!-- Quests will be dynamically added here -->
+        <section id="master-section">
+          <h2>Sponsor Quest Requirements List</h2>
+          <ul id="sponsor-quest-requirements-list">
+            <!-- Sponsor Quest Requirements will be dynamically added here -->
           </ul>
         </section>
 
-        <section id="quest-detail-section">
-          <h2>Quest Details</h2>
-          <form id="quest-form">
-            <label for="quest-id">Quest ID:</label>
-            <input type="text" id="quest-id" name="quest-id" readonly>
+        <section id="detail-section">
+          <h2>Sponsor Quest Requirement Details</h2>
+          <form id="sponsor-quest-requirement-form">
+            <label for="sqr-id">Sponsor Quest Requirement ID:</label>
+            <input type="text" id="sqr-id" name="sqr-id" required readonly>
 
-            <label for="event-id">Event ID:</label>
-            <input type="text" id="event-id" name="event-id" readonly>
+            <label for="quest-type-event-id">Quest Type Event ID:</label>
+            <select id="quest-type-event-id" name="quest-type-event-id" required></select>
 
-            <label for="start-date">Start Date:</label>
-            <input type="text" id="start-date" name="start-date" readonly>
+            <label for="sponsor-hashtags">Sponsor Hashtags:</label>
+            <input type="text" id="sponsor-hashtags" name="sponsor-hashtags" required>
 
-            <label for="end-date">End Date:</label>
-            <input type="text" id="end-date" name="end-date" readonly>
+            <label for="sponsor-hashtags-required">Sponsor Hashtags Required:</label>
+            <input type="checkbox" id="sponsor-hashtags-required" name="sponsor-hashtags-required">
 
-            <label for="required-interactions">Required Interactions:</label>
-            <input type="text" id="required-interactions" name="required-interactions" readonly>
-
-            <label for="reward-type">Reward Type:</label>
-            <input type="text" id="reward-type" name="reward-type" readonly>
-
-            <button type="button" id="register-quest">Register for Quest</button>
+            <button type="button" id="new-sponsor-quest-requirement">New Sponsor Quest Requirement</button>
+            <button type="button" id="create-sponsor-quest-requirement">Create Sponsor Quest Requirement</button>
+            <button type="button" id="update-sponsor-quest-requirement">Update Sponsor Quest Requirement</button>
+            <button type="button" id="delete-sponsor-quest-requirement">Delete Sponsor Quest Requirement</button>
           </form>
         </section>
       </main>
       <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="app.js?version=3"></script>
-      <script src="js/user.js?version=6"></script>
+      <script src="js/ethutils.js"></script>
+      <script src="js/sponsor-quest-requirements-admin.js?version=20"></script>
     </div>
   </body>
 </html>

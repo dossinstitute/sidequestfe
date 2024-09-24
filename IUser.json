@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "IUser",
-  "sourceName": "contracts/UserQuestEvents.sol",
+  "sourceName": "contracts/UserQuestTypeEvents.sol",
   "abi": [
     {
       "inputs": [

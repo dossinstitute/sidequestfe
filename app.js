@@ -4,18 +4,90 @@ const userManagerContractAddress = "0x19A20676F0D55542c5394a618C27f7346318715D";
 
 
 const eventQuestManagerContractAddress = "0xad9b202e48e1bCbafaa8cDCc7A136CD7c1E04C52";
-const newUsersContractAddress = "0x5b3f2DFD93be62C56d456951e0f0c1160F509da9";
-  const userQuestEventsContractAddress = "0x1a9eA524FF70CD1B4ffa63Bfa5620371cC6E80d8";
-  const usersContractAddress = "0x5b3f2DFD93be62C56d456951e0f0c1160F509da9";
-  const questEventsContractAddress = "0x10F6e385155A6DA095A391d8a86F8A9d6ccdC7ef";
-  const eventsContractAddress = "0xBECCf00407FC8558cAec9D0bAe392c8dd4245Db3";
-  const questsContractAddress = "0x80619c797baC0E95d393664Aff31Ac4541b94649";
+const newUsersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
+  const userQuestEventsContractAddress = "0xb60Cf112f4b5846Aa274F9AAe4457EDA9E1491D0";
+  const usersContractAddress = "0xF9F98Ee5e4fa000E6Bada4cA6F7fC97Cc2b9301e";
+  const questEventsContractAddress = "0xeb6EEbb7bA7C56Cc76F0a84BE166Ff2148450266";
+  const eventsContractAddress = "0x164155E567ee016DEe8F2c26785003c578eA919E";
+  const questsContractAddress = "0xcbf7b6da410b8d3f77f9ba600eD9ED689C058a0e";
+ const contentCreatorQuestContractAddress = "0xDf24f6fA521A1a497009F5540BcE17ba1809Bf27"
 
+//rootstock
+// Deploying contracts with the account: 0xA9574989663f48C010c87C638e94eF737c3Af3C0
+// Deploying Events contract...
+// Events contract deployed to: 0xe6a2eCCA5182d2991955d73fDA29bDB9f7c74deC
+// Deploying Users contract...
+// Users contract deployed to: 0x744b27dDD313CC12681c54cF1d3E563A3375F74e
+// Deploying Sponsors contract...
+// Sponsors contract deployed to: 0xf72887F8951e396AFfEfEE175AeD14566B6663E5
+// Deploying QuestEvents contract...
+// QuestEvents contract deployed to: 0xF39526c0B869a8f0A18D306E42e8F7f8FFe4260F
+// Deploying RewardPools contract...
+// RewardPools contract deployed to: 0x5A417C3B370b18195Bf0B281BbF243e3EDEF603E
+// Deploying UserQuestEvents contract...
+// UserQuestEvents contract deployed to: 0xb60Cf112f4b5846Aa274F9AAe4457EDA9E1491D0
+// Deploying Rewards contract...
+// Rewards contract deployed to: 0xbCBA1597D3C46f9CFA12FD32668C543B101eF173
+// Deploying QuestManager contract...
+// QuestManager contract deployed to: 0x96C8a3eAfdeC4d5a908b3CFb580fa27029B1152a
+// Deploying LocationQuest contract...
+// LocationQuest contract deployed to: 0xF9a7460D23De6b0DB9E557A63F14bd98945a346e
+// Deploying ContentCreatorQuest contract...
+// ContentCreatorQuest contract deployed to: 0x91cBc191c5729CBF08E0ed95889eF5a517D777aE
+// Deploying ProofOfKnowledgeQuest contract...
+// ProofOfKnowledgeQuest contract deployed to: 0xB6fD49bd5499f686e48F797547962c3B20F17b7B
+// Deploying EventQuestManagement contract...
+// EventQuestManagement contract deployed to: 0x10b51A671c2EE15750c6d8661b07396F9E8601A9
 // async function fetchquestABI() {
 //     let response = await fetch('QuestManager.json');
 //     const data = await response.json();
 //     return data.abi; // Assuming the ABI is stored under the key 'abi'
 // }
+// async function connectWalletByProvider(provider) {
+//     await provider.send("eth_requestAccounts", []);
+//     const signer = provider.getSigner();
+//     console.log("Connected to wallet");
+//     return signer;
+// }
+
+// async function fetchContractABI(filePath) {
+//     const response = await fetch(filePath);
+//     const data = await response.json();
+//     return data.abi;
+// }
+//
+// async function initializeContract(provider, abiPath, contractAddress) {
+//     const signer = await connectWalletByProvider(provider);
+//     const contractABI = await fetchContractABI(abiPath);
+//     return new ethers.Contract(contractAddress, contractABI, signer);
+// }
+
+function parseLogs(receipt, contract) {
+    receipt.logs.forEach(log => {
+        try {
+            const parsedLog = contract.interface.parseLog(log);
+            if (parsedLog.name.startsWith('Debug')) {
+                console.log(`${parsedLog.name} event:`, parsedLog.args.message || parsedLog.args.value || parsedLog.args.addr);
+            }
+        } catch (e) {
+            // Ignore logs that cannot be parsed
+        }
+    });
+}
+
+async function decodeRevertReason(transactionHash) {
+    const tx = await provider.getTransaction(transactionHash);
+    const code = await provider.call(tx, tx.blockNumber);
+    const reason = ethers.utils.toUtf8String('0x' + code.substr(138));
+    return reason.replace('VM Exception while processing transaction: revert ', '');
+}
+
+function handleError(error, defaultMessage) {
+    console.error(defaultMessage, error);
+    const parsedMessage = error.data && error.data.message ? error.data.message : error.message;
+    const cleanMessage = parsedMessage.replace("VM Exception while processing transaction: revert ", "");
+    return cleanMessage;
+}
 
 async function fetcheventABI() {
     let response = await fetch('EventsManager.json');
@@ -333,7 +405,7 @@ async function checkAndCreateUser() {
 				console.log(`error.data.message ${error.data.message}`);
 				console.log(`error.data ${error.data}`);
 				console.log(`error ${error}`);
-				if (error.data.message === "execution reverted: User does not exist") {
+				if (error.data.message && error.data.message.includes("User does not exist")) {
 						console.log("User does not exist. Creating new user...");
 						try {
 								const txResponse = await usersContract.createUser(userWallet, "defaultRole");

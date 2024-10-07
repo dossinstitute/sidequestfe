@@ -1,0 +1,21 @@
+{
+  "name": "sidequestfe",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^13.x.x",
+    "react": "^18.x.x",
+    "react-dom": "^18.x.x"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.x.x",
+    "autoprefixer": "^10.x.x",
+    "postcss": "^8.x.x"
+  }
+}

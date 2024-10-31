@@ -14,8 +14,12 @@
     "react-dom": "^18.x.x"
   },
   "devDependencies": {
-    "tailwindcss": "^3.x.x",
+    "@types/node": "22.8.6",
+    "@types/react": "18.3.12",
     "autoprefixer": "^10.x.x",
-    "postcss": "^8.x.x"
+    "eslint": "^8.57.1",
+    "postcss": "^8.x.x",
+    "tailwindcss": "^3.x.x",
+    "typescript": "5.6.3"
   }
 }

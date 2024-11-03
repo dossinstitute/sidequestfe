@@ -15,9 +15,9 @@ const Home: React.FC = () => {
           <span className="ml-4 bg-yellow-400 text-black py-2 px-4 rounded-full font-bold">50</span>
         </div>
         <nav className="flex space-x-6">
-          <a href="#" className="text-white hover:text-yellow-400">Home</a>
+          <a href="/" className="text-white hover:text-yellow-400">Home</a>
           <a href="/resources" className="text-white hover:text-yellow-400">Resources</a>
-          <a href="#" className="text-white hover:text-yellow-400">Blog</a>
+          <a href="/blog" className="text-white hover:text-yellow-400">Blog</a>
           <a href="#" className="text-white hover:text-yellow-400">Contact</a>
         </nav>
         <img src="/metamask-logo.png" alt="MetaMask Logo" className="w-10 h-10" />

@@ -1,5 +1,6 @@
 "use client"; // This directive makes the component a Client Component
 
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 const Home: React.FC = () => {
@@ -16,7 +17,7 @@ const Home: React.FC = () => {
         </div>
         <nav className="flex space-x-6">
           <a href="#" className="text-white hover:text-yellow-400">Home</a>
-          <a href="#" className="text-white hover:text-yellow-400">Resources</a>
+          <a href="/resources" className="text-white hover:text-yellow-400">Resources</a>
           <a href="#" className="text-white hover:text-yellow-400">Blog</a>
           <a href="#" className="text-white hover:text-yellow-400">Contact</a>
         </nav>

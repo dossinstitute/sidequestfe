@@ -18,7 +18,7 @@ const Home: React.FC = () => {
           <a href="/" className="text-white hover:text-yellow-400">Home</a>
           <a href="/resources" className="text-white hover:text-yellow-400">Resources</a>
           <a href="/blog" className="text-white hover:text-yellow-400">Blog</a>
-          <a href="#" className="text-white hover:text-yellow-400">Contact</a>
+          <a href="/contact" className="text-white hover:text-yellow-400">Contact</a>
         </nav>
         <img src="/metamask-logo.png" alt="MetaMask Logo" className="w-10 h-10" />
       </header>

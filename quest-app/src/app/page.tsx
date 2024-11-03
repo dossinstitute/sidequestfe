@@ -1,6 +1,5 @@
 "use client"; // This directive makes the component a Client Component
 
-import Link from 'next/link';
 import React, { useState } from 'react';
 
 const Home: React.FC = () => {

@@ -1,6 +1,7 @@
 "use client"; // This directive makes the component a Client Component
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Header from '../components/Header';
 
 
@@ -59,7 +60,12 @@ const Home: React.FC = () => {
           </div>
         )}
         {activeTab === 'leaderboard' && (
-          <div className="text-center text-yellow-400 text-2xl">Leaderboard content goes here</div>
+          <div className="flex justify-center items-center text-center text-4xl font-bold text-yellow-400 mb-8">
+          <Image src="/MedalIcon.png" alt="Medal" width={30} height={30} className="mx-2" />
+          <span>Leaderboard</span>
+          <Image src="/MedalIcon.png" alt="Medal" width={30} height={30} className="mx-2" />
+        </div>
+          
         )}
         {activeTab === 'airdrop' && (
           <div className="text-center text-yellow-400 text-2xl">Airdrop content goes here</div>

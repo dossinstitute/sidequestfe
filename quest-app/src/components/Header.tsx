@@ -16,11 +16,11 @@ const Header = () => {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex">
-        <a href="/" className="text-white hover:text-yellow-400 mx-3">Home</a>
-        <a href="/resources" className="text-white hover:text-yellow-400 mx-3">Resources</a>
-        <a href="/blog" className="text-white hover:text-yellow-400 mx-3">Blog</a>
-        <a href="/contact" className="text-white hover:text-yellow-400 mx-3">Contact</a>
+      <nav className="flex space-x-6">
+        <a href="/" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Home</a>
+        <a href="/resources" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400 mx-3 !mx-3">Resources</a>
+        <a href="/blog" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400 mx-3 !mx-3">Blog</a>
+        <a href="/contact" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400 mx-3 !mx-3">Contact</a>
       </nav>
 
       {/* Metamask Logo */}

@@ -16,9 +16,9 @@ const Leaderboard: React.FC = () => {
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="flex justify-between items-center p-4 bg-black text-white text-lg font-bold rounded-full">
-          <div className="flex-1 text-center">Rank</div>
-          <div className="flex-1 text-center">User</div>
-          <div className="flex-1 text-center">Points</div>
+          <div className="flex-1 text-center px-4">Rank</div>
+          <div className="flex-1 text-center px-4">User</div>
+          <div className="flex-1 text-center px-4">Points</div>
         </div>
         {/* Player Rows */}
         {players.map((player, index) => (
@@ -26,9 +26,9 @@ const Leaderboard: React.FC = () => {
             key={index}
             className="flex justify-between items-center p-4 bg-black bg-opacity-80 text-gold text-lg rounded-full shadow-md mt-4"
           >
-            <div className="flex-1 text-center">{player.rank}</div>
-            <div className="flex-1 text-center">{player.name}</div>
-            <div className="flex-1 text-center">{player.points}</div>
+            <div className="flex-1 text-center px-4">{player.rank}</div>
+            <div className="flex-1 text-center px-4">{player.name}</div>
+            <div className="flex-1 text-center px-4">{player.points}</div>
           </div>
         ))}
       </div>

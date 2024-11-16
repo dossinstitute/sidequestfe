@@ -2,9 +2,14 @@
 module.exports = {
   content: [
     './src/app/**/*.{js,ts,jsx,tsx}', // Include the src/app directory
-    './pages/**/*.{js,ts,jsx,tsx}',   // (if you add any files in ./pages)
     './components/**/*.{js,ts,jsx,tsx}', // (if you add any files in ./components)
   ],
+  safelist: [
+    'rounded-full',
+    'shadow-md',
+    'text-center',
+    'bg-black',
+  ], //PurgeCSS Removing Classes for Leaderboard Component
   theme: {
     extend: {
       colors: {

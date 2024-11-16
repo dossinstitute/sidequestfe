@@ -14,21 +14,27 @@ const Leaderboard: React.FC = () => {
     <div className="bg-teal-900 text-gold min-h-screen flex flex-col items-center p-4">
       {/* Leaderboard Table */}
       <div className="w-full max-w-2xl">
-        <div className="grid grid-cols-3 gap-4 p-4 bg-black text-white text-lg rounded-t-lg">
-          <div className="text-center">Rank</div>
-          <div className="text-center">User</div>
-          <div className="text-center">Points</div>
+        {/* Header */}
+        <div className="flex justify-between items-center p-4 bg-black text-white text-lg font-bold rounded-full">
+          <div className="flex-1 text-center">Rank</div>
+          <div className="flex-1 text-center">User</div>
+          <div className="flex-1 text-center">Points</div>
         </div>
+        {/* Player Rows */}
         {players.map((player, index) => (
-          <div key={index} className="grid grid-cols-3 gap-4 p-4 bg-black bg-opacity-80 text-gold text-lg">
-            <div className="text-center">{player.rank}</div>
-            <div className="text-center">{player.name}</div>
-            <div className="text-center">{player.points}</div>
+          <div
+            key={index}
+            className="flex justify-between items-center p-4 bg-black bg-opacity-80 text-gold text-lg rounded-full shadow-md mt-4"
+          >
+            <div className="flex-1 text-center">{player.rank}</div>
+            <div className="flex-1 text-center">{player.name}</div>
+            <div className="flex-1 text-center">{player.points}</div>
           </div>
         ))}
       </div>
     </div>
   );
+  
 };
 
 export default Leaderboard;

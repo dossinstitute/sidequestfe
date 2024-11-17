@@ -11,7 +11,7 @@ const Leaderboard: React.FC = () => {
   ];
 
   return (
-    <div className="bg-teal-900 text-gold min-h-screen flex flex-col items-center p-4">
+    <div className="bg-teal-900 text-gold flex flex-col items-center p-4">
       {/* Leaderboard Table */}
       <div className="w-full max-w-2xl">
         {/* Header */}

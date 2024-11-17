@@ -9,7 +9,13 @@ const QuestTile = () => {
         </div>
             <p className="mt-4 text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
             <a href="#" className="text-yellow-400 mt-4 inline-block hover:underline">Go to Quest →</a>
-    </div>
+            {/* Progress Bar */}
+            <div className="container mx-auto mt-12 px-4">
+                <div className="bg-gray-300 h-3 rounded-full">
+                    <div className="bg-yellow-400 h-full w-1/2 rounded-full"></div>
+                </div>
+            </div>
+        </div>
     );
 };
 

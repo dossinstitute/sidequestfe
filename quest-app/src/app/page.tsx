@@ -60,13 +60,15 @@ const Home: React.FC = () => {
           </div>
         )}
         {activeTab === 'leaderboard' && (
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">{/* Reduced mb-8 to mb-4 */}
+            {/* Title */}
             <div className="flex justify-center items-center text-4xl font-bold text-yellow-400 mb-2">
               <Image src="/MedalIcon.png" alt="Medal" width={30} height={30} className="mx-2" />
               <span>Leaderboard</span>
               <Image src="/MedalIcon.png" alt="Medal" width={30} height={30} className="mx-2" />
             </div>
-            <div className="flex justify-center">
+            {/* Leaderboard Component */}
+            <div className="w-full max-w-3xl mx-auto">{/* Added max-width and mx-auto */}
               <Leaderboard />
             </div>
           </div>

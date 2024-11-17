@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Header from '../components/Header';
 import Leaderboard from '../components/Leaderboard';
+import QuestTile from '../components/QuestTile';
 
 const Home: React.FC = () => {
   // State for active tab
@@ -40,23 +41,10 @@ const Home: React.FC = () => {
       <main className="container mx-auto mt-12 px-4">
         {activeTab === 'quests' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-[#0F262B] p-6 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center">
-                <h3 className="text-yellow-400 text-xl font-bold">Quest</h3>
-                <span className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm">50 Points</span>
-              </div>
-              <p className="mt-4 text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-              <a href="#" className="text-yellow-400 mt-4 inline-block hover:underline">Go to Quest →</a>
-            </div>
-
-            <div className="bg-[#0F262B] p-6 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center">
-                <h3 className="text-yellow-400 text-xl font-bold">Quest</h3>
-                <span className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm">50 Points</span>
-              </div>
-              <p className="mt-4 text-gray-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-              <a href="#" className="text-yellow-400 mt-4 inline-block hover:underline">Go to Quest →</a>
-            </div>
+            {/* Quest Tile Components */}
+            <QuestTile/>
+            <QuestTile/>
+            <QuestTile/>
           </div>
         )}
         {activeTab === 'leaderboard' && (
@@ -68,7 +56,7 @@ const Home: React.FC = () => {
               <Image src="/MedalIcon.png" alt="Medal" width={30} height={30} className="mx-2" />
             </div>
             {/* Leaderboard Component */}
-            <div className="w-full max-w-3xl mx-auto mt-4">{/* Added max-width and mx-auto */}
+            <div className="w-full max-w-3xl mx-auto mt-4">{/*added mt-4*/}
               <Leaderboard />
             </div>
           </div>

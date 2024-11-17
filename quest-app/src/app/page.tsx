@@ -68,7 +68,7 @@ const Home: React.FC = () => {
               <Image src="/MedalIcon.png" alt="Medal" width={30} height={30} className="mx-2" />
             </div>
             {/* Leaderboard Component */}
-            <div className="w-full max-w-3xl mx-auto">{/* Added max-width and mx-auto */}
+            <div className="w-full max-w-3xl mx-auto mt-4">{/* Added max-width and mx-auto */}
               <Leaderboard />
             </div>
           </div>

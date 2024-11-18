@@ -66,6 +66,13 @@ const Home: React.FC = () => {
           <div className="text-center text-yellow-400 text-2xl">Airdrop content goes here</div>
         )}
       </main>
+
+      {/* Progress Bar */}
+      <div className="container mx-auto mt-12 px-4">
+        <div className="bg-gray-300 h-3 rounded-full">
+          <div className="bg-yellow-400 h-full w-1/2 rounded-full"></div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -30,9 +30,9 @@ const Header = () => {
       {/* Navigation Links */}
       <nav className="flex space-x-6">
         <a href="/" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Home</a>
-        <a href="/resources" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400 mx-3 !mx-3">Resources</a>
-        <a href="/blog" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400 mx-3 !mx-3">Blog</a>
-        <a href="/contact" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400 mx-3 !mx-3">Contact</a>
+        <a href="/resources" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Resources</a>
+        <a href="/blog" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Blog</a>
+        <a href="/contact" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Contact</a>
       </nav>
 
       {/* Login Button or User Logo */}
@@ -44,7 +44,7 @@ const Header = () => {
             onClick={handleLogin}
             className="bg-yellow-400 text-black py-2 px-4 rounded-lg font-bold hover:bg-yellow-500"
           >
-            Connect & Sign-up
+            <img src="/walletlogo.png"width={20} height={20}/>Connect & Sign-up
           </button>
         )}
       </div>

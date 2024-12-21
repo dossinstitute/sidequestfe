@@ -3,18 +3,40 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { ethers } from "ethers";
 
 const Header = () => {
   // State to manage login status and user logo
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userLogo, setUserLogo] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
 
-  // Simulate login process
-  const handleLogin = () => {
-    // Simulate user logo selection (replace with actual login logic later)
-    const chosenLogo = "/metamask-logo.png"; // Example user logo
-    setUserLogo(chosenLogo);
-    setIsLoggedIn(true);
+  // Handle MetaMask login
+  const handleLogin = async () => {
+    try {
+      // Check if MetaMask is installed
+      if (!window.ethereum) {
+        alert("MetaMask is not installed. Please install it to log in.");
+        return;
+      }
+
+      // Request wallet connection
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const accounts = await provider.send("eth_requestAccounts", []);
+
+      // Get the first account address
+      const walletAddress = accounts[0];
+      setWalletAddress(walletAddress);
+
+      // Simulate fetching user profile logo (replace with your API logic)
+      const userLogoUrl = `/metamask-logo.png`; // Replace with dynamic user logo from API
+      setUserLogo(userLogoUrl);
+
+      // Set login status to true
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.error("Error connecting to MetaMask:", error);
+    }
   };
 
   return (

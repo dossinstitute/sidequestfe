@@ -10,32 +10,37 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userLogo, setUserLogo] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
+  const [showWalletOptions, setShowWalletOptions] = useState(false);
 
   // Handle MetaMask login
-  const handleLogin = async () => {
+  const handleWalletLogin = async (walletType: 'metamask' | 'coinbase') => {
     try {
-      // Check if MetaMask is installed
-      if (!window.ethereum) {
-        alert("MetaMask is not installed. Please install it to log in.");
-        return;
+      let provider;
+      
+      if (walletType === 'metamask') {
+        if (!window.ethereum) {
+          alert("MetaMask is not installed. Please install it to log in.");
+          return;
+        }
+        provider = new ethers.BrowserProvider(window.ethereum);
+      } else if (walletType === 'coinbase') {
+        if (!window.ethereum?.isCoinbaseWallet) {
+          alert("Coinbase Wallet is not installed. Please install it to log in.");
+          return;
+        }
+        provider = new ethers.BrowserProvider(window.ethereum);
       }
 
-      // Request wallet connection
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const accounts = await provider.send("eth_requestAccounts", []);
-
-      // Get the first account address
+      const accounts = await provider!.send("eth_requestAccounts", []);
       const walletAddress = accounts[0];
       setWalletAddress(walletAddress);
-
-      // Simulate fetching user profile logo (replace with your API logic)
-      const userLogoUrl = `/metamask-logo.png`; // Replace with dynamic user logo from API
+      
+      const userLogoUrl = walletType === 'metamask' ? '/metamask-logo.png' : '/coinbase-logo.png';
       setUserLogo(userLogoUrl);
-
-      // Set login status to true
       setIsLoggedIn(true);
+      setShowWalletOptions(false);
     } catch (error) {
-      console.error("Error connecting to MetaMask:", error);
+      console.error(`Error connecting to ${walletType} wallet:`, error);
     }
   };
 
@@ -58,16 +63,38 @@ const Header = () => {
       </nav>
 
       {/* Login Button or User Logo */}
-      <div>
+      <div className="relative">
         {isLoggedIn ? (
           <Image src={userLogo} alt="User Logo" width={50} height={50} className="rounded-full" />
         ) : (
-          <button
-            onClick={handleLogin}
-            className="bg-yellow-400 text-black py-2 px-4 rounded-lg font-bold hover:bg-yellow-500"
-          >
-            <img src="/walletlogo.png"width={20} height={20}/>Connect & Sign-up
-          </button>
+          <>
+            <button
+              onClick={() => setShowWalletOptions(!showWalletOptions)}
+              className="bg-yellow-400 text-black py-2 px-4 rounded-lg font-bold hover:bg-yellow-500 flex items-center"
+            >
+              <img src="/walletlogo.png" width={20} height={20} alt="Wallet" className="mr-2" />
+              Connect Wallet
+            </button>
+            
+            {showWalletOptions && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10">
+                <button
+                  onClick={() => handleWalletLogin('metamask')}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-100 rounded-t-lg flex items-center"
+                >
+                  <img src="/metamask-logo.png" width={20} height={20} alt="MetaMask" className="mr-2" />
+                  MetaMask
+                </button>
+                <button
+                  onClick={() => handleWalletLogin('coinbase')}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-100 rounded-b-lg flex items-center"
+                >
+                  <img src="/coinbase-logo.png" width={20} height={20} alt="Coinbase" className="mr-2" />
+                  Coinbase Wallet
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </header>

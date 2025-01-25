@@ -4,39 +4,20 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Header from '../components/Header';
 import Leaderboard from '../components/Leaderboard';
+import TabNavigation from '@/components/TabNavigation';
+import AdminSection from '@/components/AdminSection';
 
 const Home: React.FC = () => {
   // State for active tab
-  const [activeTab, setActiveTab] = useState<'quests' | 'leaderboard' | 'airdrop'>('quests');
+  const [activeTab, setActiveTab] = useState<'quests' | 'leaderboard' | 'airdrop' | 'admin'>('quests');
 
   return (
     <div className="min-h-screen bg-[#0A3E45] text-white font-sans">
       {/* Header */}
       <Header />
       
-      {/* Tabs */}
-      <div className="flex justify-center space-x-4 mt-10">
-        <button 
-          className={`py-2 px-6 rounded-md ${activeTab === 'quests' ? 'bg-[#AB8F3D] text-black' : 'bg-gray-600 text-gray-300'}`}
-          onClick={() => setActiveTab('quests')}
-        >
-          Quests
-        </button>
-        <button 
-          className={`py-2 px-6 rounded-md ${activeTab === 'leaderboard' ? 'bg-[#E3B051] text-black' : 'bg-gray-600 text-gray-300'}`}
-          onClick={() => setActiveTab('leaderboard')}
-        >
-          Leaderboard
-        </button>
-        <button 
-          className={`py-2 px-6 rounded-md ${activeTab === 'airdrop' ? 'bg-[#E3B051] text-black' : 'bg-gray-600 text-gray-300'}`}
-          onClick={() => setActiveTab('airdrop')}
-        >
-          Airdrop
-        </button>
-      </div>
-
-      {/* Quests Section */}
+      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      
       <main className="container mx-auto mt-12 px-4">
         {activeTab === 'quests' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -89,6 +70,7 @@ const Home: React.FC = () => {
         {activeTab === 'airdrop' && (
           <div className="text-center text-yellow-400 text-2xl">Airdrop content goes here</div>
         )}
+        {activeTab === 'admin' && <AdminSection />}
       </main>
     </div>
   );

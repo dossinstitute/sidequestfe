@@ -84,9 +84,9 @@ export default function UserAdminPage() {
                   />
                   <button 
                     onClick={handleNewUser}
-                    className="bg-[#AB8F3D] text-black px-4 py-2 rounded hover:bg-[#E3B051] transition-colors"
+                    className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
                   >
-                    Add User
+                    New User
                   </button>
                 </div>
 
@@ -121,25 +121,25 @@ export default function UserAdminPage() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2 mt-4">
+                  <div className="flex gap-4 mt-6">
                     <button
                       onClick={handleCreateUser}
                       disabled={!!selectedUser}
-                      className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+                      className="bg-[#AB8F3D] text-black px-6 py-2 rounded hover:bg-[#E3B051] transition-colors disabled:opacity-50"
                     >
                       Create User
                     </button>
                     <button
                       onClick={handleUpdateUser}
                       disabled={!selectedUser}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                      className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400 disabled:opacity-50"
                     >
                       Update User
                     </button>
                     <button
                       onClick={handleDeleteUser}
                       disabled={!selectedUser}
-                      className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
+                      className="bg-red-800 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors disabled:opacity-50"
                     >
                       Delete User
                     </button>

@@ -1,10 +1,22 @@
 "use client";
 
+import React, { useState } from 'react';
 import Header from '@/components/Header';
 
+interface Sponsor {
+  id: string;
+  companyName: string;
+  walletAddress: string;
+  rewardPoolId: string;
+}
+
 export default function SponsorAdminPage() {
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
-    <div className="min-h-screen bg-[#0A3E45] text-white font-sans">
+    <div className="min-h-screen bg-[#0A3E45] text-white font-sans pt-[88px]">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
@@ -17,18 +29,113 @@ export default function SponsorAdminPage() {
           <div className="grid gap-6">
             <div>
               <h2 className="text-xl font-semibold text-yellow-400 mb-4">Sponsor Management</h2>
-              <div className="bg-[#162F35] p-4 rounded">
+              <button 
+                onClick={() => setShowCreateForm(!showCreateForm)}
+                className="bg-[#AB8F3D] text-black px-4 py-2 rounded hover:bg-[#E3B051] transition-colors"
+              >
+                {showCreateForm ? 'Cancel' : 'Add Sponsor'}
+              </button>
+
+              {showCreateForm && (
+                <div className="mt-4 bg-[#162F35] p-6 rounded">
+                  <form id="sponsor-form" className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="sponsor-id" className="block text-yellow-400 mb-2">Sponsor ID</label>
+                        <input
+                          type="text"
+                          id="sponsor-id"
+                          name="sponsor-id"
+                          className="w-full bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                          readOnly
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="company-name" className="block text-yellow-400 mb-2">Company Name</label>
+                        <input
+                          type="text"
+                          id="company-name"
+                          name="company-name"
+                          className="w-full bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="wallet-address" className="block text-yellow-400 mb-2">Wallet Address</label>
+                        <input
+                          type="text"
+                          id="wallet-address"
+                          name="wallet-address"
+                          className="w-full bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="reward-pool-id" className="block text-yellow-400 mb-2">Reward Pool ID</label>
+                        <input
+                          type="text"
+                          id="reward-pool-id"
+                          name="reward-pool-id"
+                          className="w-full bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 mt-6">
+                      <button
+                        type="button"
+                        id="new-sponsor"
+                        className="bg-[#AB8F3D] text-black px-6 py-2 rounded hover:bg-[#E3B051] transition-colors"
+                      >
+                        New Sponsor
+                      </button>
+                      <button
+                        type="button"
+                        id="create-sponsor"
+                        className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
+                      >
+                        Create Sponsor
+                      </button>
+                      <button
+                        type="button"
+                        id="update-sponsor"
+                        className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
+                      >
+                        Update Sponsor
+                      </button>
+                      <button
+                        type="button"
+                        id="delete-sponsor"
+                        className="bg-red-800 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors"
+                      >
+                        Delete Sponsor
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              <div className="mt-4 bg-[#162F35] p-4 rounded">
                 <div className="flex justify-between items-center mb-4">
                   <input 
-                    type="text" 
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search sponsors..." 
                     className="bg-[#0A3E45] text-white px-4 py-2 rounded w-64"
                   />
-                  <button className="bg-[#AB8F3D] text-black px-4 py-2 rounded hover:bg-[#E3B051] transition-colors">
-                    Add Sponsor
-                  </button>
                 </div>
-                <p className="text-gray-300">No sponsors found</p>
+                {sponsors.length === 0 ? (
+                  <p className="text-gray-300">No sponsors found</p>
+                ) : (
+                  <div className="space-y-2">
+                    {/* Sponsor list items would go here */}
+                  </div>
+                )}
               </div>
             </div>
 

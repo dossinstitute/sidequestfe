@@ -80,44 +80,51 @@ export default function UserAdminPage() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search users..." 
-                    className="bg-[#0A3E45] text-white px-4 py-2 rounded w-64"
+                    className="bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 w-64"
                   />
                   <button 
                     onClick={handleNewUser}
-                    className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
+                    className="bg-[#AB8F3D] text-black px-4 py-2 rounded hover:bg-[#E3B051] transition-colors"
                   >
                     New User
                   </button>
                 </div>
 
-                <div className="bg-[#0A3E45] p-4 rounded mb-4">
-                  <div className="grid gap-4">
+                <div className="bg-[#162F35] p-6 rounded">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-gray-300 mb-2">User ID:</label>
+                      <label className="block text-yellow-400 mb-2">User ID:</label>
                       <input
                         type="text"
                         value={formData.userId}
                         readOnly
-                        className="w-full bg-[#162F35] text-white px-4 py-2 rounded"
+                        className="w-full bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-300 mb-2">Wallet Address:</label>
+                      <label className="block text-yellow-400 mb-2">Wallet Address:</label>
                       <input
                         type="text"
                         value={formData.walletAddress}
                         onChange={(e) => setFormData({...formData, walletAddress: e.target.value})}
-                        className="w-full bg-[#162F35] text-white px-4 py-2 rounded"
+                        className="w-full bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                        placeholder="Enter wallet address"
+                        required
                       />
                     </div>
-                    <div>
-                      <label className="block text-gray-300 mb-2">Role:</label>
-                      <input
-                        type="text"
+                    <div className="md:col-span-2">
+                      <label className="block text-yellow-400 mb-2">Role:</label>
+                      <select
                         value={formData.role}
                         onChange={(e) => setFormData({...formData, role: e.target.value})}
-                        className="w-full bg-[#162F35] text-white px-4 py-2 rounded"
-                      />
+                        className="w-full bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                        required
+                      >
+                        <option value="">Select a role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                        <option value="moderator">Moderator</option>
+                      </select>
                     </div>
                   </div>
 
@@ -146,7 +153,8 @@ export default function UserAdminPage() {
                   </div>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-6">
+                  <h3 className="text-yellow-400 text-lg font-semibold mb-3">User List</h3>
                   {users.length === 0 ? (
                     <p className="text-gray-300">No users found</p>
                   ) : (
@@ -163,14 +171,14 @@ export default function UserAdminPage() {
                               setSelectedUser(user);
                               setFormData(user);
                             }}
-                            className={`p-3 rounded cursor-pointer ${
+                            className={`p-4 rounded cursor-pointer transition-colors ${
                               selectedUser?.userId === user.userId 
                                 ? 'bg-[#AB8F3D] text-black' 
                                 : 'bg-[#0A3E45] hover:bg-[#124450]'
                             }`}
                           >
                             <div className="font-bold">{user.walletAddress}</div>
-                            <div className="text-sm">{user.role}</div>
+                            <div className="text-sm text-gray-300">{user.role}</div>
                           </div>
                         ))
                       }

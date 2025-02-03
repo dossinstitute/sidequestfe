@@ -10,6 +10,7 @@ interface User {
 }
 
 export default function UserAdminPage() {
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -72,25 +73,16 @@ export default function UserAdminPage() {
         <div className="bg-[#0F262B] p-6 rounded-lg shadow-lg">
           <div className="grid gap-6">
             <div>
-              <h2 className="text-xl font-semibold text-yellow-400 mb-4">User Management</h2>
-              <div className="bg-[#162F35] p-4 rounded">
-                <div className="flex justify-between items-center mb-4">
-                  <input 
-                    type="text" 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search users..." 
-                    className="bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 w-64"
-                  />
-                  <button 
-                    onClick={handleNewUser}
-                    className="bg-[#AB8F3D] text-black px-4 py-2 rounded hover:bg-[#E3B051] transition-colors"
-                  >
-                    New User
-                  </button>
-                </div>
+              <h2 className="text-xl font-semibold text-yellow-400 mb-4">Create New User</h2>
+              <button 
+                onClick={() => setShowCreateForm(!showCreateForm)}
+                className="bg-[#AB8F3D] text-black px-4 py-2 rounded hover:bg-[#E3B051] transition-colors"
+              >
+                {showCreateForm ? 'Cancel' : 'Create User'}
+              </button>
 
-                <div className="bg-[#162F35] p-6 rounded">
+              {showCreateForm && (
+                <div className="mt-4 bg-[#162F35] p-6 rounded">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-yellow-400 mb-2">User ID:</label>
@@ -152,8 +144,20 @@ export default function UserAdminPage() {
                     </button>
                   </div>
                 </div>
+              )}
 
-                <div className="mt-6">
+              <div className="mt-6">
+                <div className="flex justify-between items-center mb-4">
+                  <input 
+                    type="text" 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search users..." 
+                    className="bg-[#0A3E45] text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 w-64"
+                  />
+                </div>
+
+                <div className="bg-[#162F35] p-4 rounded">
                   <h3 className="text-yellow-400 text-lg font-semibold mb-3">User List</h3>
                   {users.length === 0 ? (
                     <p className="text-gray-300">No users found</p>
@@ -170,6 +174,7 @@ export default function UserAdminPage() {
                             onClick={() => {
                               setSelectedUser(user);
                               setFormData(user);
+                              setShowCreateForm(true);
                             }}
                             className={`p-4 rounded cursor-pointer transition-colors ${
                               selectedUser?.userId === user.userId 

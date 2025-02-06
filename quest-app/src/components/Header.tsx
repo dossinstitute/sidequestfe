@@ -59,11 +59,11 @@ const Header = () => {
           </span>
         </div>
 
-        <nav className="flex space-x-6">
-          <a href="/" className="text-white hover:text-yellow-400">Home</a>
-          <a href="/resources" className="text-white hover:text-yellow-400">Resources</a>
-          <a href="/Admin" className="text-white hover:text-yellow-400">Admin</a>
-          <a href="/contact" className="text-white hover:text-yellow-400">Contact</a>
+        <nav className="flex items-center">
+          <a href="/" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Home</a>
+          <a href="/resources" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Resources</a>
+          <a href="/Admin" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Admin</a>
+          <a href="/contact" style={{ marginRight: '12px' }} className="text-white hover:text-yellow-400">Contact</a>
         </nav>
 
         <div className="relative">

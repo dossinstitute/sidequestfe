@@ -1,7 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
+import { BrowserProvider, Contract } from 'ethers';
+
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
 
 interface User {
   userId: string;
@@ -14,6 +21,8 @@ export default function UserAdminPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [userManagerContract, setUserManagerContract] = useState<Contract | null>(null);
   
   // Form state
   const [formData, setFormData] = useState<User>({
@@ -21,6 +30,65 @@ export default function UserAdminPage() {
     walletAddress: '',
     role: ''
   });
+
+  // Initialize Web3 and Contract
+  useEffect(() => {
+    const initializeWeb3 = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const web3Provider = new BrowserProvider(window.ethereum);
+          setProvider(web3Provider);
+
+          // Initialize contract (add your contract address and ABI)
+          const contractAddress = "YOUR_CONTRACT_ADDRESS";
+          const contractABI = [
+            // Add your contract ABI here
+            "function createUser(string walletAddress, string role) returns (bool)",
+            "function updateUser(string userId, string walletAddress, string role) returns (bool)",
+            "function deleteUser(string userId) returns (bool)",
+            "function getUserCount() view returns (uint256)",
+            "function getUserByIndex(uint256 index) view returns (tuple(string userId, string walletAddress, string role))"
+          ];
+
+          const signer = await web3Provider.getSigner();
+          const contract = new Contract(contractAddress, contractABI, signer);
+          setUserManagerContract(contract);
+
+          // Fetch users after contract is initialized
+          fetchUsers();
+        } catch (error) {
+          console.error("Failed to initialize web3:", error);
+        }
+      } else {
+        console.error("Please install MetaMask!");
+      }
+    };
+
+    initializeWeb3();
+  }, []);
+
+  const fetchUsers = async () => {
+    if (!userManagerContract) return;
+
+    try {
+      const userCount = await userManagerContract.getUserCount();
+      const fetchedUsers = [];
+
+      for (let i = 0; i < userCount; i++) {
+        const user = await userManagerContract.getUserByIndex(i);
+        fetchedUsers.push({
+          userId: user.userId,
+          walletAddress: user.walletAddress,
+          role: user.role,
+        });
+      }
+
+      setUsers(fetchedUsers);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
 
   const handleNewUser = () => {
     setSelectedUser(null);
@@ -31,33 +99,49 @@ export default function UserAdminPage() {
     });
   };
 
-  const handleCreateUser = () => {
-    const newUser = {
-      ...formData,
-      userId: Date.now().toString() // Generate a temporary ID
-    };
-    setUsers([...users, newUser]);
-    handleNewUser();
+  const handleCreateUser = async () => {
+    if (!userManagerContract) return;
+
+    try {
+      const tx = await userManagerContract.createUser(formData.walletAddress, formData.role);
+      await tx.wait();
+      console.log("User created successfully!");
+
+      await fetchUsers();
+      handleNewUser();
+    } catch (error) {
+      console.error("Failed to create user:", error);
+    }
   };
 
-  const handleUpdateUser = () => {
-    if (!selectedUser) return;
-    
-    const updatedUsers = users.map(user => 
-      user.userId === selectedUser.userId ? formData : user
-    );
-    setUsers(updatedUsers);
-    handleNewUser();
+  const handleUpdateUser = async () => {
+    if (!userManagerContract || !selectedUser) return;
+
+    try {
+      const tx = await userManagerContract.updateUser(selectedUser.userId, formData.walletAddress, formData.role);
+      await tx.wait();
+      console.log("User updated successfully!");
+
+      await fetchUsers();
+      handleNewUser();
+    } catch (error) {
+      console.error("Failed to update user:", error);
+    }
   };
 
-  const handleDeleteUser = () => {
-    if (!selectedUser) return;
-    
-    const filteredUsers = users.filter(user => 
-      user.userId !== selectedUser.userId
-    );
-    setUsers(filteredUsers);
-    handleNewUser();
+  const handleDeleteUser = async () => {
+    if (!userManagerContract || !selectedUser) return;
+
+    try {
+      const tx = await userManagerContract.deleteUser(selectedUser.userId);
+      await tx.wait();
+      console.log("User deleted successfully!");
+
+      await fetchUsers();
+      handleNewUser();
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+    }
   };
 
   return (

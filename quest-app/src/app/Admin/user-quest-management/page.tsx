@@ -1,7 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
+import { BrowserProvider, Contract } from 'ethers';
+
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
 
 interface UserQuestEvent {
   userQuestEventId: string;
@@ -17,6 +24,139 @@ export default function UserQuestManagementPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [userQuestEvents, setUserQuestEvents] = useState<UserQuestEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<UserQuestEvent | null>(null);
+  const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [userQuestManagerContract, setUserQuestManagerContract] = useState<Contract | null>(null);
+
+  // Initialize Web3 and Contract
+  useEffect(() => {
+    const initializeWeb3 = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const web3Provider = new BrowserProvider(window.ethereum);
+          setProvider(web3Provider);
+
+          // Initialize contract (add your contract address and ABI)
+          const contractAddress = "YOUR_CONTRACT_ADDRESS";
+          const contractABI = [
+            // Add your contract ABI here
+            "function createUserQuestEvent(string userId, string questEventId, uint256 interactions, string url, bool validated, bool completed) returns (bool)",
+            "function updateUserQuestEvent(string userQuestEventId, string userId, string questEventId, uint256 interactions, string url, bool validated, bool completed) returns (bool)",
+            "function deleteUserQuestEvent(string userQuestEventId) returns (bool)",
+            "function getUserQuestEventCount() view returns (uint256)",
+            "function getUserQuestEventByIndex(uint256 index) view returns (tuple(string userQuestEventId, string userId, string questEventId, uint256 interactions, string url, bool validated, bool completed))"
+          ];
+
+          const signer = await web3Provider.getSigner();
+          const contract = new Contract(contractAddress, contractABI, signer);
+          setUserQuestManagerContract(contract);
+
+          // Fetch user quest events after contract is initialized
+          fetchUserQuestEvents();
+        } catch (error) {
+          console.error("Failed to initialize web3:", error);
+        }
+      } else {
+        console.error("Please install MetaMask!");
+      }
+    };
+
+    initializeWeb3();
+  }, []);
+
+  const fetchUserQuestEvents = async () => {
+    if (!userQuestManagerContract) return;
+
+    try {
+      const userQuestEventCount = await userQuestManagerContract.getUserQuestEventCount();
+      const fetchedUserQuestEvents = [];
+
+      for (let i = 0; i < userQuestEventCount; i++) {
+        const userQuestEvent = await userQuestManagerContract.getUserQuestEventByIndex(i);
+        fetchedUserQuestEvents.push({
+          userQuestEventId: userQuestEvent.userQuestEventId,
+          userId: userQuestEvent.userId,
+          questEventId: userQuestEvent.questEventId,
+          interactions: userQuestEvent.interactions,
+          url: userQuestEvent.url,
+          validated: userQuestEvent.validated,
+          completed: userQuestEvent.completed,
+        });
+      }
+
+      setUserQuestEvents(fetchedUserQuestEvents);
+    } catch (error) {
+      console.error("Failed to fetch user quest events:", error);
+    }
+  };
+
+  const handleCreateUserQuestEvent = async () => {
+    if (!userQuestManagerContract) return;
+
+    try {
+      const form = document.getElementById('user-quest-event-form') as HTMLFormElement;
+      const formData = new FormData(form);
+
+      const userId = formData.get('user-id') as string;
+      const questEventId = formData.get('quest-event-id') as string;
+      const interactions = parseInt(formData.get('interactions') as string);
+      const url = formData.get('url') as string;
+      const validated = formData.get('validated') === 'on';
+      const completed = formData.get('completed') === 'on';
+
+      const tx = await userQuestManagerContract.createUserQuestEvent(userId, questEventId, interactions, url, validated, completed);
+      await tx.wait();
+      console.log("User quest event created successfully!");
+
+      await fetchUserQuestEvents();
+      form.reset();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to create user quest event:", error);
+    }
+  };
+
+  const handleUpdateUserQuestEvent = async () => {
+    if (!userQuestManagerContract || !selectedEvent) return;
+
+    try {
+      const form = document.getElementById('user-quest-event-form') as HTMLFormElement;
+      const formData = new FormData(form);
+
+      const userQuestEventId = selectedEvent.userQuestEventId;
+      const userId = formData.get('user-id') as string;
+      const questEventId = formData.get('quest-event-id') as string;
+      const interactions = parseInt(formData.get('interactions') as string);
+      const url = formData.get('url') as string;
+      const validated = formData.get('validated') === 'on';
+      const completed = formData.get('completed') === 'on';
+
+      const tx = await userQuestManagerContract.updateUserQuestEvent(userQuestEventId, userId, questEventId, interactions, url, validated, completed);
+      await tx.wait();
+      console.log("User quest event updated successfully!");
+
+      await fetchUserQuestEvents();
+      form.reset();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to update user quest event:", error);
+    }
+  };
+
+  const handleDeleteUserQuestEvent = async () => {
+    if (!userQuestManagerContract || !selectedEvent) return;
+
+    try {
+      const tx = await userQuestManagerContract.deleteUserQuestEvent(selectedEvent.userQuestEventId);
+      await tx.wait();
+      console.log("User quest event deleted successfully!");
+
+      await fetchUserQuestEvents();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to delete user quest event:", error);
+    }
+  };
 
   const handleNewEvent = () => {
     setSelectedEvent(null);
@@ -138,8 +278,9 @@ export default function UserQuestManagementPage() {
                         New User Quest Event
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         id="create-user-quest-event"
+                        onClick={handleCreateUserQuestEvent}
                         className="bg-[#AB8F3D] text-black px-6 py-2 rounded hover:bg-[#E3B051] transition-colors"
                       >
                         Create User Quest Event
@@ -147,6 +288,7 @@ export default function UserQuestManagementPage() {
                       <button
                         type="button"
                         id="update-user-quest-event"
+                        onClick={handleUpdateUserQuestEvent}
                         className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
                       >
                         Update User Quest Event
@@ -154,6 +296,7 @@ export default function UserQuestManagementPage() {
                       <button
                         type="button"
                         id="delete-user-quest-event"
+                        onClick={handleDeleteUserQuestEvent}
                         className="bg-red-800 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors"
                       >
                         Delete User Quest Event

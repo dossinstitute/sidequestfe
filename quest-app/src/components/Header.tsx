@@ -1,7 +1,7 @@
 // components/Header.js
 "use client"; // This directive makes the component a Client Component
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 

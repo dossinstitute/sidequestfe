@@ -2,7 +2,7 @@
 
 import Header from '@/components/Header';
 import { useState, useEffect } from 'react';
-import { BrowserProvider, Contract, JsonRpcSigner } from 'ethers';
+import { BrowserProvider, Contract } from 'ethers';
 
 declare global {
   interface Window {

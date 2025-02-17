@@ -1,7 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
+import { BrowserProvider, Contract } from 'ethers';
+
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
 
 interface QuestEvent {
   id: string;
@@ -17,9 +24,150 @@ interface QuestEvent {
 export default function QuestManagementPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [questEvents, setQuestEvents] = useState<QuestEvent[]>([]);
+  const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [questManagerContract, setQuestManagerContract] = useState<Contract | null>(null);
+
+  // Initialize Web3 and Contract
+  useEffect(() => {
+    const initializeWeb3 = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const web3Provider = new BrowserProvider(window.ethereum);
+          setProvider(web3Provider);
+
+          // Initialize contract (add your contract address and ABI)
+          const contractAddress = "YOUR_CONTRACT_ADDRESS";
+          const contractABI = [
+            // Add your contract ABI here
+            "function createQuestEvent(string eventId, string questId, uint256 minimumInteractions, uint256 startDate, uint256 endDate, uint256 rewardAmount, string urlHashTags) returns (bool)",
+            "function updateQuestEvent(string id, string eventId, string questId, uint256 minimumInteractions, uint256 startDate, uint256 endDate, uint256 rewardAmount, string urlHashTags) returns (bool)",
+            "function deleteQuestEvent(string id) returns (bool)",
+            "function getQuestEventCount() view returns (uint256)",
+            "function getQuestEventByIndex(uint256 index) view returns (tuple(string id, string eventId, string questId, uint256 minimumInteractions, uint256 startDate, uint256 endDate, uint256 rewardAmount, string urlHashTags))"
+          ];
+
+          const signer = await web3Provider.getSigner();
+          const contract = new Contract(contractAddress, contractABI, signer);
+          setQuestManagerContract(contract);
+
+          // Fetch quest events after contract is initialized
+          fetchQuestEvents();
+        } catch (error) {
+          console.error("Failed to initialize web3:", error);
+        }
+      } else {
+        console.error("Please install MetaMask!");
+      }
+    };
+
+    initializeWeb3();
+  }, []);
+
+  const fetchQuestEvents = async () => {
+    if (!questManagerContract) return;
+
+    try {
+      const questEventCount = await questManagerContract.getQuestEventCount();
+      const fetchedQuestEvents = [];
+
+      for (let i = 0; i < questEventCount; i++) {
+        const questEvent = await questManagerContract.getQuestEventByIndex(i);
+        fetchedQuestEvents.push({
+          id: questEvent.id,
+          eventId: questEvent.eventId,
+          questId: questEvent.questId,
+          minimumInteractions: questEvent.minimumInteractions,
+          startDate: new Date(questEvent.startDate * 1000).toISOString().split('T')[0],
+          endDate: new Date(questEvent.endDate * 1000).toISOString().split('T')[0],
+          rewardAmount: questEvent.rewardAmount,
+          urlHashTags: questEvent.urlHashTags,
+        });
+      }
+
+      setQuestEvents(fetchedQuestEvents);
+    } catch (error) {
+      console.error("Failed to fetch quest events:", error);
+    }
+  };
+
+  const handleCreateQuestEvent = async () => {
+    if (!questManagerContract) return;
+
+    try {
+      const form = document.getElementById('quest-event-form') as HTMLFormElement;
+      const formData = new FormData(form);
+
+      const eventId = formData.get('event-id') as string;
+      const questId = formData.get('quest-id') as string;
+      const minimumInteractions = parseInt(formData.get('minimum-interactions') as string);
+      const startDate = new Date(formData.get('start-date') as string).getTime() / 1000;
+      const endDate = new Date(formData.get('end-date') as string).getTime() / 1000;
+      const rewardAmount = parseInt(formData.get('reward-amount') as string);
+      const urlHashTags = formData.get('url-hash-tags') as string;
+
+      const tx = await questManagerContract.createQuestEvent(eventId, questId, minimumInteractions, startDate, endDate, rewardAmount, urlHashTags);
+      await tx.wait();
+      console.log("Quest event created successfully!");
+
+      await fetchQuestEvents();
+      form.reset();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to create quest event:", error);
+    }
+  };
+
+  const handleUpdateQuestEvent = async () => {
+    if (!questManagerContract) return;
+
+    try {
+      const form = document.getElementById('quest-event-form') as HTMLFormElement;
+      const formData = new FormData(form);
+
+      const id = formData.get('quest-event-id') as string;
+      const eventId = formData.get('event-id') as string;
+      const questId = formData.get('quest-id') as string;
+      const minimumInteractions = parseInt(formData.get('minimum-interactions') as string);
+      const startDate = new Date(formData.get('start-date') as string).getTime() / 1000;
+      const endDate = new Date(formData.get('end-date') as string).getTime() / 1000;
+      const rewardAmount = parseInt(formData.get('reward-amount') as string);
+      const urlHashTags = formData.get('url-hash-tags') as string;
+
+      const tx = await questManagerContract.updateQuestEvent(id, eventId, questId, minimumInteractions, startDate, endDate, rewardAmount, urlHashTags);
+      await tx.wait();
+      console.log("Quest event updated successfully!");
+
+      await fetchQuestEvents();
+      form.reset();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to update quest event:", error);
+    }
+  };
+
+  const handleDeleteQuestEvent = async () => {
+    if (!questManagerContract) return;
+
+    try {
+      const form = document.getElementById('quest-event-form') as HTMLFormElement;
+      const formData = new FormData(form);
+      const id = formData.get('quest-event-id') as string;
+
+      const tx = await questManagerContract.deleteQuestEvent(id);
+      await tx.wait();
+      console.log("Quest event deleted successfully!");
+
+      await fetchQuestEvents();
+      form.reset();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to delete quest event:", error);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#0A3E45] text-white font-sans pt-[88px]">
+    <div className="min-h-screen bg-[#0A3E45] text-white font-sans">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
@@ -137,21 +285,16 @@ export default function QuestManagementPage() {
                     <div className="flex gap-4 mt-6">
                       <button
                         type="button"
-                        id="new-quest-event"
-                        className="bg-[#AB8F3D] text-black px-6 py-2 rounded hover:bg-[#E3B051] transition-colors"
-                      >
-                        New Quest Event
-                      </button>
-                      <button
-                        type="button"
                         id="create-quest-event"
-                        className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
+                        onClick={handleCreateQuestEvent}
+                        className="bg-[#AB8F3D] text-black px-6 py-2 rounded hover:bg-[#E3B051] transition-colors"
                       >
                         Create Quest Event
                       </button>
                       <button
                         type="button"
                         id="update-quest-event"
+                        onClick={handleUpdateQuestEvent}
                         className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
                       >
                         Update Quest Event
@@ -159,6 +302,7 @@ export default function QuestManagementPage() {
                       <button
                         type="button"
                         id="delete-quest-event"
+                        onClick={handleDeleteQuestEvent}
                         className="bg-red-800 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors"
                       >
                         Delete Quest Event
@@ -182,7 +326,28 @@ export default function QuestManagementPage() {
                     Monitor Quest
                   </button>
                 </div>
-                <p className="text-gray-300">No active quests found</p>
+                {questEvents.length > 0 ? (
+                  <ul className="space-y-4">
+                    {questEvents.map((questEvent) => (
+                      <li key={questEvent.id} className="p-4 bg-[#0A3E45] rounded hover:bg-[#0F262B] cursor-pointer">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="text-yellow-400 font-semibold">{questEvent.questId}</h3>
+                            <p className="text-gray-300 text-sm mt-1">Event ID: {questEvent.eventId}</p>
+                            <p className="text-gray-400 text-sm mt-2">
+                              {new Date(questEvent.startDate).toLocaleDateString()} - {new Date(questEvent.endDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">
+                            Active
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-300">No active quests found</p>
+                )}
               </div>
             </div>
 

@@ -1,7 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
+import { BrowserProvider, Contract } from 'ethers';
+
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
 
 interface Reward {
   rewardId: string;
@@ -16,6 +23,135 @@ export default function RewardsAdminPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
+  const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [rewardsManagerContract, setRewardsManagerContract] = useState<Contract | null>(null);
+
+  // Initialize Web3 and Contract
+  useEffect(() => {
+    const initializeWeb3 = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const web3Provider = new BrowserProvider(window.ethereum);
+          setProvider(web3Provider);
+
+          // Initialize contract (add your contract address and ABI)
+          const contractAddress = "YOUR_CONTRACT_ADDRESS";
+          const contractABI = [
+            // Add your contract ABI here
+            "function createReward(string attendeeId, string rewardPoolId, string amount, string rewardType, string poolWalletAddress) returns (bool)",
+            "function updateReward(string rewardId, string attendeeId, string rewardPoolId, string amount, string rewardType, string poolWalletAddress) returns (bool)",
+            "function deleteReward(string rewardId) returns (bool)",
+            "function getRewardCount() view returns (uint256)",
+            "function getRewardByIndex(uint256 index) view returns (tuple(string rewardId, string attendeeId, string rewardPoolId, string amount, string rewardType, string poolWalletAddress))"
+          ];
+
+          const signer = await web3Provider.getSigner();
+          const contract = new Contract(contractAddress, contractABI, signer);
+          setRewardsManagerContract(contract);
+
+          // Fetch rewards after contract is initialized
+          fetchRewards();
+        } catch (error) {
+          console.error("Failed to initialize web3:", error);
+        }
+      } else {
+        console.error("Please install MetaMask!");
+      }
+    };
+
+    initializeWeb3();
+  }, []);
+
+  const fetchRewards = async () => {
+    if (!rewardsManagerContract) return;
+
+    try {
+      const rewardCount = await rewardsManagerContract.getRewardCount();
+      const fetchedRewards = [];
+
+      for (let i = 0; i < rewardCount; i++) {
+        const reward = await rewardsManagerContract.getRewardByIndex(i);
+        fetchedRewards.push({
+          rewardId: reward.rewardId,
+          attendeeId: reward.attendeeId,
+          rewardPoolId: reward.rewardPoolId,
+          amount: reward.amount,
+          rewardType: reward.rewardType,
+          poolWalletAddress: reward.poolWalletAddress,
+        });
+      }
+
+      setRewards(fetchedRewards);
+    } catch (error) {
+      console.error("Failed to fetch rewards:", error);
+    }
+  };
+
+  const handleCreateReward = async () => {
+    if (!rewardsManagerContract) return;
+
+    try {
+      const form = document.getElementById('reward-form') as HTMLFormElement;
+      const formData = new FormData(form);
+
+      const attendeeId = formData.get('attendee-id') as string;
+      const rewardPoolId = formData.get('reward-pool-id') as string;
+      const amount = formData.get('amount') as string;
+      const rewardType = formData.get('reward-type') as string;
+      const poolWalletAddress = formData.get('pool-wallet-address') as string;
+
+      const tx = await rewardsManagerContract.createReward(attendeeId, rewardPoolId, amount, rewardType, poolWalletAddress);
+      await tx.wait();
+      console.log("Reward created successfully!");
+
+      await fetchRewards();
+      form.reset();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to create reward:", error);
+    }
+  };
+
+  const handleUpdateReward = async () => {
+    if (!rewardsManagerContract || !selectedReward) return;
+
+    try {
+      const form = document.getElementById('reward-form') as HTMLFormElement;
+      const formData = new FormData(form);
+
+      const rewardId = selectedReward.rewardId;
+      const attendeeId = formData.get('attendee-id') as string;
+      const rewardPoolId = formData.get('reward-pool-id') as string;
+      const amount = formData.get('amount') as string;
+      const rewardType = formData.get('reward-type') as string;
+      const poolWalletAddress = formData.get('pool-wallet-address') as string;
+
+      const tx = await rewardsManagerContract.updateReward(rewardId, attendeeId, rewardPoolId, amount, rewardType, poolWalletAddress);
+      await tx.wait();
+      console.log("Reward updated successfully!");
+
+      await fetchRewards();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to update reward:", error);
+    }
+  };
+
+  const handleDeleteReward = async () => {
+    if (!rewardsManagerContract || !selectedReward) return;
+
+    try {
+      const tx = await rewardsManagerContract.deleteReward(selectedReward.rewardId);
+      await tx.wait();
+      console.log("Reward deleted successfully!");
+
+      await fetchRewards();
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Failed to delete reward:", error);
+    }
+  };
 
   const handleNewReward = () => {
     setSelectedReward(null);
@@ -124,8 +260,9 @@ export default function RewardsAdminPage() {
                         New Reward
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         id="create-reward"
+                        onClick={handleCreateReward}
                         className="bg-[#AB8F3D] text-black px-6 py-2 rounded hover:bg-[#E3B051] transition-colors"
                       >
                         Create Reward
@@ -133,6 +270,7 @@ export default function RewardsAdminPage() {
                       <button
                         type="button"
                         id="update-reward"
+                        onClick={handleUpdateReward}
                         className="bg-[#0A3E45] text-yellow-400 px-6 py-2 rounded hover:bg-[#162F35] transition-colors border border-yellow-400"
                       >
                         Update Reward
@@ -140,6 +278,7 @@ export default function RewardsAdminPage() {
                       <button
                         type="button"
                         id="delete-reward"
+                        onClick={handleDeleteReward}
                         className="bg-red-800 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors"
                       >
                         Delete Reward
